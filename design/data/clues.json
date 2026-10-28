@@ -1,0 +1,166 @@
+{
+  "version": 1,
+  "tuning": {
+    "guessMul": 1.3,
+    "missMul": 1.0,
+    "counterMul": 1.3,
+    "maxMul": 1.6,
+    "readCancelsCounter": true,
+    "timeoutAsMiss": true,
+    "quizEnabled": true
+  },
+  "stances": [
+    {
+      "id": "low_charge",
+      "ang": "low",
+      "name": "低头冲锋",
+      "horns": [
+        "curl"
+      ]
+    },
+    {
+      "id": "low_sweep",
+      "ang": "low",
+      "name": "贴地扫角",
+      "horns": [
+        "branch"
+      ]
+    },
+    {
+      "id": "mid_ram",
+      "ang": "mid",
+      "name": "正面顶撞",
+      "horns": [
+        "spiral"
+      ]
+    },
+    {
+      "id": "mid_feint",
+      "ang": "mid",
+      "name": "侧身试探",
+      "horns": [
+        "curl",
+        "straight",
+        "spiral",
+        "branch"
+      ]
+    },
+    {
+      "id": "high_leap",
+      "ang": "high",
+      "name": "高跳下劈",
+      "horns": [
+        "straight"
+      ]
+    },
+    {
+      "id": "high_rear",
+      "ang": "high",
+      "name": "人立扬角",
+      "horns": [
+        "branch"
+      ]
+    }
+  ],
+  "clues": [
+    {
+      "id": "head_down",
+      "text": "头压得很低",
+      "ang": "low",
+      "fakeable": true,
+      "icon": "clue_head_down"
+    },
+    {
+      "id": "hoof_scrape",
+      "text": "前蹄刨地",
+      "ang": "low",
+      "fakeable": true,
+      "icon": "clue_hoof"
+    },
+    {
+      "id": "tail_flat",
+      "text": "尾巴放平",
+      "ang": "mid",
+      "fakeable": false,
+      "icon": "clue_tail"
+    },
+    {
+      "id": "eyes_forward",
+      "text": "眼睛直视前方",
+      "ang": "mid",
+      "fakeable": true,
+      "icon": "clue_eyes"
+    },
+    {
+      "id": "hind_bend",
+      "text": "后腿深蹲",
+      "ang": "high",
+      "fakeable": true,
+      "icon": "clue_hind"
+    },
+    {
+      "id": "ears_up",
+      "text": "耳朵竖起",
+      "ang": "high",
+      "fakeable": false,
+      "icon": "clue_ears"
+    },
+    {
+      "id": "wool_puff",
+      "text": "羊毛炸起",
+      "ang": null,
+      "fakeable": false,
+      "noise": true,
+      "icon": "clue_puff"
+    },
+    {
+      "id": "horn_glint",
+      "text": "角尖闪光",
+      "ang": "$hornWin",
+      "fakeable": true,
+      "icon": "clue_glint"
+    }
+  ],
+  "levels": [
+    {
+      "lv": 1,
+      "clueCount": 1,
+      "fakeChance": 0,
+      "observeSec": 4.0,
+      "mustHaveTrue": true,
+      "noise": 0
+    },
+    {
+      "lv": 2,
+      "clueCount": 2,
+      "fakeChance": 0.15,
+      "observeSec": 3.5,
+      "mustHaveTrue": true,
+      "noise": 0
+    },
+    {
+      "lv": 3,
+      "clueCount": 2,
+      "fakeChance": 0.3,
+      "observeSec": 3.0,
+      "mustHaveTrue": true,
+      "noise": 0
+    },
+    {
+      "lv": 4,
+      "clueCount": 3,
+      "fakeChance": 0.45,
+      "observeSec": 2.5,
+      "mustHaveTrue": true,
+      "noise": 1
+    },
+    {
+      "lv": 5,
+      "clueCount": 3,
+      "fakeChance": 0.6,
+      "observeSec": 2.0,
+      "mustHaveTrue": false,
+      "noise": 1
+    }
+  ]
+}
