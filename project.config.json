@@ -1,1 +1,57 @@
-{ "compileType": "game", "appid": "touristappid", "projectname": "goat-clash", "setting": { "es6": true }, "libVersion": "3.0.0" }
+{
+ "compileType": "game",
+ "appid": "touristappid",
+ "projectname": "goat-clash",
+ "setting": {
+  "es6": true
+ },
+ "libVersion": "3.0.0",
+ "packOptions": {
+  "ignore": [
+   {
+    "type": "folder",
+    "value": "tools"
+   },
+   {
+    "type": "folder",
+    "value": "screenshots"
+   },
+   {
+    "type": "regexp",
+    "value": "^art/_[^/]+/"
+   },
+   {
+    "type": "regexp",
+    "value": "spots_mask_"
+   },
+   {
+    "type": "folder",
+    "value": "design/sim2"
+   },
+   {
+    "type": "folder",
+    "value": "design/sim3"
+   },
+   {
+    "type": "regexp",
+    "value": "^art/.*(?<!_320)\\.(png|jpg)$"
+   },
+   {
+    "type": "folder",
+    "value": "design/sim"
+   },
+   {
+    "type": "glob",
+    "value": "design/*.md"
+   },
+   {
+    "type": "glob",
+    "value": "*.md"
+   },
+   {
+    "type": "file",
+    "value": "index.html"
+   }
+  ]
+ }
+}

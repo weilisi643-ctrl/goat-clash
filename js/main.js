@@ -28,7 +28,7 @@ function cycle(k, arr, n) { st.idx[k] = (st.idx[k] + n + arr.length) % arr.lengt
 function syncLook() { var i = st.idx; st.look = { wool: D.wools[i.wool].id, woolColor: D.woolColors[i.wc], horn: D.horns[i.horn].id, hornColor: D.hornColors[i.hc] }; }
 function drawCustom() {
   bg(); text('🐐 咩咩顶角王', W / 2, 50, 26, '#c05a00'); text('打造你的山羊', W / 2, 82, 15, '#666');
-  G.drawShadow(ctx, W / 2 - 10, H * 0.32, 2, 0); G.drawGoat(ctx, W / 2 - 10, H * 0.32, 2, st.look, 1, 0);
+  G.drawShadow(ctx, W / 2 - 10, H * 0.32, 2, 0); G.drawGoatArt(ctx, W / 2 - 10, H * 0.32, 2, st.look, 1, 0);
   var s = stats(st.look), h = D.horns[st.idx.horn];
   text('体力 ' + s.hp + '  速度 ' + (s.spd >= 0 ? '+' : '') + s.spd + '  力量 +' + s.pow, W / 2, H * 0.47, 14, '#444');
   text(h.name + '：' + h.tip, W / 2, H * 0.5, 13, '#a05000');
@@ -141,8 +141,9 @@ function drawBattle() {
   if (B.phase === 'result') { B.p.y = Math.min(0, B.p.y + 4); B.e.y = B.p.y; if (B.p.x < W * 0.25) B.p.x = W * 0.25; }
   B.t++;
   G.drawShadow(ctx, B.p.x, gy, 1.1, -B.p.y); G.drawShadow(ctx, B.e.x, gy, 1.1, -B.e.y);
-  G.drawGoat(ctx, B.p.x, gy + B.p.y, 1.1, st.look, 1, 0);
-  G.drawGoat(ctx, B.e.x, gy + B.e.y, 1.1, B.ai, -1, 0);
+  var pose = B.phase === 'air' ? 'jump' : (B.phase === 'result' && B.t < 25) ? 'clash' : 'idle';
+  G.drawGoatArt(ctx, B.p.x, gy + B.p.y, 1.1, st.look, 1, 0, pose);
+  G.drawGoatArt(ctx, B.e.x, gy + B.e.y, 1.1, B.ai, -1, 0, pose);
   if (B.phase === 'result' && B.t < 25) text('💥', W / 2, gy - 40, 40);
   text(B.msg, W / 2, 90, 15, '#a03000');
   var y0 = H * 0.76;
@@ -176,7 +177,7 @@ function hpBar(x, y, hp, max, n) { var w = W / 2 - 30; ctx.fillStyle = '#eee'; c
 function drawOver() {
   bg(); var win = B.wins[0] === 2; text(win ? '🏆 你是顶角王！' : '😢 再接再厉', W / 2, H * 0.3, 28, '#c05a00');
   text(B.wins[0] + ' : ' + B.wins[1], W / 2, H * 0.38, 22);
-  G.drawShadow(ctx, W / 2, H * 0.55, 1.8, 0); G.drawGoat(ctx, W / 2, H * 0.55, 1.8, st.look, 1, 0);
+  G.drawShadow(ctx, W / 2, H * 0.55, 1.8, 0); G.drawGoatArt(ctx, W / 2, H * 0.55, 1.8, st.look, 1, 0);
   btn(W / 2 - 80, H * 0.75, 160, 46, '再来一局', function () { startMatch(); }); btn(W / 2 - 80, H * 0.75 + 60, 160, 46, '换装', function () { st.scene = 'custom'; });
 }
 // ---------- 每日擂主 ----------
@@ -227,7 +228,7 @@ function drawArenaResult() {
   text(L.win ? '🏆 第 ' + L.stage + ' 场胜利！' : '😢 第 ' + L.stage + ' 场惜败', W / 2, 70, 26, '#c05a00');
   if (A.REASONING_ENABLED) text('预判命中 ' + L.info.hits + ' / ' + L.info.guesses, W / 2, 110, 15);
   else text('剩余体力 ' + Math.round(L.info.hpPct * 100) + '%  · 时机 ' + (L.info.timingAvg != null ? (L.info.timingAvg * 100).toFixed(0) + '%' : '-'), W / 2, 110, 14);
-  G.drawShadow(ctx, W / 2, H * 0.36, 1.6, 0); G.drawGoat(ctx, W / 2, H * 0.36, 1.6, st.look, 1, 0);
+  G.drawShadow(ctx, W / 2, H * 0.36, 1.6, 0); G.drawGoatArt(ctx, W / 2, H * 0.36, 1.6, st.look, 1, 0);
   L.msgs.forEach(function (m, i) { text(m, W / 2, H * 0.5 + i * 26, 15, '#a03000'); });
   if (L.win && L.stage === 1 && AR.p.inChallenge) btn(W / 2 - 90, H * 0.72, 180, 46, '挑战第 2 场！', function () { st.scene = 'arena'; startArenaStage(2); }, '#ff8a65');
   btn(W / 2 - 80, H * 0.72 + 60, 160, 46, '返回擂台', function () { st.scene = 'arena'; });
@@ -237,8 +238,8 @@ function drawArena() {
   text('🏆 每日擂主 · ' + AR.dateKey, W / 2, 34, 20, '#c05a00');
   var f = p.faction ? A.factionById(p.faction) : null;
   text((f ? A.factionLabel(f) : '未选牧场') + ' · 青草币 ' + p.grass + ' · 守擂 ' + p.defendDays + ' 天', W / 2, 60, 12, '#555');
-  G.drawShadow(ctx, W * 0.7, H * 0.24, 1.0, 0); G.drawGoat(ctx, W * 0.7, H * 0.24, 1.0, cfg.look, -1, 0);
-  G.drawShadow(ctx, W * 0.28, H * 0.24, 1.0, 0); G.drawGoat(ctx, W * 0.28, H * 0.24, 1.0, st.look, 1, 0);
+  G.drawShadow(ctx, W * 0.7, H * 0.24, 1.0, 0); G.drawGoatArt(ctx, W * 0.7, H * 0.24, 1.0, cfg.look, -1, 0);
+  G.drawShadow(ctx, W * 0.28, H * 0.24, 1.0, 0); G.drawGoatArt(ctx, W * 0.28, H * 0.24, 1.0, st.look, 1, 0);
   text('今日擂主：' + cfg.name + (AR.champ.procedural ? '（轮换）' : ''), W / 2, H * 0.33, 17);
   text('剩余挑战 ' + A.triesLeft(p) + ' 次' + (p.defended ? ' · 今日已守擂（练习模式）' : p.inChallenge && p.stage1Won ? ' · 第 1 场已赢' : ''), W / 2, H * 0.37, 13, '#444');
   var lim = s2.allowedHorns ? s2.allowedHorns.map(function (id) { return D.horns.filter(function (h) { return h.id === id; })[0].name; }).join(' / ') : '不限';
@@ -364,7 +365,7 @@ function drawDdlResult() {
   text('★'.repeat(DG.stars) + '☆'.repeat(3 - DG.stars), W / 2, 120, 30, '#ffb000');
   text('用了 ' + DG.shots + ' 次顶撞（上限 ' + DG.lv.maxShots + '）', W / 2, 160, 15);
   text(DG._reward ? ('青草币 +' + DG._reward) : '今日奖励次数已满，继续玩不奖励', W / 2, 190, 14, '#a05000');
-  G.drawShadow(ctx, W / 2, H * 0.45, 1.4, 0); G.drawGoat(ctx, W / 2, H * 0.45, 1.4, st.look, 1, 0);
+  G.drawShadow(ctx, W / 2, H * 0.45, 1.4, 0); G.drawGoatArt(ctx, W / 2, H * 0.45, 1.4, st.look, 1, 0);
   var next = DDL.levelById(DG.lv.id + 1);
   if (next) btn(W / 2 - 80, H * 0.7, 160, 44, '下一关', function () { enterDdl(next.id); }, '#7bd36b');
   btn(W / 2 - 80, H * 0.7 + 54, 160, 44, '选关', function () { st.scene = 'ddlSelect'; }, '#ffd36b');
@@ -392,7 +393,7 @@ if (typeof document !== 'undefined') {
   });
   document.addEventListener('mouseup', function () { if (DG) DG.drag = null; });
 }
-module.exports = { QUIZ_ENABLED: QUIZ_ENABLED, st: st, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
+module.exports = { QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
   startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
   openArena: openArena, startArenaStage: startArenaStage, chooseFaction: chooseFaction, setNow: function (ms) { nowOverride = ms; },
   openDdl: openDdl, enterDdl: enterDdl, fireDdl: function () { if (DG) DDL.fire(DG); } };

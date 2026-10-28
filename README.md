@@ -30,3 +30,10 @@
 - 加载 `design/data/levels.v2.json`（`levels.json` 保留不动）。
 - 开火前 `applyAssist`：力度吸附 ±0.05 → 0.5–1.0 档；角度吸附 ±3° → 最近可推物件/草堆（L3/L8 的 `assist.angleMagnet=false` 关闭）。
 - 物理核心 `js/ddl_physics.js` 未改。
+
+## P6 半写实分层美术接入（manifest v5，仅 _320）
+- `js/goat.js` 新增 `drawGoatArt(ctx,x,y,s,look,face,t,pose)`：按 manifest.draw_order 叠 wool→knee→body→beard→face→horn；脚底锚点对齐旧 drawGoat 的脚底 (y+40s)，1024 画布 ↔ 102.4·s 像素；换色结果按 文件|颜色 缓存在离屏 canvas；`wx.createImage`/`Image` 兼容；manifest 或任一图层加载失败 → 回退程序化 `drawGoat`。
+- 姿态：对战 charge/其他=idle，air=jump，result 且 t<25=clash；定制/擂台/结算=idle。顶顶乐仍为俯视圆点。
+- `POSE_SRC` 可按姿态配置素材目录/manifest；`ART.debug=true` 显示物理位置/脚底线/角点调试叠加。
+- 仅渲染改动：`node tools/p6_regress.js <root>` 固定种子逐帧哈希，接入前后一致。
+- `project.config.json` packOptions.ignore 排除 tools/screenshots/design(除 data)/art/_*/非 _320 图/spots_mask/md/index.html，包体约 0.35MB。
