@@ -71,7 +71,7 @@ function artLoadJSON(p) {
   if (typeof wx !== 'undefined' && wx.getFileSystemManager) return JSON.parse(wx.getFileSystemManager().readFileSync(p, 'utf8'));
   var x = new XMLHttpRequest(); x.open('GET', p, false); x.send(); if (x.status && x.status !== 200) throw new Error(p + ' ' + x.status); return JSON.parse(x.responseText);
 }
-function newImage() { return (typeof wx !== 'undefined' && wx.createImage) ? wx.createImage() : new Image(); }
+function newImage() { if (typeof wx !== 'undefined' && wx.createImage) return wx.createImage(); var im = new Image(); im.crossOrigin = 'anonymous'; return im; }
 function newCanvas(w, h) {
   var c = (typeof document !== 'undefined' && document.createElement) ? document.createElement('canvas') : wx.createCanvas(); // wx 首次 createCanvas 之后为离屏
   c.width = w; c.height = h; return c;
