@@ -14,8 +14,8 @@ function stats(look) {
   var w = D.wools.filter(function (x) { return x.id === look.wool; })[0], h = D.horns.filter(function (x) { return x.id === look.horn; })[0];
   return { hp: 100 + w.hp, spd: w.spd, pow: h.pow, win: h.win };
 }
-function btn(x, y, w, h, label, cb, variant, fs) { // 统一按钮绘制读主题（js/theme.js）；命中区 = 绘制的按钮矩形（动画只影响绘制）
-  UI.drawButton(ctx, x, y, w, h, label, variant, fs); st.buttons.push({ x: x, y: y, w: w, h: h, cb: cb, label: label });
+function btn(x, y, w, h, label, cb, variant, fs, depthColor) { // 统一按钮绘制读主题（js/theme.js）；命中区 = 绘制的按钮矩形（动画只影响绘制）
+  UI.drawButton(ctx, x, y, w, h, label, variant, fs, depthColor); st.buttons.push({ x: x, y: y, w: w, h: h, cb: cb, label: label });
 }
 var TH = UI.TH, LY = TH.layout;
 function pill(s, x, y, light, size) { return UI.drawPill(ctx, s, x, y, light, size); }
@@ -156,7 +156,7 @@ function updateBattle() { // 固定步 1/60s：只改物理/逻辑状态，绘�
     if (hc) { BP.resolvePenetration(B.p, B.e, hc); B.contact = hc;
       var snap = { p: { x: B.p.x, y: B.p.y, vy: 0 }, e: { x: B.e.x, y: B.e.y, vy: 0 }, t: 0, phase: 'result' }; clash();
       var hp = BP.hornPoint(B.p, 1, 'jump'), he = BP.hornPoint(B.e, -1, 'jump');
-      FX.ev('clash', { x: (hp[0] + he[0]) / 2, y: GY() + (hp[1] + he[1]) / 2, d: Math.abs(B.lastClash.pp - B.lastClash.ep), snap: snap, gy: GY() + 45, wool: (B.lastClash.pp >= B.lastClash.ep ? B.ai : st.look).woolColor });
+      FX.ev('clash', { x: (hp[0] + he[0]) / 2, y: GY() + (hp[1] + he[1]) / 2, d: Math.abs(B.lastClash.pp - B.lastClash.ep), snap: snap, gy: GY() + 45, perfect: B.timing >= TH.feedback.perfect.threshold, wool: (B.lastClash.pp >= B.lastClash.ep ? B.ai : st.look).woolColor });
       if (B.roundEnd === 0) FX.ev('win', { x: LW / 2, y: H * 0.45 }); }
     else if (!B.p.air && !B.e.air) { B.contact = null; B.p.y = B.e.y = 0; } // 理论不可达（落地前必接触）；保险
   }
@@ -180,6 +180,8 @@ function drawBattle() {
   goatSq('e', V.e, gy, function () { G.drawGoatArt(ctx, V.e.x, gy + V.e.y, 1.1, B.ai, -1, 0, pose); });
   if (V.phase === 'result' && V.t < 25) text('💥', LW / 2, gy - 40, 40);
   if (FX.enabled) FX.drawScene(ctx); ctx.restore();
+  var PA = FX.enabled && FX.perfectAnim && FX.perfectAnim(); if (PA) { var PF = TH.feedback.perfect, ps = toScreen(PA.x, PA.y + PF.offsetY, sk); ps[1] = Math.max(ps[1], L.msgY + PF.minGapBelowMsg) + PA.dy; // 夹在提示胶囊下方，不压 HUD
+    ctx.save(); ctx.globalAlpha = PA.a; ctx.translate(ps[0], ps[1]); ctx.rotate(PF.rotate * Math.PI / 180); ctx.scale(PA.s, PA.s); text('完美！', 0, 0, PF.size, 'perfect'); ctx.restore(); }
   if (B.msg) pill(B.msg, W / 2, L.msgY, 'warn', L.msgSize || 13); // 提示：红字 → 圆角胶囊
   var y0 = H * 0.76, aY = H - L.angleBottom, hintY = H - L.hintBottom;
   if (B.phase === 'quiz' && QUIZ_ENABLED) {
@@ -222,15 +224,22 @@ function hpW() { return Math.min(LY.battle.hpW, Math.floor((W - 40 - 16) / 2)); 
 function hpBar(x, y, hp, max, n, right) { var w = hpW(), v = Math.max(0, hp);
   text(right ? v + ' · ' + n : n + ' · ' + v, right ? x + w : x, LY.battle.hpLabelY, 14, 'ink', right ? 'right' : 'left');
   UI.drawBar(ctx, x, y, w, v, max, right); }
-function resultCard(win, banner) { var R = LY.result; bg(); UI.dim(ctx, W, H); panel(R.cardX, R.cardY, W - 2 * R.cardX, R.cardH);
-  text(banner, W / 2, R.bannerY, 44, win ? 'banner' : 'bannerLose'); }
+function resultCard(win, banner, art) { var R = LY.result, RS = TH.resultArt; bg(); UI.dim(ctx, W, H); panel(R.cardX, R.cardY, W - 2 * R.cardX, R.cardH);
+  var im = art && UI.img(win ? RS.win : RS.lose);
+  if (!im) return text(banner, W / 2, R.bannerY, 44, win ? 'banner' : 'bannerLose');
+  var sz = win ? RS.winSize : RS.loseSize, k = UI.anim.pop, a = UI.anim.fade, w = sz[0] * (win ? k : 1), h = sz[1] * (win ? k : 1), cy = R.cardY + (win ? 0 : RS.loseDrop * (1 - a));
+  ctx.save(); if (!win) ctx.globalAlpha = a; ctx.drawImage(im, W / 2 - w * 0.5, cy - h * 0.6, w, h); ctx.restore(); // 卡片上沿对齐字高 60%
+  if (win) { var st1 = UI.img(RS.star), st2 = UI.img(RS.starSmall); // 胜利两侧星星（≤3）
+    if (st1) { ctx.drawImage(st1, W / 2 - w / 2 - 30, cy - h * 0.6 - 4, 32 * a, 32 * a); ctx.drawImage(st1, W / 2 + w / 2 - 4, cy - h * 0.6 + 8, 32 * a, 32 * a); }
+    if (st2) ctx.drawImage(st2, W / 2 + w / 2 + 14, cy - h * 0.6 - 14, 22 * a, 22 * a); } }
+function perfectCount() { var th = TH.feedback.perfect.threshold; return B.timings.filter(function (t) { return t >= th; }).length; }
 function drawOver() {
-  var R = LY.result, win = B.wins[0] === 2; resultCard(win, win ? '胜 利 !' : '再接再厉');
+  var R = LY.result, win = B.wins[0] === 2; resultCard(win, win ? '胜 利 !' : '再接再厉', true);
   G.drawShadow(ctx, W / 2, R.goatY, R.goatS, 0); G.drawGoatArt(ctx, W / 2, R.goatY, R.goatS, st.look, 1, 0);
   text(win ? '你是顶角王！' : '惜败，再练练', W / 2, R.lineY, 17);
-  text('本场比分', W / 2, R.subY, 14, 'muted');
+  text('本场比分 · 完美起跳 ' + perfectCount() + ' 次', W / 2, R.subY, 14, 'muted');
   text(B.wins[0] + ' : ' + B.wins[1], W / 2, R.bigY, R.bigSize, 'score');
-  btn(W / 2 - R.btnW / 2, R.btnY, R.btnW, R.btnH, '再来一局', function () { startMatch(); }, 'main', 23);
+  btn(W / 2 - R.btnW / 2, R.btnY, R.btnW, R.btnH, '再来一局', function () { startMatch(); }, 'main', 23, TH.colors.resultDeepGreen);
   btn(W / 2 - R.btn2W / 2, R.btn2Y, R.btn2W, R.btn2H, '回主页', function () { st.scene = 'custom'; }, 'blue', 17);
 }
 // ---------- 每日擂主 ----------
@@ -473,12 +482,12 @@ function drawTutorial() { var L = LY.battle, TT = TH.tutorial, s = T.step, holes
   if (s === 1) st.buttons.push({ x: 0, y: 0, w: W, h: H, cb: function () { tutStep(2); }, label: '教学:继续' });
   btn(W - 64, 12, TT.skipW, TT.skipH, '跳过', tutSkip, 'white', 13); // 右上角常驻
 }
-function drawTutResult() { var R = LY.result, L = T.last; resultCard(L.win, L.win ? '胜 利 !' : '再接再厉');
+function drawTutResult() { var R = LY.result, L = T.last; resultCard(L.win, L.win ? '胜 利 !' : '再接再厉', true);
   G.drawShadow(ctx, W / 2, R.goatY, R.goatS, 0); G.drawGoatArt(ctx, W / 2, R.goatY, R.goatS, st.look, 1, 0);
   text(L.win ? TUT_WIN : TUT_LOSE, W / 2, R.lineY, 15);
   text('完美起跳 ' + L.perfect + ' 次' + (T.reward ? ' · 获得羊毛色「' + TUT_REWARD_NAME + '」' : ''), W / 2, R.subY, 13, 'accent');
-  if (L.win) btn(W / 2 - R.btnW / 2, R.btnY, R.btnW, R.btnH, '去换装', function () { st.scene = 'custom'; }, 'main', 23);
-  else btn(W / 2 - R.btnW / 2, R.btnY, R.btnW, R.btnH, '再来一局', function () { startMatch(); }, 'main', 23);
+  if (L.win) btn(W / 2 - R.btnW / 2, R.btnY, R.btnW, R.btnH, '去换装', function () { st.scene = 'custom'; }, 'main', 23, TH.colors.resultDeepGreen);
+  else btn(W / 2 - R.btnW / 2, R.btnY, R.btnW, R.btnH, '再来一局', function () { startMatch(); }, 'main', 23, TH.colors.resultDeepGreen);
   btn(W / 2 - R.btn2W / 2, R.btn2Y, R.btn2W, R.btn2H, '回主页', function () { st.scene = 'custom'; }, 'blue', 17);
 }
 function drawSettings() { bg(); text('设置', W / 2, 60, 34, 'title');

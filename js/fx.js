@@ -1,6 +1,6 @@
 var UI = require('./ui.js'); // 贴图加载/乘色（art/fx，按 fx.json；未就绪或失败时回退程序化绘制）
 // 画面特效（只读物理事件，绝不写回物理状态；自带 RNG，不消耗 Math.random，保证回归一致）
-var BLEND=100,sk=[0,0],drawn=false,N=240,P=[],seed=9,now=0,shake=0,shakeT=0,flash=0,freezeT=0,frozen=null,rings=[],lines=[],glows=[],sq={};
+var perf=null,BLEND=100,sk=[0,0],drawn=false,N=240,P=[],seed=9,now=0,shake=0,shakeT=0,flash=0,freezeT=0,frozen=null,rings=[],lines=[],glows=[],sq={};
 for(var i=0;i<N;i++)P.push({a:0});
 function r(){seed=(seed*16807)%2147483647;return seed/2147483647;}
 var K={dust:['#d8c9a8',3,0.6,-30],grass:['#5fae3c',2.5,0.9,120],spark:['#fff3a0',2,0.35,0],wool:['#ffffff',4,1.2,40],conf:[null,4,2.2,60]};
@@ -12,7 +12,7 @@ function emit(type,x,y,n,sp,dir,spread,col){for(var j=0;j<P.length&&n>0;j++){var
 function ev(name,o){o=o||{};
  if(name==='jump'){emit('dust',o.x,o.y,8,60,Math.PI,2.4);sq[o.id]={k:'stretch',t:now};}
  else if(name==='land'){emit('dust',o.x,o.y,10,80,-Math.PI/2,2.8);emit('grass',o.x,o.y,5,90,-Math.PI/2,1.6);sq[o.id]={k:'squash',t:now};}
- else if(name==='clash'){var pw=Math.min(1,(o.d||0)/30);freezeT=now+60+40*pw;frozen=o.snap;shake=4+6*pw;shakeT=now;flash=0.55+0.35*pw;
+ else if(name==='clash'){var pw=Math.min(1,(o.d||0)/30);freezeT=now+60+40*pw;frozen=o.snap;shake=4+6*pw;shakeT=now;flash=0.55+0.35*pw;if(o.perfect){var PF=UI.TH.feedback.perfect;freezeT=now+PF.hitstopMs;shake=Math.max(PF.shake,Math.min(shake,PF.shakeMax));perf={x:o.x,y:o.y,t:freezeT};}
   rings.push({x:o.x,y:o.y,t:now});glows.push({x:o.x,y:o.y,t:now,p:pw});for(var i=0;i<10;i++)lines.push({x:o.x,y:o.y,a:r()*6.283,t:now});
   emit('spark',o.x,o.y,14+(pw*10|0),260);emit('wool',o.x,o.y,8,120,null,0,o.wool);emit('dust',o.x,o.gy,8,90,-Math.PI/2,2.5);}
  else if(name==='ddl'){var t=o.k;if(t==='wall')emit('dust',o.x,o.y,5,60);else if(t==='break'){emit('spark',o.x,o.y,10,200);emit('dust',o.x,o.y,12,120);shake=4;shakeT=now;}
@@ -25,6 +25,10 @@ function lerpG(a,b,k){return{x:a.x+(b.x-a.x)*k,y:a.y+(b.y-a.y)*k,vy:b.vy};}
 function view(B){ // 顿帧定格 → BLEND ms 平滑追上物理（只影响显示）
  if(!frozen)return null;if(now<freezeT)return frozen;var e=(now-freezeT)/BLEND;if(e>=1){frozen=null;return null;}
  var k=1-Math.pow(1-e,3);return{p:lerpG(frozen.p,B.p,k),e:lerpG(frozen.e,B.e,k),t:B.t,phase:B.phase};}
+function perfectAnim(){ // 「完美！」：顿帧后 0.6→1.1→1.0（popMs）→ 停留 holdMs → 上浮 floatPx 并淡出 fadeMs（只显示）
+ if(!perf)return null;var P=UI.TH.feedback.perfect,e=now-perf.t;if(e<0)return null;var tot=P.popMs+P.holdMs+P.fadeMs;if(e>=tot){perf=null;return null;}
+ var s,a=1,dy=0;if(e<P.popMs){var k=e/P.popMs;s=k<0.6?P.from+(P.peak-P.from)*(k/0.6):P.peak+(1-P.peak)*((k-0.6)/0.4);}else s=1;
+ if(e>P.popMs+P.holdMs){var f=(e-P.popMs-P.holdMs)/P.fadeMs;a=1-f;dy=-P.floatPx*f;}return{x:perf.x,y:perf.y,s:s,a:a,dy:dy};}
 function frozenView(){return now<freezeT?frozen:null;}
 function shakeOff(){return sk;}
 function squash(id,vy){var s=sq[id],e=s?now-s.t:1e9;
@@ -54,4 +58,4 @@ function drawScene(ctx){drawn=true;var ring=UI.tinted(T+'shockwave_ring.png','#f
 function drawFlash(ctx,W,H){if(!drawn)drawScene(ctx);
  if(flash>0){ctx.fillStyle='rgba(255,255,255,'+Math.min(1,flash)+')';ctx.fillRect(-20,-20,W+40,H+40);}}
 function alive(){var c=0;for(var i=0;i<N;i++)if(P[i].a>0)c++;return c;}
-module.exports={ev:ev,step:step,drawScene:drawScene,drawFlash:drawFlash,view:view,frozenView:frozenView,shakeOff:shakeOff,squash:squash,alive:alive,enabled:true};
+module.exports={perfectAnim:perfectAnim,ev:ev,step:step,drawScene:drawScene,drawFlash:drawFlash,view:view,frozenView:frozenView,shakeOff:shakeOff,squash:squash,alive:alive,enabled:true};

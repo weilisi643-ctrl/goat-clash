@@ -22,7 +22,7 @@ module.exports = {
     bannerLose: { fill: '#C9CCC4', stroke: 6, shadow: [3, 4], rotate: -3 },
     score: { fill: '#FFFFFF', stroke: 5 },
     ink: { fill: '#2F3727' }, muted: { fill: 'rgba(47,55,39,0.55)' }, white: { fill: '#FFFFFF' },
-    accent: { fill: '#2E6FD8' }, warn: { fill: '#E5482F' }, gold: { fill: '#FCD800', stroke: 3 }
+    accent: { fill: '#2E6FD8' }, warn: { fill: '#E5482F' }, gold: { fill: '#FCD800', stroke: 3 }, perfect: { fill: '#FCD800', stroke: 5, shadow: [2, 3] }
   },
   button: {
     style: 'sticker', radius: 11, stroke: { width: 2, color: '#2F3727' },
@@ -54,6 +54,8 @@ module.exports = {
     aim: '#FF4D4D', aimW: 3, aimDash: [8, 6], aimLen: 84, hint: '#2E6FD8', hintLen: 104, goatR: 18, hornW: 4
   },
   tutorial: { dimAlpha: 0.55, holePad: 8, holeR: 14, tipY: 182, tipSize: 14, zoneColor: 'accentYellow', zoneW: 3, zonePad: 4, skipW: 52, skipH: 30 }, // 新手教学：遮罩/提示/完美区描边（仅显示）
+  resultArt: { win: 'art/ui_v3/assets/title_win@3x.png', lose: 'art/ui_v3/assets/title_lose@3x.png', star: 'art/ui_v3/assets/deco_star@3x.png', starSmall: 'art/ui_v3/assets/deco_star_small@3x.png', winSize: [120, 60.5], loseSize: [98, 56], loseDrop: 8 }, // 结算标题素材（ui_v3；不含 v10 title_perfect）
+  feedback: { perfect: { hitstopMs: 70, shake: 3, shakeMax: 5, popMs: 220, from: 0.6, peak: 1.1, holdMs: 600, floatPx: 12, fadeMs: 200, size: 38, rotate: -4, offsetY: -40, minGapBelowMsg: 46, threshold: 0.9 } }, // 完美起跳反馈（只显示；threshold=timing≥0.9 即完美区 0.72–0.88）
   shadow: { contactColor: '#2F3727', contactAlpha: 0.26, asset: 'art/ui_v3/assets/contact_shadow@3x.png', assetW: 84, assetAspect: 0.3134, assetAlpha: 0.9, liftMinScale: 0.6, liftMinAlpha: 0.4 }, // 接触阴影：首页展示台与战斗共用；asset 未加载时用 Canvas 径向渐变占位（contactColor/alpha）
   stage: { asset: 'art/ui_v3/assets/pedestal@3x.png', assetW: 142, assetH: 45, anchor: [0.5, 0.42], pedestal: '#F4FBE6', pedestalEdge: '#B9D98C', pedestalRx: 66, pedestalRy: 10, contactAlpha: 0.28 }, // 首页展示台（美术到位前 Canvas 占位）
   layout: { // 各屏布局令牌（相对 375×667；bottom 为距屏底）
