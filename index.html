@@ -1,12 +1,66 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>咩咩顶角王 - 浏览器预览</title>
-<style>body{margin:0;background:#222;display:flex;justify-content:center}</style></head><body>
+<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>咩咩顶角王 - 浏览器预览</title>
+<style>
+html,body{margin:0;padding:0;width:100%;height:100%;background:#111;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+</style></head><body>
 <script>
-// 浏览器 shim：模拟 wx API 与 CommonJS require（需通过 http 服务打开，如 python3 -m http.server）
-var W=375,H=667,cv=document.createElement('canvas');document.body.appendChild(cv);
-window.wx={createCanvas:function(){return cv},getSystemInfoSync:function(){return{windowWidth:W,windowHeight:H}},
- onTouchStart:function(f){cv.addEventListener('mousedown',function(e){var r=cv.getBoundingClientRect();f({touches:[{clientX:e.clientX-r.left,clientY:e.clientY-r.top}]})})}};
-var cache={};function req(base){return function(p){var u=new URL(p,location.origin+base).pathname;if(cache[u])return cache[u].exports;
- var x=new XMLHttpRequest();x.open('GET',u,false);x.send();var m={exports:{}};cache[u]=m;
- new Function('module','exports','require',x.responseText)(m,m.exports,req(u));return m.exports}}
-window.GAME=req(location.pathname)('./game.js');window.GAME=cache[new URL('./js/main.js',location.href).pathname].exports;
+// 浏览器 shim：模拟 wx API 与 CommonJS require（需通过 http 服务打开）
+function sz(){
+  var vv=window.visualViewport;
+  return {
+    w: Math.max(1, Math.floor(vv ? vv.width : window.innerWidth)),
+    h: Math.max(1, Math.floor(vv ? vv.height : window.innerHeight))
+  };
+}
+var S=sz(), W=S.w, H=S.h;
+var cv=document.createElement('canvas');
+cv.width=W; cv.height=H;
+document.body.appendChild(cv);
+function applySize(){
+  S=sz(); W=S.w; H=S.h;
+  cv.width=W; cv.height=H;
+  try{
+    var info=window.wx && window.wx.__info;
+    if(info){ info.windowWidth=W; info.windowHeight=H; }
+    if(window.GAME && typeof window.GAME.resize==='function') window.GAME.resize(W,H);
+  }catch(e){}
+}
+window.wx={
+  __info:{windowWidth:W,windowHeight:H},
+  createCanvas:function(){return cv},
+  getSystemInfoSync:function(){return window.wx.__info},
+  onTouchStart:function(f){
+    function pt(e){
+      var t=(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0]);
+      var r=cv.getBoundingClientRect();
+      var sx=cv.width/r.width, sy=cv.height/r.height;
+      if(t){
+        return {touches:[{clientX:(t.clientX-r.left)*sx, clientY:(t.clientY-r.top)*sy}]};
+      }
+      return {touches:[{clientX:(e.clientX-r.left)*sx, clientY:(e.clientY-r.top)*sy}]};
+    }
+    cv.addEventListener('touchstart',function(e){ e.preventDefault(); f(pt(e)); },{passive:false});
+    cv.addEventListener('mousedown',function(e){ f(pt(e)); });
+  }
+};
+var cache={};
+function req(base){
+  return function(p){
+    var u=new URL(p,location.origin+base).pathname;
+    if(cache[u]) return cache[u].exports;
+    var x=new XMLHttpRequest(); x.open('GET',u,false); x.send();
+    var m={exports:{}}; cache[u]=m;
+    new Function('module','exports','require',x.responseText)(m,m.exports,req(u));
+    return m.exports;
+  };
+}
+window.GAME=req(location.pathname)('./game.js');
+window.GAME=cache[new URL('./js/main.js',location.href).pathname].exports;
+window.addEventListener('resize',applySize);
+window.addEventListener('orientationchange',function(){ setTimeout(applySize,100); });
+if(window.visualViewport) window.visualViewport.addEventListener('resize',applySize);
 </script></body></html>
