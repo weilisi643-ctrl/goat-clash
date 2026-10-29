@@ -14,9 +14,9 @@ function stats(look) {
 }
 function btn(x, y, w, h, label, cb, color) { // 九宫格按钮（灰度贴图乘色）；tween 淡入上浮只影响绘制，命中区不变
   var a = UI.anim.fade, oy = (1 - a) * 10; ctx.save(); ctx.globalAlpha = 0.25 + 0.75 * a;
-  if (!UI.nine(ctx, 'art/ui/btn9.png', x, y + oy, w, h, color || '#ffb347', 20)) { ctx.fillStyle = color || '#ffb347'; roundRect(x, y + oy, w, h, 12); ctx.fill(); }
+  if (!UI.nine(ctx, 'art/ui/btn9.png', x, y + oy, w, h, UI.lighten(color || '#ffb347', UI.VC.button.brightness), 20)) { ctx.fillStyle = color || '#ffb347'; roundRect(x, y + oy, w, h, 12); ctx.fill(); }
   var fs = Math.min(16, h * 0.42);
-  if (!UI.text(ctx, label, x + w / 2, y + oy + h / 2 - 2, fs, 'btn')) { ctx.fillStyle = '#4a2c00'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, x + w / 2, y + oy + h / 2 - 2); }
+  if (!UI.text(ctx, label, x + w / 2, y + oy + h / 2 - 1, fs, 'btn')) { ctx.fillStyle = '#4a2c00'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, x + w / 2, y + oy + h / 2 - 2); }
   ctx.restore(); st.buttons.push({ x: x, y: y, w: w, h: h, cb: cb, label: label });
 }
 function panel(x, y, w, h, alpha) { ctx.save(); ctx.globalAlpha = (alpha || 0.92) * (0.3 + 0.7 * UI.anim.fade);
@@ -24,7 +24,7 @@ function panel(x, y, w, h, alpha) { ctx.save(); ctx.globalAlpha = (alpha || 0.92
 function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
   ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 function text(s, x, y, size, c) { size = size || 16;
-  if (size >= 18) { var k = UI.anim.pop; ctx.save(); ctx.translate(x, y); ctx.scale(k, k); var ok = UI.text(ctx, s, 0, 0, size, 'title'); ctx.restore(); if (ok) return; } // 标题：位图字体 + tween 弹出
+  if (size >= 18) { var k = UI.anim.pop; ctx.save(); ctx.translate(x, y); ctx.scale(k, k); var ok = UI.text(ctx, s, 0, 0, size, 'title', c); ctx.restore(); if (ok) return; } // 标题：位图字体 + tween 弹出
   else if (size >= 16 && UI.text(ctx, s, x, y, size, 'btn')) return;
   ctx.fillStyle = c || '#333'; ctx.font = 'bold ' + (size || 16) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y); }
 function bg() { var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#bfe9ff'); g.addColorStop(1, '#fff6d8');

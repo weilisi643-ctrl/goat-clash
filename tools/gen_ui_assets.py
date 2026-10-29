@@ -1,7 +1,8 @@
 # 离线生成 UI 资源：位图字体图集（Noto Sans CJK SC Bold，SIL OFL 1.1，只含用到的字符）+ 九宫格按钮/面板（灰度，运行时乘色）
 import re,json
 from PIL import Image,ImageDraw,ImageFont,ImageFilter
-R='/workspace/goat-game/'
+import os
+R=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..')+'/'
 FONT='/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc'
 src=open(R+'js/main.js').read()
 chars=set('0123456789:/+-.%·×!！？?()（）「」、，,·★☆°')
@@ -15,6 +16,7 @@ chars|=set(''.join(f['name'] for f in json.load(open(R+'design/data/factions.jso
 chars=sorted(c for c in chars if c.strip() and ord(c)<0x2600 or '\u4e00'<=c<='\u9fff' or c in '★☆（）！？，、「」°·')
 chars=sorted(set(c for c in chars if c.strip()))
 STY={'title':dict(px=44,fill=[(255,214,90),(232,110,20)],stroke=(110,45,0),sw=5),
+     'title_mask':dict(px=44,fill=[(255,255,255),(215,215,215)],stroke=(70,70,70),sw=5),
      'btn':dict(px=34,fill=[(74,44,0),(74,44,0)],stroke=(255,250,235),sw=2)}
 out={'font':'Noto Sans CJK SC Bold','license':'SIL Open Font License 1.1 (art/ui/OFL.txt)','styles':{}}
 for name,s in STY.items():
@@ -33,7 +35,8 @@ for name,s in STY.items():
     fill=grad.copy(); fill.putalpha(m); cell=Image.alpha_composite(cell,fill)
     img.paste(cell,(x0,y0)); g[c]=[x0,y0,ws[c]]
   fn='font_%s.png'%name; img.quantize(colors=128,method=Image.FASTOCTREE).save(R+'art/ui/'+fn,optimize=True)
-  out['styles'][name]={'file':'ui/'+fn,'px':s['px'],'h':ch,'pad':pad,'glyphs':g}
+  ref=Image.new('L',(cw,ch),0); ImageDraw.Draw(ref).text((pad,pad-int(s['px']*0.1)),'中',font=f,fill=255); bb=ref.getbbox()
+  out['styles'][name]={'file':'ui/'+fn,'px':s['px'],'h':ch,'pad':pad,'cy':round((bb[1]+bb[3])/2,1),'glyphs':g}
 json.dump(out,open(R+'art/ui/font.json','w'),ensure_ascii=False,separators=(',',':'))
 # 九宫格（灰度：运行时 multiply 成按钮色），64x64，边 22
 def nine(fn,r,top,bot,edge,hl):
@@ -48,6 +51,6 @@ def nine(fn,r,top,bot,edge,hl):
   im=Image.alpha_composite(base,body)
   if hl: ImageDraw.Draw(im).rounded_rectangle([3*S,3*S,Wd-1-3*S,Wd*0.42],(r-3)*S,outline=None,fill=(255,255,255,70))
   im.resize((64,64),Image.LANCZOS).save(R+'art/ui/'+fn,optimize=True)
-nine('btn9.png',16,255,215,140,True)
+nine('btn9.png',16,255,250,222,True)
 nine('panel9.png',14,255,238,200,False)
 print(len(chars),'glyphs')

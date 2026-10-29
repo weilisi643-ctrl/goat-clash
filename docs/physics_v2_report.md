@@ -153,3 +153,9 @@ screenshots/p8_01_jump、p8_02_clash、p8_03_jump_debug、p8_04_clash_debug、p8
 - art/fx 贴图替换程序化粒子（dust_0..2 按寿命换帧、grass_blade、spark_streak 沿速度旋转 lighter、wool_fluff 按羊毛色乘色、shockwave_ring 0.2→1.2 渐隐）；未加载/失败回退原绘制。art/parts 未使用，未删任何美术文件。
 - project.config.json：原 ignore 正则 `^art/.*(?<!_320)\.(png|jpg)$` 会把 art/fx、art/ui 排除出主包，改为 `^art/(?!fx/|ui/).*(?<!_320)\.(png|jpg)$`。主包实测见 tools/pkg_size.py。
 - 回归与 v2 一致：battleHash af021cef…86ce / 9074 帧，逐帧 dump 1692fd26…，410 例 fe6ea1d9…4548，10 关三星，AI 统计逐字节一致，多帧率一致。截图 screenshots/p11_*（before=2286c4b / after / compare）。
+
+## 10. 画面 v2.1（仅渲染层）
+- 集中配置 js/visual_config.js：暗角 alpha 0.10（inner 0.5 / outer 0.8）、阵营色调 alpha 0.05 + 顶部色带 0.22（高 22%）、撞击光晕 220ms / alpha 0.55 / 半径 26+46e+20pw / 星爆 0.8×80px、按钮提亮 1.07。
+- 九宫格按钮调亮（btn9 主体 255→250、底边 222，乘色前按 brightness 提亮）；亮度见 docs/p12_button_luma.json。
+- 字形视觉中心写入 font.json（cy），文字与 emoji 都以 y 居中；标题支持传入颜色（title_mask 蒙版字体乘色）。
+- 回归与 v2 一致；截图 screenshots/p12_*（orig=2286c4b / v2=5b84a85 / v21）。
