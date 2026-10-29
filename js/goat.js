@@ -101,14 +101,23 @@ function loadArt() {
       else list[t.replace('{pose}', pose)] = 1;
     });
   });
-  var keys = Object.keys(list); ART.pending = keys.length;
-  keys.forEach(function (k) {
-    var img = newImage();
-    img.onload = function () { ART.imgs[k] = img; if (--ART.pending === 0) { ART.ready = true; measureFeet(); } };
-    img.onerror = function () { ART.errors.push('load fail ' + k); ART.imgs[k] = null; if (--ART.pending === 0) { ART.ready = true; measureFeet(); } };
-    img.src = smallPath(k);
-  });
+  // 懒加载：首屏只加载公共层 + 默认毛型/角型（全部姿态）；其余毛型/角型按需加载，空闲时后台预取
+  var keys = Object.keys(list), core = keys.filter(isCore); ART.rest = keys.filter(function (k) { return !isCore(k); });
+  ART.pending = core.length;
+  core.forEach(function (k) { loadWhole(k, function () { if (--ART.pending === 0) { ART.ready = true; measureFeet(); } }); });
 }
+var DEF_LOOK = { wool: 'fluffy', horn: 'curl' }, LAZY = { prefetchPerFrame: 2, prefetchDelayFrames: 30 };
+function isCore(k) { var M = ART.man.ids, w = M.wools.filter(function (x) { return k.indexOf('/' + x + '_') >= 0 && k.indexOf('wool/') === 0; })[0], h = k.indexOf('horn/') === 0;
+  return w ? w === DEF_LOOK.wool : h ? k.indexOf('/' + DEF_LOOK.horn + '_') >= 0 : true; }
+function loadWhole(k, done) { if (k in ART.imgs || (ART.loadingW = ART.loadingW || {})[k]) return; ART.loadingW[k] = 1;
+  var img = newImage();
+  img.onload = function () { ART.imgs[k] = img; delete ART.loadingW[k]; if (done) done(); };
+  img.onerror = function () { ART.errors.push('load fail ' + k); ART.imgs[k] = null; delete ART.loadingW[k]; if (done) done(); };
+  img.src = smallPath(k); }
+function prefetchTick() { if (!ART.ready || !ART.rest || !ART.rest.length) return; // 空闲预取（每帧最多 N 张）
+  if ((ART.pfWait = (ART.pfWait || 0) + 1) < LAZY.prefetchDelayFrames) return;
+  for (var i = 0; i < LAZY.prefetchPerFrame && ART.rest.length; i++) loadWhole(ART.rest.shift()); }
+module.exports.prefetchTick = prefetchTick;
 function kindOf(key) {
   if (ART.kindOv && ART.kindOv[key]) key = ART.kindOv[key];
   var f = ((ART.poseMan[poseOf(key)] || ART.man).files || []).filter(function (x) { return x.small === key + '_320.png'; })[0];
@@ -142,11 +151,18 @@ function measureFeet() {
     } catch (e) { ART.errors.push('measure ' + pose + ': ' + e.message); }
   });
 }
+function needKeys(look, pose) { return ART.man.draw_order.map(function (t) { return t.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose); }); }
 function artUsable(look, pose) {
   if (!ART.ready || ART.failed || !ART.man) return false;
-  var need = ART.man.draw_order.map(function (t) { return t.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose); });
-  return need.every(function (k) { return !!ART.imgs[k]; });
+  return needKeys(look, pose).every(function (k) { return !!ART.imgs[k]; });
 }
+// 按需加载该外观；未就绪时用默认毛型/角型整图顶替（保留颜色），避免闪回程序化羊
+function lazyLook(look, pose) { if (!ART.ready || ART.failed || !ART.man || artUsable(look, pose)) return look;
+  needKeys(look, pose).forEach(function (k) { if (!(k in ART.imgs)) loadWhole(k); });
+  var f = { wool: look.wool, horn: look.horn, woolColor: look.woolColor, hornColor: look.hornColor };
+  if (!needKeys({ wool: f.wool, horn: DEF_LOOK.horn }, pose).filter(function (k) { return k.indexOf('wool/') === 0; }).every(function (k) { return !!ART.imgs[k]; })) f.wool = DEF_LOOK.wool;
+  if (!needKeys({ wool: DEF_LOOK.wool, horn: f.horn }, pose).filter(function (k) { return k.indexOf('horn/') === 0; }).every(function (k) { return !!ART.imgs[k]; })) f.horn = DEF_LOOK.horn;
+  return f; }
 // ================= 部件（art/parts.json）：头/尾展示性旋转 + 关节补片（只渲染，不读写物理） =================
 // 旋转角为 0 时走上面的整图路径（观感与之前完全一致）；非 0 时按 parts.json 的 part_draw_order 逐部件绘制。
 // spots_mask 与整图路径一致不使用（整图 draw_order 无 spots_mask，且 packOptions 排除 spots_mask_）。
@@ -220,11 +236,21 @@ function drawParts(ctx, look, pose, rot, cw, chh, size, sz, ax, ay) {
   return true;
 }
 module.exports.drawParts = drawParts;
+function colOf(tpl, key, look) { return tpl.indexOf('{wool}') >= 0 || key.indexOf('beard/') === 0 ? look.woolColor : // v8c 胡子与羊毛同色（manifest kind=gray_mask 时生效，kind=color 时 layer() 原样返回）
+  key.indexOf('wool/knee') === 0 ? KNEE : tpl.indexOf('{horn}') >= 0 ? look.hornColor : null; }
+var COMP = {}, COMP_N = 0, COMP_MAX = 24; // 合成缓存上限（超出清空重建）
+function composite(m, look, pose) { var ck = [pose, look.wool, look.woolColor, look.horn, look.hornColor].join('|'); if (COMP[ck]) return COMP[ck];
+  var ref = ART.imgs['body/body_' + pose]; if (!ref || typeof document === 'undefined' && !(typeof wx !== 'undefined')) return null;
+  var c; try { c = newCanvas(ref.width, ref.height); } catch (e) { return null; } var x = c.getContext('2d');
+  m.draw_order.forEach(function (tpl) { var key = tpl.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose);
+    var L = layer(key, colOf(tpl, key, look)); if (L) x.drawImage(L, 0, 0, ref.width, ref.height); });
+  if (++COMP_N > COMP_MAX) { COMP = {}; COMP_N = 1; } return (COMP[ck] = c); }
 var KNEE = '#a8774a', ART_SCALE = 0.1; // 画布高 1024 → 102.4*s 像素（宽按实际图片比例），与旧程序化羊大小相当
 // x,y 与旧 drawGoat 相同（身体中心，脚底在 y+40*s）；pose: idle|jump|clash
 function drawGoatArt(ctx, x, y, s, look, face, t, pose, rot) { // rot: 可选 {head, tail} 展示性旋转（canvas 度数）
   look = normalizeLook(look); pose = pose || 'idle';
   if (!ART.man || !ART.man.poses[pose]) pose = 'idle';
+  look = lazyLook(look, pose); // 缺帧回退：默认整图
   if (!artUsable(look, pose)) return drawGoat(ctx, x, y, s, look, face, t);
   var m = ART.poseMan[pose] || ART.man, P = m.poses[pose];
   // 画布尺寸以实际图片为准（宽高比 × manifest 高度），manifest.canvas 仅作缺省；v7 = 1152×1024 / 360×320
@@ -237,10 +263,11 @@ function drawGoatArt(ctx, x, y, s, look, face, t, pose, rot) { // rot: 可选 {h
   ctx.save(); ctx.translate(x, footY); ctx.scale(face < 0 ? -1 : 1, 1);
   rot = ART.rot || rot;
   if (rot && Object.keys(rot).some(function (k) { return rot[k]; }) && drawParts(ctx, look, pose, rot, cw, chh, size, sz, ax, ay)) { ctx.restore(); return; }
-  m.draw_order.forEach(function (tpl) {
+  var CC = ART.composite && composite(m, look, pose); // 离屏缓存（仅低端机开启：p22 实测游戏尺寸透绿 32→40，默认关）：整图各层按源分辨率预合成一张，每帧 1 次 drawImage
+  if (CC) ctx.drawImage(CC, -ax * size, -ay * sz, size, sz);
+  else m.draw_order.forEach(function (tpl) {
     var key = tpl.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose);
-    var col = tpl.indexOf('{wool}') >= 0 || key.indexOf('beard/') === 0 ? look.woolColor :  // v8c 胡子与羊毛同色（manifest kind=gray_mask 时生效，kind=color 时 layer() 原样返回）
-      key.indexOf('wool/knee') === 0 ? KNEE : tpl.indexOf('{horn}') >= 0 ? look.hornColor : null;
+    var col = colOf(tpl, key, look);
     var L = layer(key, col); if (L) ctx.drawImage(L, -ax * size, -ay * sz, size, sz);
   });
   ctx.restore();

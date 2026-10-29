@@ -521,7 +521,7 @@ function update() {
 var PERF = { low: false, lastDraw: null, avg: 0, n: 0, prev: null };
 function perfDraw(ts) { var C = TH.perf; if (typeof ts !== 'number') return true;
   if (PERF.prev !== null) { var d = ts - PERF.prev; PERF.avg += (d - PERF.avg) / Math.min(++PERF.n, C.lowWindow);
-    if (!PERF.low && (C.forceLow || (PERF.n > C.lowAfterFrames && PERF.avg > C.lowAvgMs))) { PERF.low = true; FX.low = true; } }
+    if (!PERF.low && (C.forceLow || (PERF.n > C.lowAfterFrames && PERF.avg > C.lowAvgMs))) { PERF.low = true; FX.low = true; G.ART.composite = true; } }
   PERF.prev = ts;
   var cap = PERF.low ? C.lowFpsCap : C.fpsCap, gap = 1000 / cap - 1;
   if (PERF.lastDraw !== null && ts - PERF.lastDraw < gap) return false;
@@ -536,7 +536,7 @@ function loop(ts) {
   }
   if (typeof ts === 'number') FX.step(ts);
   clock.frames++;
-  UI.update(typeof ts === 'number' ? ts : clock.steps * STEP, st.scene);
+  UI.update(typeof ts === 'number' ? ts : clock.steps * STEP, st.scene); if (G.prefetchTick) G.prefetchTick();
   if (perfDraw(ts)) { render(); if (!PERF.low) UI.vignette(ctx, W, H); if (FX.enabled) FX.drawFlash(ctx, W, H); } // HUD 不抖；场景层在各 draw 内平移
   requestAnimationFrame(loop);
 }
