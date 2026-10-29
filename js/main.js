@@ -1,6 +1,8 @@
 var D = require('./data.js'), BP = require('./battle_physics.js'), FX = require('./fx.js'), G = require('./goat.js'), A = require('./arena.js'), DDL = require('./ddl.js'), UI = require('./ui.js');
 var canvas = wx.createCanvas(), ctx = canvas.getContext('2d');
 var info = wx.getSystemInfoSync(), W = info.windowWidth, H = info.windowHeight;
+// 对战场地固定逻辑宽度 LW=375：物理只用 LW，与屏宽无关（宽屏留边居中、窄屏等比缩小，仅渲染变换）
+var LW = 375;
 canvas.width = W; canvas.height = H;
 // 蓄力答题开关：false = 自由对战和每日擂主都不出蓄力题、无答题力量加成（makeQuiz/answer 代码保留）
 var QUIZ_ENABLED = false;
@@ -82,8 +84,8 @@ function makeGuess(g) {
   B.phase = 'charge'; B.meter = 0; B.dir = 1;
 }
 function startRound() {
-  B.p = { hp: stats(st.look).hp, x: W * 0.25, y: 0, vy: 0, ang: 'mid', bonus: 0 };
-  B.e = { hp: eMaxHp(), x: W * 0.75, y: 0, vy: 0, ang: pick(ANG) };
+  B.p = { hp: stats(st.look).hp, x: LW * 0.25, y: 0, vy: 0, ang: 'mid', bonus: 0 };
+  B.e = { hp: eMaxHp(), x: LW * 0.75, y: 0, vy: 0, ang: pick(ANG) };
   B.t = 0; nextExchange();
 }
 function makeQuiz() {
@@ -129,6 +131,9 @@ function clash() {
   }
   var c = B.contact || { dy: 0, align: 1 };
   pp *= BP.heightMul(B.p.y, B.e.y); ep *= BP.heightMul(B.e.y, B.p.y); // 角判定点高度差：居高临下 ±3%
+  if (!(isFinite(pp) && isFinite(ep))) { // 防护：非有限战力 → 本次无效、不扣血（正常数据不可达，不影响基线）
+    B.lastClash = { pp: 0, ep: 0, dmg: 0, dy: c.dy, align: c.align, invalid: true }; B.p.kv = -BP.KB.recoil; B.e.kv = BP.KB.recoil;
+    B.msg = '平手！再来'; B.phase = 'result'; B.t = 0; B.roundEnd = -1; if (typeof console !== 'undefined') console.warn('clash non-finite', pp, ep); return; }
   var d = BP.damage(pp, ep, c.align); BP.knockback(B.p, B.e, pp, ep); B.lastClash = { pp: pp, ep: ep, dmg: d, dy: c.dy, align: c.align };
   if (pp >= ep) { B.e.hp -= d; B.msg = '咚！你赢了这次对撞，造成 ' + d; }
   else { B.p.hp -= d; B.msg = '哎呀！被顶了 ' + d; }
@@ -149,10 +154,10 @@ function updateBattle() { // 固定步 1/60s：只改物理/逻辑状态，绘�
       var snap = { p: { x: B.p.x, y: B.p.y, vy: 0 }, e: { x: B.e.x, y: B.e.y, vy: 0 }, t: 0, phase: 'result' }; clash();
       var hp = BP.hornPoint(B.p, 1, 'jump'), he = BP.hornPoint(B.e, -1, 'jump');
       FX.ev('clash', { x: (hp[0] + he[0]) / 2, y: GY() + (hp[1] + he[1]) / 2, d: Math.abs(B.lastClash.pp - B.lastClash.ep), snap: snap, gy: GY() + 45, wool: (B.lastClash.pp >= B.lastClash.ep ? B.ai : st.look).woolColor });
-      if (B.roundEnd === 0) FX.ev('win', { x: W / 2, y: H * 0.45 }); }
+      if (B.roundEnd === 0) FX.ev('win', { x: LW / 2, y: H * 0.45 }); }
     else if (!B.p.air && !B.e.air) { B.contact = null; B.p.y = B.e.y = 0; } // 理论不可达（落地前必接触）；保险
   }
-  if (B.phase === 'result') { var a0 = B.p.air, a1 = B.e.air; BP.stepRecover(B.p, W * 0.25, W); BP.stepRecover(B.e, W * 0.75, W);
+  if (B.phase === 'result') { var a0 = B.p.air, a1 = B.e.air; BP.stepRecover(B.p, LW * 0.25, LW); BP.stepRecover(B.e, LW * 0.75, LW);
     if (a0 && !B.p.air) FX.ev('land', { id: 'p', x: B.p.x, y: GY() + 45 }); if (a1 && !B.e.air) FX.ev('land', { id: 'e', x: B.e.x, y: GY() + 45 }); }
   B.t++;
   if (B.phase === 'charge') { B.meter += 0.018 * B.dir; if (B.meter > 1 || B.meter < 0) B.dir *= -1; }
@@ -164,12 +169,13 @@ function drawBattle() {
   hpBar(20, L.hpY, B.p.hp, stats(st.look).hp, '你', false); hpBar(W - 20 - L.hpW, L.hpY, B.e.hp, eMaxHp(), B.arena ? '擂主·' + B.arena.cfg.name : '电脑', true);
   if (B.arena) text('每日擂主 第 ' + B.arena.stage + ' 场' + (A.REASONING_ENABLED ? ' · 线索 Lv' + B.stageCfg.clueLv : ''), W / 2, L.arenaY, 12, 'muted');
   var V = (FX.enabled && FX.view(B)) || { p: B.p, e: B.e, t: B.t, phase: B.phase }; // 顿帧定格+插值追帧：只影响显示，物理照常推进
-  var sk = FX.enabled ? FX.shakeOff() : [0, 0]; ctx.save(); ctx.translate(sk[0], sk[1] + (L.sceneShiftY || 0)); // 屏震只作用于场景层；sceneShiftY 仅平移显示
+  var sk = FX.enabled ? FX.shakeOff() : [0, 0]; ctx.save(); ctx.translate(sk[0], sk[1] + (L.sceneShiftY || 0));
+  var fk = Math.min(1, W / LW), fy0 = gy + 45; ctx.translate((W - LW * fk) / 2, fy0 * (1 - fk)); ctx.scale(fk, fk); // 逻辑场地 → 屏幕（只渲染） // 屏震只作用于场景层；sceneShiftY 仅平移显示
   G.drawShadow(ctx, V.p.x, gy, 1.1, -V.p.y); G.drawShadow(ctx, V.e.x, gy, 1.1, -V.e.y);
   var pose = V.phase === 'air' ? 'jump' : (V.phase === 'result' && V.t < 25) ? 'clash' : 'idle';
   goatSq('p', V.p, gy, function () { G.drawGoatArt(ctx, V.p.x, gy + V.p.y, 1.1, st.look, 1, 0, pose); });
   goatSq('e', V.e, gy, function () { G.drawGoatArt(ctx, V.e.x, gy + V.e.y, 1.1, B.ai, -1, 0, pose); });
-  if (V.phase === 'result' && V.t < 25) text('💥', W / 2, gy - 40, 40);
+  if (V.phase === 'result' && V.t < 25) text('💥', LW / 2, gy - 40, 40);
   if (FX.enabled) FX.drawScene(ctx); ctx.restore();
   if (B.msg) text(B.msg, W / 2, L.msgY, 16, 'warn');
   var y0 = H * 0.76, aY = H - L.angleBottom, hintY = H - L.hintBottom;
@@ -466,7 +472,7 @@ if (typeof document !== 'undefined') {
   });
   document.addEventListener('mouseup', function () { if (DG) DG.drag = null; });
 }
-module.exports = { QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
+module.exports = { LW: LW, QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
   startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
   openArena: openArena, startArenaStage: startArenaStage, chooseFaction: chooseFaction, setNow: function (ms) { nowOverride = ms; },
   FX: FX, UI: UI, clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,
