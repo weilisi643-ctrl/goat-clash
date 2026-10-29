@@ -181,7 +181,7 @@ function drawBattle() {
   if (V.phase === 'result' && V.t < 25) text('💥', LW / 2, gy - 40, 40);
   if (FX.enabled) FX.drawScene(ctx); ctx.restore();
   var PA = FX.enabled && FX.perfectAnim && FX.perfectAnim(); if (PA) { var PF = TH.feedback.perfect, ps = toScreen(PA.x, PA.y + PF.offsetY, sk); ps[1] = Math.max(ps[1], L.msgY + PF.minGapBelowMsg) + PA.dy; // 夹在提示胶囊下方，不压 HUD
-    ctx.save(); ctx.globalAlpha = PA.a; ctx.translate(ps[0], ps[1]); ctx.rotate(PF.rotate * Math.PI / 180); ctx.scale(PA.s, PA.s); text('完美！', 0, 0, PF.size, 'perfect'); ctx.restore(); }
+    ctx.save(); ctx.globalAlpha = PA.a; ctx.translate(ps[0], ps[1]); ctx.rotate(PF.rotate * Math.PI / 180); ctx.scale(PA.s, PA.s); text(TC.labels.perfectPop, 0, 0, PF.size, 'perfect'); ctx.restore(); }
   if (B.msg) pill(B.msg, W / 2, L.msgY, 'warn', L.msgSize || 13); // 提示：红字 → 圆角胶囊
   var y0 = H * 0.76, aY = H - L.angleBottom, hintY = H - L.hintBottom;
   if (B.phase === 'quiz' && QUIZ_ENABLED) {
@@ -237,7 +237,7 @@ function drawOver() {
   var R = LY.result, win = B.wins[0] === 2; resultCard(win, win ? '胜 利 !' : '再接再厉', true);
   G.drawShadow(ctx, W / 2, R.goatY, R.goatS, 0); G.drawGoatArt(ctx, W / 2, R.goatY, R.goatS, st.look, 1, 0);
   text(win ? '你是顶角王！' : '惜败，再练练', W / 2, R.lineY, 17);
-  text('本场比分 · 完美起跳 ' + perfectCount() + ' 次', W / 2, R.subY, 14, 'muted');
+  text(TC.labels.score + TC.labels.perfect + perfectCount() + TC.labels.times, W / 2, R.subY, 14, 'muted');
   text(B.wins[0] + ' : ' + B.wins[1], W / 2, R.bigY, R.bigSize, 'score');
   btn(W / 2 - R.btnW / 2, R.btnY, R.btnW, R.btnH, '再来一局', function () { startMatch(); }, 'main', 23, TH.colors.resultDeepGreen);
   btn(W / 2 - R.btn2W / 2, R.btn2Y, R.btn2W, R.btn2H, '回主页', function () { st.scene = 'custom'; }, 'blue', 17);
