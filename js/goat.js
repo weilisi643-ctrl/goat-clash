@@ -150,7 +150,7 @@ function indexParts(p) {
   var add = function (f) { ART.partFiles[f.replace(/\.png$/, '')] = 1; };
   Object.keys(p.poses || {}).forEach(function (pose) { var fl = p.poses[pose].files || {}; Object.keys(fl).forEach(function (k) { fl[k].forEach(add); }); });
   var jp = (p.joint_patch || {}).poses || {};
-  Object.keys(jp).forEach(function (pose) { ['head_patch', 'tail_patch'].forEach(function (k) { ((jp[pose][k] || {}).files || []).forEach(add); }); });
+  Object.keys(jp).forEach(function (pose) { Object.keys(jp[pose]).forEach(function (k) { ((jp[pose][k] || {}).files || []).forEach(add); }); });
 }
 function partLayers(look, pose) { // [{key, whole, part}]，按 part_draw_order × 部件内图层顺序；只返回 parts.json 中存在的文件
   var out = [], m = ART.man;
@@ -168,7 +168,7 @@ function patchKey(look, pose, which, a) { // a = -(canvas 度数)；返回 {key,
   var aa = Math.abs(a); if (aa < 1) return null;
   var n = aa <= 7.5 ? 5 : aa <= 12.5 ? 10 : 15;
   var key = 'parts/' + pose + '/' + which + '/' + look.wool + '_' + pose + '_a' + (a > 0 ? '+' : '-') + n;
-  if (!ART.partFiles[key]) return null;
+  if (!ART.partFiles[key]) { ART.missLogged = ART.missLogged || {}; if (!ART.missLogged[key]) { ART.missLogged[key] = 1; ART.errors.push('patch frame missing, skipped: ' + key); } return null; }
   ART.kindOv[key] = 'wool/' + look.wool + '_' + pose;
   return { key: key, alpha: Math.max(0, Math.min(1, (aa - 1) / 4)) };
 }
@@ -196,17 +196,19 @@ function colorFor(tpl, whole, look) {
 function drawParts(ctx, look, pose, rot, cw, chh, size, sz, ax, ay) {
   if (!ART.parts || !ART.parts.poses[pose]) return false;
   var PP = ART.parts.poses[pose], piv = PP.pivots, layers = partLayers(look, pose);
-  var hp = patchKey(look, pose, 'head_patch', -(rot.head || 0)), tp = patchKey(look, pose, 'tail_patch', -(rot.tail || 0));
-  var need = layers.map(function (l) { return l.key; }); if (hp) need.push(hp.key); if (tp) need.push(tp.key);
+  // 关节补片：joint_patch 中每个 <部件>_patch（head/tail/四条腿）按该部件自身旋转角选帧
+  var JP = ((ART.parts.joint_patch || {}).poses || {})[pose] || {}, patches = [];
+  Object.keys(JP).forEach(function (pk) { var part = pk.replace(/_patch$/, ''), d = rot[part] || 0; if (!d) return; var q = patchKey(look, pose, pk, -d); if (q) patches.push(q); });
+  var need = layers.map(function (l) { return l.key; }); patches.forEach(function (q) { need.push(q.key); });
   if (!ensurePartImgs(need)) return false;
   var X = function (px) { return (px / cw - ax) * size; }, Y = function (py) { return (py / chh - ay) * sz; };
-  [hp, tp].forEach(function (p) { if (!p || ART.onlyPart) return; var L = layer(p.key, look.woolColor); if (!L) return; // 补片：最下层、不跟头/尾转
+  patches.forEach(function (p) { if (!p || ART.onlyPart) return; var L = layer(p.key, look.woolColor); if (!L) return; // 补片：最下层、不跟头/尾转
     ctx.save(); ctx.globalAlpha *= p.alpha; ctx.drawImage(L, -ax * size, -ay * sz, size, sz); ctx.restore(); });
   layers.forEach(function (l) {
     if (ART.onlyPart && l.part !== ART.onlyPart) return; // 调试：只画某部件（像素归属统计用）
     var L = layer(l.key, colorFor(l.tpl, l.whole, look)); if (!L) return;
-    var rp = l.part === 'head' || l.part === 'horn' ? 'head' : l.part === 'tail' ? 'tail' : null, d = rp ? (rot[rp] || 0) : 0;
-    if (d) { var pv = piv[rp === 'head' ? 'head' : 'tail']; ctx.save(); ctx.translate(X(pv[0]), Y(pv[1])); ctx.rotate(d * Math.PI / 180); ctx.translate(-X(pv[0]), -Y(pv[1])); }
+    var rp = l.part === 'horn' ? 'head' : l.part === 'body' ? null : l.part, d = rp ? (rot[rp] || 0) : 0; // horn 跟随 head；腿绕各自 pivot
+    if (d) { var pv = piv[rp]; ctx.save(); ctx.translate(X(pv[0]), Y(pv[1])); ctx.rotate(d * Math.PI / 180); ctx.translate(-X(pv[0]), -Y(pv[1])); }
     ctx.drawImage(L, -ax * size, -ay * sz, size, sz);
     if (d) ctx.restore();
   });
@@ -229,7 +231,7 @@ function drawGoatArt(ctx, x, y, s, look, face, t, pose, rot) { // rot: 可选 {h
   var footY = y + 40 * s;
   ctx.save(); ctx.translate(x, footY); ctx.scale(face < 0 ? -1 : 1, 1);
   rot = ART.rot || rot;
-  if (rot && (rot.head || rot.tail) && drawParts(ctx, look, pose, rot, cw, chh, size, sz, ax, ay)) { ctx.restore(); return; }
+  if (rot && Object.keys(rot).some(function (k) { return rot[k]; }) && drawParts(ctx, look, pose, rot, cw, chh, size, sz, ax, ay)) { ctx.restore(); return; }
   m.draw_order.forEach(function (tpl) {
     var key = tpl.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose);
     var col = tpl.indexOf('{wool}') >= 0 || key.indexOf('beard/') === 0 ? look.woolColor :  // v8c 胡子与羊毛同色（manifest kind=gray_mask 时生效，kind=color 时 layer() 原样返回）

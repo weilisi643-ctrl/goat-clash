@@ -166,7 +166,7 @@ function drawBattle() {
   var L = LY.battle; bg(); var gy = H * 0.72 - 40;
   pill('第 ' + B.round + ' 回合 · 三局两胜', W / 2, L.pillY, false, 13);
   text(B.wins[0] + ' : ' + B.wins[1], W / 2, L.scoreY, L.scoreSize, 'score');
-  hpBar(20, L.hpY, B.p.hp, stats(st.look).hp, '你', false); hpBar(W - 20 - L.hpW, L.hpY, B.e.hp, eMaxHp(), B.arena ? '擂主·' + B.arena.cfg.name : '电脑', true);
+  hpBar(20, L.hpY, B.p.hp, stats(st.look).hp, '你', false); hpBar(W - 20 - hpW(), L.hpY, B.e.hp, eMaxHp(), B.arena ? '擂主·' + B.arena.cfg.name : '电脑', true);
   if (B.arena) text('每日擂主 第 ' + B.arena.stage + ' 场' + (A.REASONING_ENABLED ? ' · 线索 Lv' + B.stageCfg.clueLv : ''), W / 2, L.arenaY, 12, 'muted');
   var V = (FX.enabled && FX.view(B)) || { p: B.p, e: B.e, t: B.t, phase: B.phase }; // 顿帧定格+插值追帧：只影响显示，物理照常推进
   var sk = FX.enabled ? FX.shakeOff() : [0, 0]; ctx.save(); ctx.translate(sk[0], sk[1] + (L.sceneShiftY || 0));
@@ -208,7 +208,8 @@ function goatSq(id, g, gy, fn) { // 挤压拉伸：仅绕脚底缩放绘制，�
   if (k[0] === 1 && k[1] === 1) return fn();
   ctx.save(); ctx.translate(g.x, fy); ctx.scale(k[0], k[1]); ctx.translate(-g.x, -fy); fn(); ctx.restore();
 }
-function hpBar(x, y, hp, max, n, right) { var w = LY.battle.hpW, v = Math.max(0, hp);
+function hpW() { return Math.min(LY.battle.hpW, Math.floor((W - 40 - 16) / 2)); } // 窄屏（320）两条血条留 16px 间隔，不重叠
+function hpBar(x, y, hp, max, n, right) { var w = hpW(), v = Math.max(0, hp);
   text(right ? v + ' · ' + n : n + ' · ' + v, right ? x + w : x, LY.battle.hpLabelY, 14, 'ink', right ? 'right' : 'left');
   UI.drawBar(ctx, x, y, w, v, max, right); }
 function resultCard(win, banner) { var R = LY.result; bg(); UI.dim(ctx, W, H); panel(R.cardX, R.cardY, W - 2 * R.cardX, R.cardH);

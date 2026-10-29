@@ -1,140 +1,18 @@
 {
  "summary": {
   "pre": {
-   "fringe_green": 808,
-   "pinholes": 1176,
+   "fringe_green": 455,
+   "pinholes": 734,
    "green_tint": 0
   },
   "post": {
-   "fringe_green": 455,
-   "pinholes": 734,
+   "fringe_green": 202,
+   "pinholes": 260,
    "green_tint": 0
   }
  },
  "detail": {
   "pre": {
-   "idle_fluffy_#ffffff": [
-    57,
-    77,
-    0
-   ],
-   "idle_fluffy_#333333": [
-    57,
-    77,
-    0
-   ],
-   "idle_short_#ffffff": [
-    68,
-    77,
-    0
-   ],
-   "idle_short_#333333": [
-    68,
-    77,
-    0
-   ],
-   "idle_spots_#ffffff": [
-    57,
-    77,
-    0
-   ],
-   "idle_spots_#333333": [
-    57,
-    77,
-    0
-   ],
-   "idle_cloud_#ffffff": [
-    127,
-    79,
-    0
-   ],
-   "idle_cloud_#333333": [
-    127,
-    79,
-    0
-   ],
-   "jump_fluffy_#ffffff": [
-    0,
-    15,
-    0
-   ],
-   "jump_fluffy_#333333": [
-    0,
-    15,
-    0
-   ],
-   "jump_short_#ffffff": [
-    26,
-    206,
-    0
-   ],
-   "jump_short_#333333": [
-    26,
-    206,
-    0
-   ],
-   "jump_spots_#ffffff": [
-    0,
-    15,
-    0
-   ],
-   "jump_spots_#333333": [
-    0,
-    15,
-    0
-   ],
-   "jump_cloud_#ffffff": [
-    40,
-    17,
-    0
-   ],
-   "jump_cloud_#333333": [
-    40,
-    17,
-    0
-   ],
-   "clash_fluffy_#ffffff": [
-    1,
-    3,
-    0
-   ],
-   "clash_fluffy_#333333": [
-    1,
-    3,
-    0
-   ],
-   "clash_short_#ffffff": [
-    3,
-    3,
-    0
-   ],
-   "clash_short_#333333": [
-    3,
-    3,
-    0
-   ],
-   "clash_spots_#ffffff": [
-    1,
-    3,
-    0
-   ],
-   "clash_spots_#333333": [
-    1,
-    3,
-    0
-   ],
-   "clash_cloud_#ffffff": [
-    24,
-    16,
-    0
-   ],
-   "clash_cloud_#333333": [
-    24,
-    16,
-    0
-   ]
-  },
-  "post": {
    "idle_fluffy_#ffffff": [
     3,
     12,
@@ -253,6 +131,128 @@
    "clash_cloud_#333333": [
     26,
     15,
+    0
+   ]
+  },
+  "post": {
+   "idle_fluffy_#ffffff": [
+    3,
+    12,
+    0
+   ],
+   "idle_fluffy_#333333": [
+    2,
+    12,
+    0
+   ],
+   "idle_short_#ffffff": [
+    13,
+    12,
+    0
+   ],
+   "idle_short_#333333": [
+    12,
+    12,
+    0
+   ],
+   "idle_spots_#ffffff": [
+    0,
+    12,
+    0
+   ],
+   "idle_spots_#333333": [
+    0,
+    12,
+    0
+   ],
+   "idle_cloud_#ffffff": [
+    58,
+    17,
+    0
+   ],
+   "idle_cloud_#333333": [
+    58,
+    17,
+    0
+   ],
+   "jump_fluffy_#ffffff": [
+    0,
+    15,
+    0
+   ],
+   "jump_fluffy_#333333": [
+    0,
+    15,
+    0
+   ],
+   "jump_short_#ffffff": [
+    0,
+    9,
+    0
+   ],
+   "jump_short_#333333": [
+    0,
+    9,
+    0
+   ],
+   "jump_spots_#ffffff": [
+    0,
+    15,
+    0
+   ],
+   "jump_spots_#333333": [
+    0,
+    15,
+    0
+   ],
+   "jump_cloud_#ffffff": [
+    15,
+    15,
+    0
+   ],
+   "jump_cloud_#333333": [
+    15,
+    15,
+    0
+   ],
+   "clash_fluffy_#ffffff": [
+    1,
+    3,
+    0
+   ],
+   "clash_fluffy_#333333": [
+    1,
+    3,
+    0
+   ],
+   "clash_short_#ffffff": [
+    3,
+    3,
+    0
+   ],
+   "clash_short_#333333": [
+    3,
+    3,
+    0
+   ],
+   "clash_spots_#ffffff": [
+    1,
+    3,
+    0
+   ],
+   "clash_spots_#333333": [
+    1,
+    3,
+    0
+   ],
+   "clash_cloud_#ffffff": [
+    8,
+    14,
+    0
+   ],
+   "clash_cloud_#333333": [
+    8,
+    14,
     0
    ]
   }
