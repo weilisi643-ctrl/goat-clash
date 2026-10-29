@@ -47,7 +47,7 @@ module.exports = {
     h: 15, radius: 7.5, stroke: 2, bg: '#FFFFFF', hp: '#8CCB4E', hpLow: '#FF7A6B', lowRatio: 0.3,
     meterH: 17, meterZone: '#8CCB4E', marker: '#FF4D4D', markerW: 6, markerH: 29
   },
-  field: { trail: { every: 2, alpha: 0.9, w: 4, endR: 5, outline: '#3A3A3A', goatColor: '#FFFFFF', ballColor: '#FCD800', goatDash: [], ballDash: [6, 5] }, // 失败球轨迹线（只显示）
+  field: { trail: { enabled: true, fullUpToLevel: 3, laterMinFails: 2, laterBalls: false, /* 老大定：1–3 关山羊+球都显示；4 关起同关连续失败≥2 次才显示且只画山羊；过关/换关清零 */ every: 2, alpha: 0.9, w: 4, endR: 5, outline: '#3A3A3A', goatColor: '#FFFFFF', ballColor: '#FCD800', goatDash: [], ballDash: [6, 5] }, // 失败球轨迹线（只显示）
     msgBottom: 162, // 顶顶乐场地
     bg: '#CFFC98', top: '#CFFC98', line: '#2F3727', lineW: 2,
     objects: { crate: '#E8B070', fragile: '#FFD9A0', ball: '#FFFFFF', rock: '#9AA19A', sheep: '#FFFFFF' }, fallback: '#DDDDDD',

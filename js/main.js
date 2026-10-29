@@ -369,7 +369,11 @@ function drawObj(b) {
   if (b.type === 'rock') text('石', b.x, b.y, 11, 'white');
 }
 function GY() { return H * 0.72 - 40; }
-var DT = null; // 顶顶乐失败球轨迹（只显示层：只读 shot 位置，不写回任何状态）
+var DT = null, TF = { lv: null, fails: 0 }; // TF：同一关连续未过关次数（只显示用；过关/换关清零）
+function trailCount(cleared) { if (TF.lv !== DG.lv.id) { TF.lv = DG.lv.id; TF.fails = 0; } TF.fails = cleared ? 0 : TF.fails + 1; }
+function trailMode() { var T = TH.field.trail, id = DG.lv.id; if (!T.enabled) return null; if (TF.lv !== id) return null;
+  if (id <= T.fullUpToLevel) return { goat: true, balls: true };
+  return TF.fails >= T.laterMinFails ? { goat: true, balls: T.laterBalls } : null; } // 顶顶乐失败球轨迹（只显示层：只读 shot 位置，不写回任何状态）
 function trailRec(sh) { var T = TH.field.trail;
   if (!DT || DT.shot !== sh) DT = { shot: sh, lv: DG.lv.id, n: 0, paths: {}, show: false };
   if (DT.n++ % T.every) return;
@@ -377,8 +381,9 @@ function trailRec(sh) { var T = TH.field.trail;
     if (!l || Math.abs(l[0] - b.x) + Math.abs(l[1] - b.y) > 0.5) q.pts.push([b.x, b.y]); }); }
 function drawTrail() { var T = TH.field.trail;
   if (!DT || !DT.show || DT.lv !== DG.lv.id || (DG.phase !== 'aim' && DG.phase !== 'fail')) return;
+  var MD = trailMode(); if (!MD) return;
   ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  Object.keys(DT.paths).forEach(function (k) { var q = DT.paths[k], P = q.pts; if (P.length < 2) return;
+  Object.keys(DT.paths).forEach(function (k) { var q = DT.paths[k], P = q.pts; if (P.length < 2 || (q.goat ? !MD.goat : !MD.balls)) return;
     ctx.globalAlpha = T.alpha; ctx.setLineDash(q.goat ? T.goatDash : T.ballDash); ctx.lineWidth = T.w + 2; ctx.strokeStyle = T.outline;
     ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]); P.forEach(function (p) { ctx.lineTo(p[0], p[1]); }); ctx.stroke();
     ctx.lineWidth = T.w; ctx.strokeStyle = q.goat ? T.goatColor : T.ballColor; ctx.stroke(); ctx.setLineDash([]);
@@ -386,7 +391,7 @@ function drawTrail() { var T = TH.field.trail;
   ctx.restore(); }
 function updateDdl() {
   var sh = DG.shot, n0 = sh ? sh.ev.length : 0;
-  if (DG.phase === 'flying') { DDL.tick(DG); if (sh) { trailRec(sh); if (!DG.shot) DT.show = DG.phase !== 'result'; } }
+  if (DG.phase === 'flying') { DDL.tick(DG); if (sh) { trailRec(sh); if (!DG.shot) { DT.show = DG.phase !== 'result'; trailCount(DG.phase === 'result'); } } }
   if (sh) sh.ev.slice(n0).forEach(function (e) { var b = sh.B.filter(function (o) { return o.id === e[1]; })[0]; if (b) FX.ev('ddl', { k: e[0], x: b.x, y: b.y }); }); // 只读事件
   if (sh && DG.phase === 'result') FX.ev('win', { x: W / 2, y: H * 0.3 });
   if (DG.phase === 'aim') { DG.meter += 0.018 * DG.dir; if (DG.meter > 1 || DG.meter < 0) DG.dir *= -1; DG.aimPower = Math.max(0, Math.min(1, DG.meter)); }
@@ -562,7 +567,7 @@ if (typeof document !== 'undefined') {
   });
   document.addEventListener('mouseup', function () { if (DG) DG.drag = null; });
 }
-module.exports = { PERF: PERF, T: T, startTutorial: startTutorial, tutorialCfg: tutorialCfg, woolColorList: woolColorList, PERFECT_ZONE: PERFECT_ZONE, LW: LW, QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
+module.exports = { trailState: function () { return { TF: TF, mode: DG ? trailMode() : null, show: !!(DT && DT.show) }; }, PERF: PERF, T: T, startTutorial: startTutorial, tutorialCfg: tutorialCfg, woolColorList: woolColorList, PERFECT_ZONE: PERFECT_ZONE, LW: LW, QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
   sceneXf: sceneXf, toScreen: toScreen, toWorld: toWorld, startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
   openArena: openArena, startArenaStage: startArenaStage, chooseFaction: chooseFaction, setNow: function (ms) { nowOverride = ms; },
   FX: FX, UI: UI, clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,

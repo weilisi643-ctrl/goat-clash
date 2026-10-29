@@ -1,0 +1,66 @@
+{
+ "pass": true,
+ "cases": {
+  "lv2_fail1": {
+   "lv": 2,
+   "phase": "aim",
+   "fails": 1,
+   "mode": {
+    "goat": true,
+    "balls": true
+   },
+   "show": true
+  },
+  "lv2_fail2": {
+   "lv": 2,
+   "phase": "aim",
+   "fails": 2,
+   "mode": {
+    "goat": true,
+    "balls": true
+   },
+   "show": true
+  },
+  "lv5_fail1": {
+   "lv": 5,
+   "phase": "aim",
+   "fails": 1,
+   "mode": null,
+   "show": true
+  },
+  "lv5_fail2": {
+   "lv": 5,
+   "phase": "aim",
+   "fails": 2,
+   "mode": {
+    "goat": true,
+    "balls": false
+   },
+   "show": true
+  },
+  "lv5_restart": {
+   "lv": 5,
+   "phase": "aim",
+   "fails": 3,
+   "mode": {
+    "goat": true,
+    "balls": false
+   },
+   "show": true
+  },
+  "lv4_switch": {
+   "lv": 4,
+   "phase": "aim",
+   "fails": 1,
+   "mode": null,
+   "show": true
+  },
+  "lv5_clear": {
+   "lv": 5,
+   "phase": "aim",
+   "fails": 0,
+   "mode": null,
+   "show": false
+  }
+ }
+}
