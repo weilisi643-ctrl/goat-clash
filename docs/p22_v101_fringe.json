@@ -1,0 +1,650 @@
+{
+ "p19_s1.342": {
+  "before": [
+   72,
+   1014
+  ],
+  "after": [
+   32,
+   1004
+  ],
+  "combos": {
+   "idle/fluffy/#ffffff": {
+    "before": [
+     2,
+     35
+    ],
+    "after": [
+     2,
+     35
+    ],
+    "near_after": null
+   },
+   "idle/fluffy/#333333": {
+    "before": [
+     2,
+     35
+    ],
+    "after": [
+     2,
+     35
+    ],
+    "near_after": null
+   },
+   "idle/short/#ffffff": {
+    "before": [
+     3,
+     35
+    ],
+    "after": [
+     2,
+     35
+    ],
+    "near_after": null
+   },
+   "idle/short/#333333": {
+    "before": [
+     3,
+     35
+    ],
+    "after": [
+     2,
+     35
+    ],
+    "near_after": null
+   },
+   "idle/spots/#ffffff": {
+    "before": [
+     2,
+     35
+    ],
+    "after": [
+     2,
+     35
+    ],
+    "near_after": null
+   },
+   "idle/spots/#333333": {
+    "before": [
+     2,
+     35
+    ],
+    "after": [
+     2,
+     35
+    ],
+    "near_after": null
+   },
+   "idle/cloud/#ffffff": {
+    "before": [
+     13,
+     37
+    ],
+    "after": [
+     2,
+     35
+    ],
+    "near_after": null
+   },
+   "idle/cloud/#333333": {
+    "before": [
+     13,
+     37
+    ],
+    "after": [
+     2,
+     35
+    ],
+    "near_after": null
+   },
+   "jump/fluffy/#ffffff": {
+    "before": [
+     1,
+     35
+    ],
+    "after": [
+     1,
+     35
+    ],
+    "near_after": null
+   },
+   "jump/fluffy/#333333": {
+    "before": [
+     1,
+     35
+    ],
+    "after": [
+     1,
+     35
+    ],
+    "near_after": null
+   },
+   "jump/short/#ffffff": {
+    "before": [
+     1,
+     34
+    ],
+    "after": [
+     1,
+     34
+    ],
+    "near_after": null
+   },
+   "jump/short/#333333": {
+    "before": [
+     1,
+     34
+    ],
+    "after": [
+     1,
+     34
+    ],
+    "near_after": null
+   },
+   "jump/spots/#ffffff": {
+    "before": [
+     1,
+     35
+    ],
+    "after": [
+     1,
+     35
+    ],
+    "near_after": null
+   },
+   "jump/spots/#333333": {
+    "before": [
+     1,
+     35
+    ],
+    "after": [
+     1,
+     35
+    ],
+    "near_after": null
+   },
+   "jump/cloud/#ffffff": {
+    "before": [
+     3,
+     35
+    ],
+    "after": [
+     1,
+     34
+    ],
+    "near_after": null
+   },
+   "jump/cloud/#333333": {
+    "before": [
+     3,
+     35
+    ],
+    "after": [
+     1,
+     34
+    ],
+    "near_after": null
+   },
+   "clash/fluffy/#ffffff": {
+    "before": [
+     2,
+     55
+    ],
+    "after": [
+     1,
+     55
+    ],
+    "near_after": null
+   },
+   "clash/fluffy/#333333": {
+    "before": [
+     2,
+     55
+    ],
+    "after": [
+     1,
+     55
+    ],
+    "near_after": null
+   },
+   "clash/short/#ffffff": {
+    "before": [
+     2,
+     60
+    ],
+    "after": [
+     1,
+     59
+    ],
+    "near_after": null
+   },
+   "clash/short/#333333": {
+    "before": [
+     2,
+     60
+    ],
+    "after": [
+     1,
+     59
+    ],
+    "near_after": null
+   },
+   "clash/spots/#ffffff": {
+    "before": [
+     2,
+     55
+    ],
+    "after": [
+     1,
+     55
+    ],
+    "near_after": null
+   },
+   "clash/spots/#333333": {
+    "before": [
+     2,
+     55
+    ],
+    "after": [
+     1,
+     55
+    ],
+    "near_after": null
+   },
+   "clash/cloud/#ffffff": {
+    "before": [
+     4,
+     56
+    ],
+    "after": [
+     1,
+     55
+    ],
+    "near_after": null
+   },
+   "clash/cloud/#333333": {
+    "before": [
+     4,
+     56
+    ],
+    "after": [
+     1,
+     55
+    ],
+    "near_after": null
+   }
+  }
+ },
+ "p13_s7": {
+  "before": [
+   743,
+   270
+  ],
+  "after": [
+   528,
+   178
+  ],
+  "combos": {
+   "idle/fluffy/#ffffff": {
+    "before": [
+     69,
+     7
+    ],
+    "after": [
+     67,
+     7
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "idle/fluffy/#333333": {
+    "before": [
+     69,
+     7
+    ],
+    "after": [
+     67,
+     7
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "idle/short/#ffffff": {
+    "before": [
+     91,
+     7
+    ],
+    "after": [
+     66,
+     7
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "idle/short/#333333": {
+    "before": [
+     92,
+     7
+    ],
+    "after": [
+     66,
+     7
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "idle/spots/#ffffff": {
+    "before": [
+     65,
+     7
+    ],
+    "after": [
+     66,
+     7
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "idle/spots/#333333": {
+    "before": [
+     65,
+     7
+    ],
+    "after": [
+     65,
+     7
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "idle/cloud/#ffffff": {
+    "before": [
+     119,
+     29
+    ],
+    "after": [
+     65,
+     0
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "idle/cloud/#333333": {
+    "before": [
+     119,
+     29
+    ],
+    "after": [
+     66,
+     0
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "jump/fluffy/#ffffff": {
+    "before": [
+     0,
+     15
+    ],
+    "after": [
+     0,
+     15
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "jump/fluffy/#333333": {
+    "before": [
+     0,
+     15
+    ],
+    "after": [
+     0,
+     15
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "jump/short/#ffffff": {
+    "before": [
+     0,
+     15
+    ],
+    "after": [
+     0,
+     15
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "jump/short/#333333": {
+    "before": [
+     0,
+     15
+    ],
+    "after": [
+     0,
+     15
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "jump/spots/#ffffff": {
+    "before": [
+     0,
+     15
+    ],
+    "after": [
+     0,
+     15
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "jump/spots/#333333": {
+    "before": [
+     0,
+     15
+    ],
+    "after": [
+     0,
+     15
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "jump/cloud/#ffffff": {
+    "before": [
+     14,
+     15
+    ],
+    "after": [
+     0,
+     15
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "jump/cloud/#333333": {
+    "before": [
+     14,
+     15
+    ],
+    "after": [
+     0,
+     15
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "clash/fluffy/#ffffff": {
+    "before": [
+     0,
+     2
+    ],
+    "after": [
+     0,
+     2
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "clash/fluffy/#333333": {
+    "before": [
+     0,
+     2
+    ],
+    "after": [
+     0,
+     2
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "clash/short/#ffffff": {
+    "before": [
+     1,
+     2
+    ],
+    "after": [
+     0,
+     2
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "clash/short/#333333": {
+    "before": [
+     1,
+     2
+    ],
+    "after": [
+     0,
+     2
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "clash/spots/#ffffff": {
+    "before": [
+     0,
+     2
+    ],
+    "after": [
+     0,
+     2
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "clash/spots/#333333": {
+    "before": [
+     0,
+     2
+    ],
+    "after": [
+     0,
+     2
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "clash/cloud/#ffffff": {
+    "before": [
+     12,
+     19
+    ],
+    "after": [
+     0,
+     2
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   },
+   "clash/cloud/#333333": {
+    "before": [
+     12,
+     19
+    ],
+    "after": [
+     0,
+     2
+    ],
+    "near_after": {
+     "685,345": 0,
+     "437,445": 0,
+     "698,717": 0
+    }
+   }
+  }
+ }
+}

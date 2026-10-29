@@ -152,9 +152,9 @@
    "leg_LR_note": "L/R=画面左/右，near/far 见 pivots",
    "split_curves": {
     "back_split_poly_x_of_y": [
-     0.001964,
-     -3.276764,
-     1623.693495
+     0.005383,
+     -9.422366,
+     4379.686834
     ],
     "front_split_poly_x_of_y": [
      0.011811,
@@ -163,12 +163,12 @@
    },
    "underlap_px_full_fluffy": {
     "head<body": 10185,
-    "leg_back_near<body": 3239,
+    "leg_back_near<body": 6214,
     "leg_front_near<body": 5870,
-    "leg_back_far<body": 8563,
+    "leg_back_far<body": 4868,
     "leg_front_far<body": 2673,
     "tail<body": 6816,
-    "leg_back_far<leg_back_near": 991,
+    "leg_back_far<leg_back_near": 1915,
     "leg_front_far<leg_front_near": 2125
    },
    "files": {
@@ -354,9 +354,9 @@
    "leg_LR_note": "L/R=画面左/右，near/far 见 pivots",
    "split_curves": {
     "back_split_poly_x_of_y": [
-     0.001481,
-     -3.048912,
-     1789.146617
+     0.001394,
+     -2.886216,
+     1713.318224
     ],
     "front_split_poly_x_of_y": [
      -0.733333,
@@ -365,12 +365,12 @@
    },
    "underlap_px_full_fluffy": {
     "head<body": 8200,
-    "leg_back_near<body": 4851,
+    "leg_back_near<body": 4941,
     "leg_front_near<body": 6098,
-    "leg_back_far<body": 2555,
+    "leg_back_far<body": 2494,
     "leg_front_far<body": 3252,
     "tail<body": 4605,
-    "leg_back_far<leg_back_near": 2044,
+    "leg_back_far<leg_back_near": 2097,
     "leg_front_far<leg_front_near": 366
    },
    "files": {
@@ -555,9 +555,9 @@
    "leg_LR_note": "L/R=画面左/右，near/far 见 pivots",
    "split_curves": {
     "back_split_poly_x_of_y": [
-     0.003235,
-     -5.74862,
-     2771.902071
+     0.003124,
+     -5.546444,
+     2679.775819
     ],
     "front_split_poly_x_of_y": [
      0.217391,
@@ -566,13 +566,13 @@
    },
    "underlap_px_full_fluffy": {
     "head<body": 9144,
-    "leg_back_near<body": 3322,
+    "leg_back_near<body": 3263,
     "leg_front_near<body": 5647,
-    "leg_back_far<body": 5036,
+    "leg_back_far<body": 5067,
     "leg_front_far<body": 927,
     "tail<body": 5120,
     "leg_back_far<leg_back_near": 181,
-    "leg_front_far<leg_front_near": 1299
+    "leg_front_far<leg_front_near": 1326
    },
    "files": {
     "leg_back_far": [
@@ -751,7 +751,6 @@
       "parts/idle/leg_back_near_patch/cloud_idle_a+5.png",
       "parts/idle/leg_back_near_patch/cloud_idle_a-10.png",
       "parts/idle/leg_back_near_patch/cloud_idle_a-15.png",
-      "parts/idle/leg_back_near_patch/cloud_idle_a-5.png",
       "parts/idle/leg_back_near_patch/fluffy_idle_a+10.png",
       "parts/idle/leg_back_near_patch/fluffy_idle_a+15.png",
       "parts/idle/leg_back_near_patch/fluffy_idle_a+5.png",
@@ -984,16 +983,13 @@
      "files": [
       "parts/jump/leg_back_near_patch/cloud_jump_a+10.png",
       "parts/jump/leg_back_near_patch/cloud_jump_a+15.png",
-      "parts/jump/leg_back_near_patch/cloud_jump_a+5.png",
       "parts/jump/leg_back_near_patch/fluffy_jump_a+10.png",
       "parts/jump/leg_back_near_patch/fluffy_jump_a+15.png",
-      "parts/jump/leg_back_near_patch/fluffy_jump_a+5.png",
       "parts/jump/leg_back_near_patch/short_jump_a+10.png",
       "parts/jump/leg_back_near_patch/short_jump_a+15.png",
       "parts/jump/leg_back_near_patch/short_jump_a+5.png",
       "parts/jump/leg_back_near_patch/spots_jump_a+10.png",
-      "parts/jump/leg_back_near_patch/spots_jump_a+15.png",
-      "parts/jump/leg_back_near_patch/spots_jump_a+5.png"
+      "parts/jump/leg_back_near_patch/spots_jump_a+15.png"
      ]
     },
     "leg_back_far_patch": {
@@ -1011,8 +1007,6 @@
      ],
      "files": [
       "parts/jump/leg_back_far_patch/cloud_jump_a+10.png",
-      "parts/jump/leg_back_far_patch/cloud_jump_a+15.png",
-      "parts/jump/leg_back_far_patch/cloud_jump_a+5.png",
       "parts/jump/leg_back_far_patch/cloud_jump_a-10.png",
       "parts/jump/leg_back_far_patch/cloud_jump_a-15.png",
       "parts/jump/leg_back_far_patch/cloud_jump_a-5.png",
@@ -1049,7 +1043,6 @@
      "files": [
       "parts/jump/leg_front_near_patch/cloud_jump_a+10.png",
       "parts/jump/leg_front_near_patch/cloud_jump_a+15.png",
-      "parts/jump/leg_front_near_patch/cloud_jump_a+5.png",
       "parts/jump/leg_front_near_patch/cloud_jump_a-10.png",
       "parts/jump/leg_front_near_patch/cloud_jump_a-15.png",
       "parts/jump/leg_front_near_patch/cloud_jump_a-5.png",
