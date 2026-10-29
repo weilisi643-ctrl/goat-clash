@@ -45,7 +45,7 @@ function drawScene(ctx){drawn=true;var ring=UI.tinted(T+'shockwave_ring.png','#f
   ctx.strokeStyle='rgba(255,255,255,'+(1-e)+')';ctx.lineWidth=4*(1-e)+1;ctx.beginPath();ctx.arc(g.x,g.y,10+70*e,0,7);ctx.stroke();});
  lines.forEach(function(l){var e=(now-l.t)/220,r0=20+60*e,r1=r0+24*(1-e);ctx.strokeStyle='rgba(255,255,255,'+(0.9*(1-e))+')';ctx.lineWidth=2;ctx.beginPath();
   ctx.moveTo(l.x+Math.cos(l.a)*r0,l.y+Math.sin(l.a)*r0);ctx.lineTo(l.x+Math.cos(l.a)*r1,l.y+Math.sin(l.a)*r1);ctx.stroke();});
- for(var i=0;i<N;i++){var p=P[i];if(p.a<=0)continue;var al=Math.min(1,p.a/p.l*1.5),life=1-p.a/p.l,im=null;ctx.globalAlpha=al;
+ for(var i=0;i<N;i++){var p=P[i];if(p.a<=0||(module.exports.low&&p.v))continue;var al=Math.min(1,p.a/p.l*1.5),life=1-p.a/p.l,im=null;ctx.globalAlpha=al;
   if(p.t==='dust')im=UI.tinted(T+'dust_'+Math.min(2,(life*3)|0)+'.png',p.c);
   else if(p.t==='grass')im=UI.img(T+'grass_blade_'+p.v+'.png');else if(p.t==='wool')im=UI.tinted(T+'wool_fluff_'+p.v+'.png',p.c);
   else if(p.t==='spark')im=UI.img(T+'spark_streak.png');
@@ -58,4 +58,4 @@ function drawScene(ctx){drawn=true;var ring=UI.tinted(T+'shockwave_ring.png','#f
 function drawFlash(ctx,W,H){if(!drawn)drawScene(ctx);
  if(flash>0){ctx.fillStyle='rgba(255,255,255,'+Math.min(1,flash)+')';ctx.fillRect(-20,-20,W+40,H+40);}}
 function alive(){var c=0;for(var i=0;i<N;i++)if(P[i].a>0)c++;return c;}
-module.exports={perfectAnim:perfectAnim,ev:ev,step:step,drawScene:drawScene,drawFlash:drawFlash,view:view,frozenView:frozenView,shakeOff:shakeOff,squash:squash,alive:alive,enabled:true};
+module.exports={perfectAnim:perfectAnim,ev:ev,step:step,drawScene:drawScene,drawFlash:drawFlash,view:view,frozenView:frozenView,shakeOff:shakeOff,squash:squash,alive:alive,enabled:true,low:false};

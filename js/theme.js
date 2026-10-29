@@ -73,6 +73,7 @@ module.exports = {
   },
   motion: { titlePopFrom: 0.6, titlePopMs: 380, titleEasing: 'Back.Out', fadeMs: 220, fadeEasing: 'Quadratic.Out', buttonRise: 8, buttonMinAlpha: 0.25, panelMinAlpha: 0.3 },
   spacing: { screenPad: 20, gap: 10, rowGap: 49 },
+  perf: { fpsCap: 60, lowFpsCap: 30, lowAvgMs: 26, lowWindow: 90, lowAfterFrames: 120, forceLow: false }, // 渲染/加载层性能：帧数上限、低端机降级（只跳过绘制，不跳 update）
   effects: { // 新风格：无光影/暗角；阵营只在顶部加一条细色带
     vignette: { enabled: false, color: '40,20,0', alpha: 0.1, inner: 0.5, outer: 0.8 },
     factionTint: { enabled: false, alpha: 0, topAlpha: 0.18, topHeight: 0.14,

@@ -517,6 +517,15 @@ function update() {
   if (st.scene === 'battle') updateBattle(); else if (st.scene === 'ddl' && DG) updateDdl();
   clock.steps++;
 }
+// 性能（只渲染层）：帧数上限 + 低端机降级。update/物理固定步长照常执行，仅决定本帧是否绘制
+var PERF = { low: false, lastDraw: null, avg: 0, n: 0, prev: null };
+function perfDraw(ts) { var C = TH.perf; if (typeof ts !== 'number') return true;
+  if (PERF.prev !== null) { var d = ts - PERF.prev; PERF.avg += (d - PERF.avg) / Math.min(++PERF.n, C.lowWindow);
+    if (!PERF.low && (C.forceLow || (PERF.n > C.lowAfterFrames && PERF.avg > C.lowAvgMs))) { PERF.low = true; FX.low = true; } }
+  PERF.prev = ts;
+  var cap = PERF.low ? C.lowFpsCap : C.fpsCap, gap = 1000 / cap - 1;
+  if (PERF.lastDraw !== null && ts - PERF.lastDraw < gap) return false;
+  PERF.lastDraw = ts; return true; }
 function loop(ts) {
   if (typeof ts !== 'number') { update(); FX.step(clock.steps * STEP); }
   else {
@@ -528,7 +537,7 @@ function loop(ts) {
   if (typeof ts === 'number') FX.step(ts);
   clock.frames++;
   UI.update(typeof ts === 'number' ? ts : clock.steps * STEP, st.scene);
-  render(); UI.vignette(ctx, W, H); if (FX.enabled) FX.drawFlash(ctx, W, H); // HUD 不抖；场景层在各 draw 内平移
+  if (perfDraw(ts)) { render(); if (!PERF.low) UI.vignette(ctx, W, H); if (FX.enabled) FX.drawFlash(ctx, W, H); } // HUD 不抖；场景层在各 draw 内平移
   requestAnimationFrame(loop);
 }
 function render() { st.buttons = [];
@@ -553,7 +562,7 @@ if (typeof document !== 'undefined') {
   });
   document.addEventListener('mouseup', function () { if (DG) DG.drag = null; });
 }
-module.exports = { T: T, startTutorial: startTutorial, tutorialCfg: tutorialCfg, woolColorList: woolColorList, PERFECT_ZONE: PERFECT_ZONE, LW: LW, QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
+module.exports = { PERF: PERF, T: T, startTutorial: startTutorial, tutorialCfg: tutorialCfg, woolColorList: woolColorList, PERFECT_ZONE: PERFECT_ZONE, LW: LW, QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
   sceneXf: sceneXf, toScreen: toScreen, toWorld: toWorld, startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
   openArena: openArena, startArenaStage: startArenaStage, chooseFaction: chooseFaction, setNow: function (ms) { nowOverride = ms; },
   FX: FX, UI: UI, clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,
