@@ -294,15 +294,15 @@ function drawArena() {
   }, 'blue', 14);
   btn(P + hw + 12, y + 106, hw, 38, '🚩 选择牧场', function () { st.scene = 'faction'; }, 'orange', 14);
   // 牧场榜：胶囊行 + 左侧彩色名次块，只显示牧场名（本地演示数据；正式版按人均分由云函数计算）
-  var ly = y + 162; text('本周牧场榜 · 人均分（本地演示）', W / 2, ly, 12, 'muted');
+  var AL = LY.arena; var ly = y + AL.rankY; text('本周牧场榜 · 人均分（本地演示）', W / 2, ly, 12, 'muted');
   var rows = A.FACTIONS.factions.map(function (f) { return { f: f, v: p.factionScores[f.id] || 0 }; }).sort(function (a, b) { return b.v - a.v; }).slice(0, 3);
   var RC = [TH.colors.yellow, '#C9CCC4', TH.colors.orange];
-  rows.forEach(function (r, i) { var ry = ly + 12 + i * 27, rx = P + 20, rw = W - 2 * P - 40;
-    UI.sticker(ctx, rx, ry, rw, 22, 11, '#FFFFFF', 0, null, 2); UI.sticker(ctx, rx, ry, 34, 22, 11, RC[i], 0, null, 2);
-    text('' + (i + 1), rx + 17, ry + 11, 13); text(A.factionLabel(r.f), rx + 46, ry + 11, 13, 'ink', 'left'); text('' + r.v, rx + rw - 12, ry + 11, 13, 'ink', 'right'); });
-  if (f) text('你：' + f.name + '的一只' + D.horns[st.idx.horn].name + '羊', W / 2, ly + 99, 11, 'muted');
-  btn(W / 2 - 55, H - 56, 110, 34, '返回', function () { st.scene = 'custom'; }, 'gray', 16);
-  text('适度游戏益脑，沉迷游戏伤身', W / 2, H - 12, 10, 'muted');
+  rows.forEach(function (r, i) { var ry = ly + AL.rowY0 + i * AL.rowStep, rx = P + 20, rw = W - 2 * P - 40;
+    UI.sticker(ctx, rx, ry, rw, AL.rowH, AL.rowH / 2, '#FFFFFF', 0, null, 2); UI.sticker(ctx, rx, ry, 34, AL.rowH, AL.rowH / 2, RC[i], 0, null, 2);
+    text('' + (i + 1), rx + 17, ry + AL.rowH / 2, 13); text(A.factionLabel(r.f), rx + 46, ry + AL.rowH / 2, 13, 'ink', 'left'); text('' + r.v, rx + rw - 12, ry + AL.rowH / 2, 13, 'ink', 'right'); });
+  if (f) text('你：' + f.name + '的一只' + D.horns[st.idx.horn].name + '羊', W / 2, ly + AL.youY, 11, 'muted');
+  btn(W / 2 - AL.backW / 2, H - AL.backBottom, AL.backW, AL.backH, '返回', function () { st.scene = 'custom'; }, 'gray', 16);
+  text('适度游戏益脑，沉迷游戏伤身', W / 2, H - AL.footBottom, 10, 'muted');
 }
 // ---------- 顶顶乐 ----------
 var DG = null, DP = null;
@@ -366,7 +366,7 @@ function drawDdl() {
   });
   DG.state.forEach(drawObj);
   if (FX.enabled) FX.drawScene(ctx); ctx.restore();
-  if (DG.msg) pill(DG.msg, W / 2, H - 150, true, 13);
+  if (DG.msg) pill(DG.msg, W / 2, H - TH.field.msgBottom, true, 13);
   var y0 = H - 130;
   if (DG.phase === 'aim') {
     text('拖动瞄准 · 角度 ' + Math.round(DG.aimAngle) + '°', W / 2, y0 + 2, 13);

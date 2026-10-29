@@ -66,3 +66,7 @@
 - battle.sceneShiftY：仅平移场景显示层，不影响物理坐标。
 - 顶顶乐玩家羊/瞄准线在控件之上绘制（起点 y≈600 与底部控件重叠）。
 - 验证：tools/p14_shots.py（Playwright 真实点击按钮中心走通全部流程，docs/p14_flow.json）。
+
+## v3.1 间距修正（p15）
+- layout.arena 令牌（rankY,rowStep,rowH,youY,backW/H,backBottom,footBottom）：擂主屏榜单/“你：”/返回按钮间距 ≥10px，点击区域由同一值生成。
+- battle.hintBottom 172→180（对手架势胶囊与角度按钮间距）；field.msgBottom 162（顶顶乐提示胶囊与瞄准标签）。

@@ -46,7 +46,7 @@ module.exports = {
     h: 15, radius: 7.5, stroke: 2, bg: '#FFFFFF', hp: '#8CCB4E', hpLow: '#FF7A6B', lowRatio: 0.3,
     meterH: 17, meterZone: '#8CCB4E', marker: '#FF4D4D', markerW: 6, markerH: 29
   },
-  field: { // 顶顶乐场地
+  field: { msgBottom: 162, // 顶顶乐场地
     bg: '#CFFC98', top: '#CFFC98', line: '#2F3727', lineW: 2,
     objects: { crate: '#E8B070', fragile: '#FFD9A0', ball: '#FFFFFF', rock: '#9AA19A', sheep: '#FFFFFF' }, fallback: '#DDDDDD',
     hay: '#FCD800', hayAlpha: 0.85, hayStroke: '#B08A1E', target: '#FCD800',
@@ -57,8 +57,9 @@ module.exports = {
     home: { titleY: 104, titleSize: 50, pillY: 160, goatY: 262, goatS: 1.6, statsY: 340, tipY: 358, rowY: 374, rowGap: 45, rowH: 35, arrowW: 35, rowX: 47,
       startW: 200, startH: 55, startBottom: 112, sideW: 55, sideH: 42, sideBottom: 97, sideX: 20 },
     battle: { pillY: 34, scoreY: 82, scoreSize: 46, hpY: 140, hpLabelY: 129, hpW: 155, msgY: 186, arenaY: 112,
-      jumpW: 200, jumpH: 52, jumpBottom: 75, meterBottom: 108, angleBottom: 158, angleW: 85, angleH: 44, hintBottom: 172, sceneShiftY: -70 },
+      jumpW: 200, jumpH: 52, jumpBottom: 75, meterBottom: 108, angleBottom: 158, angleW: 85, angleH: 44, hintBottom: 180, sceneShiftY: -70 },
     result: { cardX: 42, cardY: 150, cardW: 290, cardH: 380, bannerY: 150, goatY: 250, goatS: 1.25, lineY: 330, subY: 357, bigY: 390, bigSize: 44, btnY: 430, btnW: 180, btnH: 50, btn2Y: 495, btn2W: 110, btn2H: 40 },
+    arena: { rankY: 162, rowY0: 12, rowStep: 25, rowH: 20, youY: 94, backW: 110, backH: 32, backBottom: 52, footBottom: 10 },
     list: { titleY: 52, subY: 94, top: 118, rowH: 50, gap: 12, backW: 110, backH: 40, backBottom: 60 }
   },
   motion: { titlePopFrom: 0.6, titlePopMs: 380, titleEasing: 'Back.Out', fadeMs: 220, fadeEasing: 'Quadratic.Out', buttonRise: 8, buttonMinAlpha: 0.25, panelMinAlpha: 0.3 },
