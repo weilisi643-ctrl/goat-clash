@@ -1,4 +1,4 @@
-var D = require('./data.js'), BP = require('./battle_physics.js'), FX = require('./fx.js'), G = require('./goat.js'), A = require('./arena.js'), DDL = require('./ddl.js');
+var D = require('./data.js'), BP = require('./battle_physics.js'), FX = require('./fx.js'), G = require('./goat.js'), A = require('./arena.js'), DDL = require('./ddl.js'), UI = require('./ui.js');
 var canvas = wx.createCanvas(), ctx = canvas.getContext('2d');
 var info = wx.getSystemInfoSync(), W = info.windowWidth, H = info.windowHeight;
 canvas.width = W; canvas.height = H;
@@ -12,16 +12,27 @@ function stats(look) {
   var w = D.wools.filter(function (x) { return x.id === look.wool; })[0], h = D.horns.filter(function (x) { return x.id === look.horn; })[0];
   return { hp: 100 + w.hp, spd: w.spd, pow: h.pow, win: h.win };
 }
-function btn(x, y, w, h, label, cb, color) {
-  ctx.fillStyle = color || '#ffb347'; roundRect(x, y, w, h, 12); ctx.fill();
-  ctx.fillStyle = '#4a2c00'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(label, x + w / 2, y + h / 2); st.buttons.push({ x: x, y: y, w: w, h: h, cb: cb, label: label });
+function btn(x, y, w, h, label, cb, color) { // 九宫格按钮（灰度贴图乘色）；tween 淡入上浮只影响绘制，命中区不变
+  var a = UI.anim.fade, oy = (1 - a) * 10; ctx.save(); ctx.globalAlpha = 0.25 + 0.75 * a;
+  if (!UI.nine(ctx, 'art/ui/btn9.png', x, y + oy, w, h, color || '#ffb347', 20)) { ctx.fillStyle = color || '#ffb347'; roundRect(x, y + oy, w, h, 12); ctx.fill(); }
+  var fs = Math.min(16, h * 0.42);
+  if (!UI.text(ctx, label, x + w / 2, y + oy + h / 2 - 2, fs, 'btn')) { ctx.fillStyle = '#4a2c00'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, x + w / 2, y + oy + h / 2 - 2); }
+  ctx.restore(); st.buttons.push({ x: x, y: y, w: w, h: h, cb: cb, label: label });
 }
+function panel(x, y, w, h, alpha) { ctx.save(); ctx.globalAlpha = (alpha || 0.92) * (0.3 + 0.7 * UI.anim.fade);
+  if (!UI.nine(ctx, 'art/ui/panel9.png', x, y, w, h, '#fff8e8', 20)) { ctx.fillStyle = 'rgba(255,255,255,0.85)'; roundRect(x, y, w, h, 10); ctx.fill(); } ctx.restore(); }
 function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
   ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
-function text(s, x, y, size, c) { ctx.fillStyle = c || '#333'; ctx.font = 'bold ' + (size || 16) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y); }
+function text(s, x, y, size, c) { size = size || 16;
+  if (size >= 18) { var k = UI.anim.pop; ctx.save(); ctx.translate(x, y); ctx.scale(k, k); var ok = UI.text(ctx, s, 0, 0, size, 'title'); ctx.restore(); if (ok) return; } // 标题：位图字体 + tween 弹出
+  else if (size >= 16 && UI.text(ctx, s, x, y, size, 'btn')) return;
+  ctx.fillStyle = c || '#333'; ctx.font = 'bold ' + (size || 16) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y); }
 function bg() { var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#bfe9ff'); g.addColorStop(1, '#fff6d8');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#8fd17a'; ctx.fillRect(0, H * 0.72, W, H * 0.28); }
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#8fd17a'; ctx.fillRect(0, H * 0.72, W, H * 0.28);
+  var fid = arenaFaction(); if (fid) UI.factionTint(ctx, W, H, fid); }
+function arenaFaction() { // 擂主相关画面按玩家牧场加色调（只显示牧场名，不显示省份）
+  var sc = st.scene, inArena = sc === 'arena' || sc === 'faction' || sc === 'arenaResult' || (sc === 'battle' && B && B.arena);
+  return inArena && AR && AR.p ? AR.p.faction : null; }
 
 // ---------- 定制界面 ----------
 function cycle(k, arr, n) { st.idx[k] = (st.idx[k] + n + arr.length) % arr.length; }
@@ -29,7 +40,7 @@ function syncLook() { var i = st.idx; st.look = { wool: D.wools[i.wool].id, wool
 function drawCustom() {
   bg(); text('🐐 咩咩顶角王', W / 2, 50, 26, '#c05a00'); text('打造你的山羊', W / 2, 82, 15, '#666');
   G.drawShadow(ctx, W / 2 - 10, H * 0.32, 2, 0); G.drawGoatArt(ctx, W / 2 - 10, H * 0.32, 2, st.look, 1, 0);
-  var s = stats(st.look), h = D.horns[st.idx.horn];
+  var s = stats(st.look), h = D.horns[st.idx.horn]; panel(14, H * 0.445, W - 28, H * 0.075);
   text('体力 ' + s.hp + '  速度 ' + (s.spd >= 0 ? '+' : '') + s.spd + '  力量 +' + s.pow, W / 2, H * 0.47, 14, '#444');
   text(h.name + '：' + h.tip, W / 2, H * 0.5, 13, '#a05000');
   var rows = [['羊毛', 'wool', D.wools, D.wools[st.idx.wool].name], ['毛色', 'wc', D.woolColors, ''], ['角形', 'horn', D.horns, h.name], ['角色', 'hc', D.hornColors, '']];
@@ -171,7 +182,7 @@ function drawBattle() {
   } else if (B.phase === 'observe' && A.REASONING_ENABLED) {
     var left = B.obs.observeSec - (Date.now() - B.obs.t0) / 1000;
     if (left <= 0) { makeGuess(null); return; }
-    ctx.fillStyle = 'rgba(255,255,255,0.85)'; roundRect(16, 128, W - 32, 40 + B.obs.clues.length * 24, 10); ctx.fill();
+    panel(16, 128, W - 32, 40 + B.obs.clues.length * 24);
     text('对手摆出架势「' + B.e.stance.name + '」 观察 ' + left.toFixed(1) + 's', W / 2, 146, 14, '#a05000');
     B.obs.clues.forEach(function (c, i) { text('👁 ' + c.text, W / 2, 172 + i * 24, 14, '#333'); });
     text('预判对手真正的角度：', W / 2, y0 - 5, 15);
@@ -262,7 +273,7 @@ function drawArena() {
   text((f ? A.factionLabel(f) : '未选牧场') + ' · 青草币 ' + p.grass + ' · 守擂 ' + p.defendDays + ' 天', W / 2, 60, 12, '#555');
   G.drawShadow(ctx, W * 0.7, H * 0.24, 1.0, 0); G.drawGoatArt(ctx, W * 0.7, H * 0.24, 1.0, cfg.look, -1, 0);
   G.drawShadow(ctx, W * 0.28, H * 0.24, 1.0, 0); G.drawGoatArt(ctx, W * 0.28, H * 0.24, 1.0, st.look, 1, 0);
-  text('今日擂主：' + cfg.name + (AR.champ.procedural ? '（轮换）' : ''), W / 2, H * 0.33, 17);
+  panel(14, H * 0.305, W - 28, H * 0.15); text('今日擂主：' + cfg.name + (AR.champ.procedural ? '（轮换）' : ''), W / 2, H * 0.33, 17);
   text('剩余挑战 ' + A.triesLeft(p) + ' 次' + (p.defended ? ' · 今日已守擂（练习模式）' : p.inChallenge && p.stage1Won ? ' · 第 1 场已赢' : ''), W / 2, H * 0.37, 13, '#444');
   var lim = s2.allowedHorns ? s2.allowedHorns.map(function (id) { return D.horns.filter(function (h) { return h.id === id; })[0].name; }).join(' / ') : '不限';
   text('第 2 场限定角形：' + lim + ' · 你的角形：' + D.horns[st.idx.horn].name, W / 2, H * 0.405, 12, '#a05000');
@@ -280,7 +291,7 @@ function drawArena() {
   }, '#cfe8ff');
   btn(W / 2 + 10, y + 94, W / 2 - 30, 38, '🚩 选择牧场', function () { st.scene = 'faction'; }, '#cfe8ff');
   // 牧场榜：列表 + 匿名，只显示牧场名（本地演示数据；正式版按人均分由云函数计算）
-  text('本周牧场榜（人均分 · 本地演示）', W / 2, y + 150, 13, '#555');
+  panel(30, y + 136, W - 60, 110); text('本周牧场榜（人均分 · 本地演示）', W / 2, y + 150, 13, '#555');
   var rows = A.FACTIONS.factions.map(function (f) { return { f: f, v: p.factionScores[f.id] || 0 }; }).sort(function (a, b) { return b.v - a.v; }).slice(0, 3);
   rows.forEach(function (r, i) { text((i + 1) + '. ' + A.factionLabel(r.f) + '  ' + r.v, W / 2, y + 172 + i * 20, 13, '#333'); });
   if (f) text('你：' + f.name + '的一只' + D.horns[st.idx.horn].name + '羊', W / 2, y + 236, 12, '#888');
@@ -336,7 +347,7 @@ function drawDdl() {
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   ctx.fillStyle = '#7ec85a'; ctx.fillRect(0, 60, W, H - 60);
   // UI 顶栏
-  ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(0, 0, W, 60);
+  ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(0, 0, W, 60); panel(-12, -20, W + 24, 80, 0.95);
   text(DG.lv.id + '. ' + DG.lv.name, W / 2, 22, 16, '#c05a00');
   text('顶撞 ' + DG.shots + '/' + DG.max + '  ·  ' + DG.lv.teach, W / 2, 44, 11, '#555');
   var sk = FX.enabled ? FX.shakeOff() : [0, 0]; ctx.save(); ctx.translate(sk[0], sk[1]); // 屏震只作用于场景层（顶栏/按钮不抖）
@@ -392,7 +403,7 @@ function drawDdlResult() {
   if (DG._reward == null) { DG._reward = DDL.onClear(DP, A.dateKeyAt(now()), DG); }
   text('过关！', W / 2, 80, 28, '#c05a00');
   text('★'.repeat(DG.stars) + '☆'.repeat(3 - DG.stars), W / 2, 120, 30, '#ffb000');
-  text('用了 ' + DG.shots + ' 次顶撞（上限 ' + DG.lv.maxShots + '）', W / 2, 160, 15);
+  panel(24, 140, W - 48, 70); text('用了 ' + DG.shots + ' 次顶撞（上限 ' + DG.lv.maxShots + '）', W / 2, 160, 15);
   text(DG._reward ? ('青草币 +' + DG._reward) : '今日奖励次数已满，继续玩不奖励', W / 2, 190, 14, '#a05000');
   G.drawShadow(ctx, W / 2, H * 0.45, 1.4, 0); G.drawGoatArt(ctx, W / 2, H * 0.45, 1.4, st.look, 1, 0);
   var next = DDL.levelById(DG.lv.id + 1);
@@ -418,7 +429,8 @@ function loop(ts) {
   }
   if (typeof ts === 'number') FX.step(ts);
   clock.frames++;
-  render(); if (FX.enabled) FX.drawFlash(ctx, W, H); // HUD 不抖；场景层在各 draw 内平移
+  UI.update(typeof ts === 'number' ? ts : clock.steps * STEP, st.scene);
+  render(); UI.vignette(ctx, W, H); if (FX.enabled) FX.drawFlash(ctx, W, H); // HUD 不抖；场景层在各 draw 内平移
   requestAnimationFrame(loop);
 }
 function render() { st.buttons = [];
@@ -445,6 +457,6 @@ if (typeof document !== 'undefined') {
 module.exports = { QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
   startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
   openArena: openArena, startArenaStage: startArenaStage, chooseFaction: chooseFaction, setNow: function (ms) { nowOverride = ms; },
-  FX: FX, clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,
+  FX: FX, UI: UI, clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,
   openDdl: openDdl, enterDdl: enterDdl, fireDdl: function () { if (DG) DDL.fire(DG); } };
 loop();

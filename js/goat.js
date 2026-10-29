@@ -45,10 +45,13 @@ function drawHorn(ctx, shape, c, t) {
 }
 module.exports = { drawGoat: drawGoat };
 // 脚下影子：半透明椭圆，画在地面上；lift 为离地高度，越高影子越小越淡
-function drawShadow(ctx, x, y, s, lift) {
-  var k = Math.max(0.4, 1 - (lift || 0) / 160);
-  ctx.save(); ctx.fillStyle = 'rgba(0,0,0,' + (0.22 * k).toFixed(3) + ')';
-  ctx.beginPath(); ctx.ellipse(x, y + 41 * s, 40 * s * k, 7 * s * k, 0, 0, 7); ctx.fill(); ctx.restore();
+function drawShadow(ctx, x, y, s, lift) { // 柔和椭圆影子：中心/尺寸规则与原版一致（与物理位置对齐），径向渐变边缘
+  var k = Math.max(0.4, 1 - (lift || 0) / 160), a = 0.3 * k, rx = 40 * s * k, ry = 7 * s * k, cy = y + 41 * s;
+  ctx.save(); var g = ctx.createRadialGradient && ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+  if (g && g.addColorStop) { g.addColorStop(0, 'rgba(0,0,0,' + a.toFixed(3) + ')'); g.addColorStop(0.6, 'rgba(0,0,0,' + (a * 0.6).toFixed(3) + ')'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.translate(x, cy); ctx.scale(rx * 1.25, ry * 1.6); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 1, 0, 7); ctx.fill(); }
+  else { ctx.fillStyle = 'rgba(0,0,0,' + (0.22 * k).toFixed(3) + ')'; ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, 7); ctx.fill(); }
+  ctx.restore();
 }
 module.exports.drawShadow = drawShadow;
 

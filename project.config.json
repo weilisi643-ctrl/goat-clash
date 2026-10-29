@@ -34,7 +34,7 @@
    },
    {
     "type": "regexp",
-    "value": "^art/.*(?<!_320)\\.(png|jpg)$"
+    "value": "^art/(?!fx/|ui/).*(?<!_320)\\.(png|jpg)$"
    },
    {
     "type": "folder",

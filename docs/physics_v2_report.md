@@ -144,3 +144,12 @@ screenshots/p8_01_jump、p8_02_clash、p8_03_jump_debug、p8_04_clash_debug、p8
 2. 顿帧结束后 100ms cubic ease-out 插值，显示位置从冻结快照追上物理位置，击退起点不跳；物理不受影响。
 3. 对撞扬尘与起跳/落地尘都用地面线 GY()+45。
 回归：p6 sha 8de1a12a…（对战哈希 af021cef…86ce / 9074 帧）、410 例 fe6ea1d9…4548、AI 统计逐字节一致、L1–L10 全部达成、30/60/120/144/45抖动 Hz 结果一致。截图 screenshots/p10_*，录屏 screenshots/p10_clash_fx.webm。
+
+## 9. 画面升级第二步（仅渲染层）
+- 暗角：js/ui.js vignette（场景+HUD 之上、白闪之下）。影子：goat.js drawShadow 改为径向渐变柔和椭圆，中心 (x, y+41s)、尺寸与离地衰减 k=max(0.4,1-lift/160) 与原版一致，位置仍与物理对齐。撞击光晕：fx.js clash 事件加 lighter 径向光晕 + spark_burst 贴图。
+- 位图字体：tools/gen_ui_assets.py 用 Noto Sans CJK SC Bold（SIL OFL 1.1，许可 art/ui/OFL.txt）离线生成 art/ui/font_title.png / font_btn.png + font.json，只含标题/按钮/关卡名/牧场名/数字 198 字；缺字整串回退系统字体，emoji 单字回退。九宫格：art/ui/btn9.png、panel9.png（灰度，运行时乘色）。
+- tween.js 23.1.3（MIT，libs/tween.umd.js + libs/tween.LICENSE）：UMD 在微信 require 与 index.html shim 下均可加载；场景切换时标题 Back.Out 弹出、按钮/面板淡入上浮，时间由渲染时钟显式传入，命中区不变。
+- 擂主阵营色调：arena/faction/arenaResult/擂主对战画面按玩家牧场叠加色调，文字仍只显示牧场名。
+- art/fx 贴图替换程序化粒子（dust_0..2 按寿命换帧、grass_blade、spark_streak 沿速度旋转 lighter、wool_fluff 按羊毛色乘色、shockwave_ring 0.2→1.2 渐隐）；未加载/失败回退原绘制。art/parts 未使用，未删任何美术文件。
+- project.config.json：原 ignore 正则 `^art/.*(?<!_320)\.(png|jpg)$` 会把 art/fx、art/ui 排除出主包，改为 `^art/(?!fx/|ui/).*(?<!_320)\.(png|jpg)$`。主包实测见 tools/pkg_size.py。
+- 回归与 v2 一致：battleHash af021cef…86ce / 9074 帧，逐帧 dump 1692fd26…，410 例 fe6ea1d9…4548，10 关三星，AI 统计逐字节一致，多帧率一致。截图 screenshots/p11_*（before=2286c4b / after / compare）。
