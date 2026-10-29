@@ -168,7 +168,7 @@ function patchKey(look, pose, which, a) { // a = -(canvas 度数)；返回 {key,
   var aa = Math.abs(a); if (aa < 1) return null;
   var n = aa <= 7.5 ? 5 : aa <= 12.5 ? 10 : 15;
   var key = 'parts/' + pose + '/' + which + '/' + look.wool + '_' + pose + '_a' + (a > 0 ? '+' : '-') + n;
-  if (!ART.partFiles[key]) { ART.missLogged = ART.missLogged || {}; if (!ART.missLogged[key]) { ART.missLogged[key] = 1; ART.errors.push('patch frame missing, skipped: ' + key); } return null; }
+  if (!ART.partFiles[key]) return null; // parts.json 未列出的帧＝美术有意留空，静默跳过（不记 ART.errors）
   ART.kindOv[key] = 'wool/' + look.wool + '_' + pose;
   return { key: key, alpha: Math.max(0, Math.min(1, (aa - 1) / 4)) };
 }
