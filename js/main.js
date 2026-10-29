@@ -34,10 +34,10 @@ function cycle(k, arr, n) { st.idx[k] = (st.idx[k] + n + arr.length) % arr.lengt
 function syncLook() { var i = st.idx; st.look = { wool: D.wools[i.wool].id, woolColor: D.woolColors[i.wc], horn: D.horns[i.horn].id, hornColor: D.hornColors[i.hc] }; }
 function drawCustom() {
   var L = LY.home; bg(); text('咩咩顶角王', W / 2, L.titleY, L.titleSize, 'title'); pill('打造你的山羊', W / 2, L.pillY);
-  G.drawShadow(ctx, W / 2, L.goatY, L.goatS, 0); G.drawGoatArt(ctx, W / 2, L.goatY, L.goatS, st.look, 1, 0);
+  UI.drawPedestal(ctx, W / 2, L.goatY, L.goatS); G.drawGoatArt(ctx, W / 2, L.goatY, L.goatS, st.look, 1, 0); // 展示台：底座+接触阴影（占位）
   var s = stats(st.look), h = D.horns[st.idx.horn];
   text('体力 ' + s.hp + ' · 速度 ' + (s.spd >= 0 ? '+' : '') + s.spd + ' · 力量 +' + s.pow, W / 2, L.statsY, 14);
-  text(h.name + '：' + h.tip, W / 2, L.tipY, 11, 'muted');
+  ctx.save(); ctx.globalAlpha = 0.7; text(h.name + '：' + h.tip, W / 2, L.tipY, 11, 'muted'); ctx.restore(); // 角形说明降级
   var rows = [['羊毛', 'wool', D.wools, D.wools[st.idx.wool].name], ['毛色', 'wc', D.woolColors, ''], ['角形', 'horn', D.horns, h.name], ['角色', 'hc', D.hornColors, '']];
   rows.forEach(function (r, i) {
     var y = L.rowY + i * L.rowGap, aw = L.arrowW, x0 = L.rowX, x1 = W - L.rowX - aw, px = x0 + aw + 9, pw = x1 - 9 - px;
@@ -169,15 +169,14 @@ function drawBattle() {
   hpBar(20, L.hpY, B.p.hp, stats(st.look).hp, '你', false); hpBar(W - 20 - hpW(), L.hpY, B.e.hp, eMaxHp(), B.arena ? '擂主·' + B.arena.cfg.name : '电脑', true);
   if (B.arena) text('每日擂主 第 ' + B.arena.stage + ' 场' + (A.REASONING_ENABLED ? ' · 线索 Lv' + B.stageCfg.clueLv : ''), W / 2, L.arenaY, 12, 'muted');
   var V = (FX.enabled && FX.view(B)) || { p: B.p, e: B.e, t: B.t, phase: B.phase }; // 顿帧定格+插值追帧：只影响显示，物理照常推进
-  var sk = FX.enabled ? FX.shakeOff() : [0, 0]; ctx.save(); ctx.translate(sk[0], sk[1] + (L.sceneShiftY || 0));
-  var fk = Math.min(1, W / LW), fy0 = gy + 45; ctx.translate((W - LW * fk) / 2, fy0 * (1 - fk)); ctx.scale(fk, fk); // 逻辑场地 → 屏幕（只渲染） // 屏震只作用于场景层；sceneShiftY 仅平移显示
+  var sk = FX.enabled ? FX.shakeOff() : [0, 0], X = sceneXf(sk); ctx.save(); ctx.translate(X.tx, X.ty); ctx.scale(X.k, X.k); // 物理坐标 → 屏幕：唯一变换（羊/影子/特效/粒子/💥 全走这里）
   G.drawShadow(ctx, V.p.x, gy, 1.1, -V.p.y); G.drawShadow(ctx, V.e.x, gy, 1.1, -V.e.y);
   var pose = V.phase === 'air' ? 'jump' : (V.phase === 'result' && V.t < 25) ? 'clash' : 'idle';
   goatSq('p', V.p, gy, function () { G.drawGoatArt(ctx, V.p.x, gy + V.p.y, 1.1, st.look, 1, 0, pose); });
   goatSq('e', V.e, gy, function () { G.drawGoatArt(ctx, V.e.x, gy + V.e.y, 1.1, B.ai, -1, 0, pose); });
   if (V.phase === 'result' && V.t < 25) text('💥', LW / 2, gy - 40, 40);
   if (FX.enabled) FX.drawScene(ctx); ctx.restore();
-  if (B.msg) text(B.msg, W / 2, L.msgY, 16, 'warn');
+  if (B.msg) pill(B.msg, W / 2, L.msgY, 'warn', L.msgSize || 13); // 提示：红字 → 圆角胶囊
   var y0 = H * 0.76, aY = H - L.angleBottom, hintY = H - L.hintBottom;
   if (B.phase === 'quiz' && QUIZ_ENABLED) {
     text(B.quiz.q, W / 2, y0, 20); B.quiz.opts.forEach(function (o, i) { btn(W / 2 - 130 + i * 90, y0 + 25, 80, 44, '' + o, function () { answer(o); }, 'white'); });
@@ -203,6 +202,12 @@ function drawBattle() {
   if (B.phase === 'result' && B.arena && B.reveal) pill(B.reveal, W / 2, hintY, true, 13);
   if (B.phase === 'result' && B.t > 30) btn(W / 2 - L.jumpW / 2, H - L.jumpBottom, L.jumpW, L.jumpH, B.roundEnd >= 0 ? '下一回合' : '继续', next, 'main', 24);
 }
+// 对战场景变换（只渲染）：屏幕 = 物理 × k + (tx, ty)。k = min(1, W/LW) × sceneZoom，以地面线 fy0 为缩放基线、场地水平居中
+function sceneXf(sk) { var L = LY.battle, gy = H * 0.72 - 40, fy0 = gy + 45, k = Math.min(1, W / LW) * (L.sceneZoom || 1); sk = sk || [0, 0];
+  return { k: k, tx: sk[0] + (W - LW * k) / 2, ty: sk[1] + (L.sceneShiftY || 0) + fy0 * (1 - k), gy: gy };
+}
+function toScreen(x, y, sk) { var X = sceneXf(sk); return [x * X.k + X.tx, y * X.k + X.ty]; } // 场内触控/叠加用（屏幕 → 物理 用逆变换）
+function toWorld(sx, sy, sk) { var X = sceneXf(sk); return [(sx - X.tx) / X.k, (sy - X.ty) / X.k]; }
 function goatSq(id, g, gy, fn) { // 挤压拉伸：仅绕脚底缩放绘制，不改 goat.js
   var k = FX.enabled ? FX.squash(id, g.vy) : [1, 1], fy = gy + g.y + 44;
   if (k[0] === 1 && k[1] === 1) return fn();
@@ -474,7 +479,7 @@ if (typeof document !== 'undefined') {
   document.addEventListener('mouseup', function () { if (DG) DG.drag = null; });
 }
 module.exports = { LW: LW, QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
-  startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
+  sceneXf: sceneXf, toScreen: toScreen, toWorld: toWorld, startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
   openArena: openArena, startArenaStage: startArenaStage, chooseFaction: chooseFaction, setNow: function (ms) { nowOverride = ms; },
   FX: FX, UI: UI, clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,
   openDdl: openDdl, enterDdl: enterDdl, fireDdl: function () { if (DG) DDL.fire(DG); } };

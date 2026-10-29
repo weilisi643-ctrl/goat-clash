@@ -41,7 +41,7 @@ module.exports = {
     style: 'sticker', radius: 18, fill: '#FFFFFF', stroke: { width: 2.5, color: '#2F3727' }, shadowY: 6, alpha: 1,
     image: 'art/ui/panel9.png', slice: 20, tint: '#FFFFFF', shadow: { color: 'rgba(0,0,0,0)', blur: 0, offsetY: 0 }
   },
-  pill: { fill: '#2F3727', text: '#FFFFFF', padX: 13, h: 22, fontSize: 14, light: { fill: '#FFFFFF', text: '#2F3727' } },
+  pill: { fill: '#2F3727', text: '#FFFFFF', padX: 13, h: 22, fontSize: 14, light: { fill: '#FFFFFF', text: '#2F3727' }, warn: { fill: '#FFF1EE', text: '#2F3727', stroke: '#E8705F' } },
   bar: { // 血条 / 蓄力条
     h: 15, radius: 7.5, stroke: 2, bg: '#FFFFFF', hp: '#8CCB4E', hpLow: '#FF7A6B', lowRatio: 0.3,
     meterH: 17, meterZone: '#8CCB4E', marker: '#FF4D4D', markerW: 6, markerH: 29
@@ -52,12 +52,16 @@ module.exports = {
     hay: '#FCD800', hayAlpha: 0.85, hayStroke: '#B08A1E', target: '#FCD800',
     aim: '#FF4D4D', aimW: 3, aimDash: [8, 6], aimLen: 84, hint: '#2E6FD8', hintLen: 104, goatR: 18, hornW: 4
   },
+  shadow: { contactColor: '#2F3727', contactAlpha: 0.26, asset: null }, // 接触阴影：首页展示台与战斗共用；美术 contact_shadow 未接入前用 Canvas 径向渐变占位
+  stage: { pedestal: '#F4FBE6', pedestalEdge: '#B9D98C', pedestalRx: 66, pedestalRy: 10, contactAlpha: 0.28 }, // 首页展示台（美术到位前 Canvas 占位）
   layout: { // 各屏布局令牌（相对 375×667；bottom 为距屏底）
     pad: 20, gap: 10,
-    home: { titleY: 104, titleSize: 50, pillY: 160, goatY: 262, goatS: 1.6, statsY: 340, tipY: 358, rowY: 374, rowGap: 45, rowH: 35, arrowW: 35, rowX: 47,
+    home: { titleY: 104, titleSize: 50, pillY: 160, goatY: 254, goatS: 1.6, statsY: 350, tipY: 365, rowY: 374, rowGap: 45, rowH: 35, arrowW: 35, rowX: 47,
       startW: 200, startH: 55, startBottom: 112, sideW: 55, sideH: 42, sideBottom: 97, sideX: 20 },
-    battle: { pillY: 34, scoreY: 82, scoreSize: 46, hpY: 140, hpLabelY: 129, hpW: 155, msgY: 186, arenaY: 112,
-      jumpW: 200, jumpH: 52, jumpBottom: 75, meterBottom: 108, angleBottom: 158, angleW: 85, angleH: 44, hintBottom: 180, sceneShiftY: -70 },
+    battle: { // v3.5 三层：上 状态区（比分缩小）/ 中 对战区（整场物理→屏幕变换放大 sceneZoom）/ 下 操作区（起跳为主按钮）
+      pillY: 30, scoreY: 66, scoreSize: 34, hpY: 112, hpLabelY: 101, hpW: 155, msgY: 146, arenaY: 92,
+      jumpW: 236, jumpH: 60, jumpBottom: 84, meterBottom: 112, angleBottom: 160, angleW: 76, angleH: 38, hintBottom: 182, sceneShiftY: -70,
+      sceneZoom: 1.22, msgSize: 13 },
     result: { cardX: 42, cardY: 150, cardW: 290, cardH: 380, bannerY: 150, goatY: 250, goatS: 1.25, lineY: 330, subY: 357, bigY: 390, bigSize: 44, btnY: 430, btnW: 180, btnH: 50, btn2Y: 495, btn2W: 110, btn2H: 40 },
     arena: { rankY: 162, rowY0: 12, rowStep: 25, rowH: 20, youY: 94, backW: 110, backH: 32, backBottom: 52, footBottom: 10 },
     list: { titleY: 52, subY: 94, top: 118, rowH: 50, gap: 12, backW: 110, backH: 40, backBottom: 60 }

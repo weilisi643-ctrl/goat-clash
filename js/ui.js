@@ -94,9 +94,9 @@ function drawButton(ctx, x, y, w, h, label, variant, fontSize) { var B = TH.butt
 function drawPanel(ctx, x, y, w, h, alpha) { var P = TH.panel, M = TH.motion; ctx.save(); ctx.globalAlpha = (alpha || P.alpha) * (M.panelMinAlpha + (1 - M.panelMinAlpha) * anim.fade);
   sticker(ctx, x, y, w, h, P.radius, P.fill, P.shadowY, null, P.stroke.width); ctx.restore(); }
 // 胶囊标签：dark=黑底白字（样稿“第 1 回合”），light=白底黑描边
-function drawPill(ctx, s, x, y, light, size) { var P = TH.pill, C = light ? P.light : P, fs = size || P.fontSize, w = measure(ctx, s, fs) + P.padX * 2, h = Math.max(P.h, fs + 8);
+function drawPill(ctx, s, x, y, light, size) { var P = TH.pill, C = light === 'warn' ? P.warn : light ? P.light : P, fs = size || P.fontSize, w = measure(ctx, s, fs) + P.padX * 2, h = Math.max(P.h, fs + 8);
   ctx.save(); ctx.fillStyle = C.fill; rr(ctx, x - w / 2, y - h / 2, w, h, h / 2); ctx.fill();
-  if (light) { ctx.strokeStyle = ink(); ctx.lineWidth = 2; ctx.stroke(); }
+  if (light) { ctx.strokeStyle = C.stroke || ink(); ctx.lineWidth = 2; ctx.stroke(); }
   ctx.restore(); drawText(ctx, s, x, y, fs, C.text); return w; }
 // 血条：白底黑描边圆角，fromRight 时从右侧填充（对手）
 function drawBar(ctx, x, y, w, v, max, fromRight) { var B = TH.bar, k = Math.max(0, Math.min(1, v / max)), h = B.h;
@@ -125,5 +125,10 @@ function drawBg(ctx, W, H) { var C = TH.colors;
   if (TH.background.style === 'gradient') { var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, C.skyTop); g.addColorStop(1, C.skyBottom);
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.fillStyle = C.ground; ctx.fillRect(0, H * C.groundY, W, H * (1 - C.groundY)); return; }
   ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H); drawTufts(ctx, W, H); }
+// 首页展示台：浅色椭圆底座 + 接触阴影（y/s 与 drawGoatArt 相同）
+function drawPedestal(ctx, x, y, s) { var S = TH.stage, k = s / 1.6, rx = S.pedestalRx * k, ry = S.pedestalRy * k, cy = y + 41 * s + 3 * k; // 与 goat.drawShadow 同一脚底规则（y+41s）
+  ctx.save(); ctx.fillStyle = S.pedestalEdge; ctx.beginPath(); ctx.ellipse(x, cy + 4 * k, rx, ry, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = S.pedestal; ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, 7); ctx.fill(); ctx.strokeStyle = ink(); ctx.lineWidth = 2; ctx.stroke();
+  ctx.restore(); require('./goat.js').drawShadow(ctx, x, y - 1 * k, s * 0.9, 0); } // 接触阴影统一走 theme.shadow（与战斗同款）
 function dim(ctx, W, H) { ctx.fillStyle = TH.colors.dim; ctx.fillRect(0, 0, W, H); }
-module.exports = { drawPill: drawPill, drawBar: drawBar, drawMeter: drawMeter, sticker: sticker, dim: dim, measure: measure, sysFont: sysFont, drawTufts: drawTufts, TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };
+module.exports = { drawPedestal: drawPedestal, drawPill: drawPill, drawBar: drawBar, drawMeter: drawMeter, sticker: sticker, dim: dim, measure: measure, sysFont: sysFont, drawTufts: drawTufts, TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };

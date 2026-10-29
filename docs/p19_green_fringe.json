@@ -1,0 +1,27 @@
+{
+ "before_s1.1": {
+  "scale": 1.1,
+  "fringe_green": 78,
+  "pinholes": 686
+ },
+ "after_s1.342": {
+  "scale": 1.342,
+  "fringe_green": 72,
+  "pinholes": 1014
+ },
+ "after_dpr2": {
+  "scale": 2.684,
+  "fringe_green": 95,
+  "pinholes": 3360
+ },
+ "after_dpr3": {
+  "scale": 4.026,
+  "fringe_green": 260,
+  "pinholes": 7438
+ },
+ "ref_s7": {
+  "scale": 7,
+  "fringe_green": 743,
+  "pinholes": 270
+ }
+}

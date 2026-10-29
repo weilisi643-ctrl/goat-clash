@@ -45,12 +45,14 @@ function drawHorn(ctx, shape, c, t) {
 }
 module.exports = { drawGoat: drawGoat };
 // 脚下影子：半透明椭圆，画在地面上；lift 为离地高度，越高影子越小越淡
-function drawShadow(ctx, x, y, s, lift) { // 柔和椭圆影子：中心/尺寸规则与原版一致（与物理位置对齐），径向渐变边缘
-  var k = Math.max(0.4, 1 - (lift || 0) / 160), a = 0.3 * k, rx = 40 * s * k, ry = 7 * s * k, cy = y + 41 * s;
+function shadowRGB() { var c = '#2F3727'; try { var T = require('./theme.js'); if (T.shadow && T.shadow.contactColor) c = T.shadow.contactColor; } catch (e) {} var n = parseInt(c.slice(1), 16); return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255); }
+function shadowAlpha() { try { var T = require('./theme.js'); if (T.shadow && T.shadow.contactAlpha != null) return T.shadow.contactAlpha; } catch (e) {} return 0.26; }
+function drawShadow(ctx, x, y, s, lift) { // 接触阴影（theme.shadow 令牌，#2F3727 低透明度；展示台与战斗共用）：中心/尺寸规则与物理位置对齐，径向渐变占位
+  var k = Math.max(0.4, 1 - (lift || 0) / 160), a = shadowAlpha() * k, rx = 40 * s * k, ry = 7 * s * k, cy = y + 41 * s, rgb = shadowRGB();
   ctx.save(); var g = ctx.createRadialGradient && ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
-  if (g && g.addColorStop) { g.addColorStop(0, 'rgba(0,0,0,' + a.toFixed(3) + ')'); g.addColorStop(0.6, 'rgba(0,0,0,' + (a * 0.6).toFixed(3) + ')'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  if (g && g.addColorStop) { g.addColorStop(0, 'rgba(' + rgb + ',' + a.toFixed(3) + ')'); g.addColorStop(0.6, 'rgba(' + rgb + ',' + (a * 0.6).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + rgb + ',0)');
     ctx.translate(x, cy); ctx.scale(rx * 1.25, ry * 1.6); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 1, 0, 7); ctx.fill(); }
-  else { ctx.fillStyle = 'rgba(0,0,0,' + (0.22 * k).toFixed(3) + ')'; ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, 7); ctx.fill(); }
+  else { ctx.fillStyle = 'rgba(' + rgb + ',' + (a * 0.75).toFixed(3) + ')'; ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, 7); ctx.fill(); }
   ctx.restore();
 }
 module.exports.drawShadow = drawShadow;
