@@ -101,7 +101,7 @@ function jump() { // 玩家点击起跳；对手同步起跳
   // physics v2：对手时机在起跳时决定（擂主=timingHit 命中则 1，否则 0–0.7；自由对战 0–1 随机），决定双方抛物线高度
   B.eTiming = B.arena ? (Math.random() < B.stageCfg.ai.timingHit ? 1 : Math.random() * 0.7) : Math.random();
   BP.startJump(B.p, B.timing); BP.startJump(B.e, B.eTiming); B.p.kv = B.e.kv = 0; B.phase = 'air'; B.t = 0;
-  FX.ev('jump', { id: 'p', x: B.p.x, y: GY() + 44 }); FX.ev('jump', { id: 'e', x: B.e.x, y: GY() + 44 }); // 特效只读
+  FX.ev('jump', { id: 'p', x: B.p.x, y: GY() + 45 }); FX.ev('jump', { id: 'e', x: B.e.x, y: GY() + 45 }); // 特效只读
 }
 function clash() {
   var ps = stats(st.look), es = stats(B.ai);
@@ -141,12 +141,12 @@ function updateBattle() { // 固定步 1/60s：只改物理/逻辑状态，绘�
     if (hc) { BP.resolvePenetration(B.p, B.e, hc); B.contact = hc;
       var snap = { p: { x: B.p.x, y: B.p.y, vy: 0 }, e: { x: B.e.x, y: B.e.y, vy: 0 }, t: 0, phase: 'result' }; clash();
       var hp = BP.hornPoint(B.p, 1, 'jump'), he = BP.hornPoint(B.e, -1, 'jump');
-      FX.ev('clash', { x: (hp[0] + he[0]) / 2, y: GY() + (hp[1] + he[1]) / 2, d: Math.abs(B.lastClash.pp - B.lastClash.ep), snap: snap, wool: (B.lastClash.pp >= B.lastClash.ep ? B.ai : st.look).woolColor });
+      FX.ev('clash', { x: (hp[0] + he[0]) / 2, y: GY() + (hp[1] + he[1]) / 2, d: Math.abs(B.lastClash.pp - B.lastClash.ep), snap: snap, gy: GY() + 45, wool: (B.lastClash.pp >= B.lastClash.ep ? B.ai : st.look).woolColor });
       if (B.roundEnd === 0) FX.ev('win', { x: W / 2, y: H * 0.45 }); }
     else if (!B.p.air && !B.e.air) { B.contact = null; B.p.y = B.e.y = 0; } // 理论不可达（落地前必接触）；保险
   }
   if (B.phase === 'result') { var a0 = B.p.air, a1 = B.e.air; BP.stepRecover(B.p, W * 0.25, W); BP.stepRecover(B.e, W * 0.75, W);
-    if (a0 && !B.p.air) FX.ev('land', { id: 'p', x: B.p.x, y: GY() + 44 }); if (a1 && !B.e.air) FX.ev('land', { id: 'e', x: B.e.x, y: GY() + 44 }); }
+    if (a0 && !B.p.air) FX.ev('land', { id: 'p', x: B.p.x, y: GY() + 45 }); if (a1 && !B.e.air) FX.ev('land', { id: 'e', x: B.e.x, y: GY() + 45 }); }
   B.t++;
   if (B.phase === 'charge') { B.meter += 0.018 * B.dir; if (B.meter > 1 || B.meter < 0) B.dir *= -1; }
 }
@@ -155,12 +155,14 @@ function drawBattle() {
   text('第 ' + B.round + ' 回合  (三局两胜)  ' + B.wins[0] + ' : ' + B.wins[1], W / 2, 30, 16);
   hpBar(20, 50, B.p.hp, stats(st.look).hp, '你'); hpBar(W / 2 + 10, 50, B.e.hp, eMaxHp(), B.arena ? '擂主·' + B.arena.cfg.name : '电脑');
   if (B.arena) text('每日擂主 第 ' + B.arena.stage + ' 场' + (A.REASONING_ENABLED ? ' · 线索 Lv' + B.stageCfg.clueLv : ''), W / 2, 112, 12, '#666');
-  var V = (FX.enabled && FX.frozenView()) || { p: B.p, e: B.e, t: B.t, phase: B.phase }; // 顿帧：只冻结画面，物理照常推进
+  var V = (FX.enabled && FX.view(B)) || { p: B.p, e: B.e, t: B.t, phase: B.phase }; // 顿帧定格+插值追帧：只影响显示，物理照常推进
+  var sk = FX.enabled ? FX.shakeOff() : [0, 0]; ctx.save(); ctx.translate(sk[0], sk[1]); // 屏震只作用于场景层
   G.drawShadow(ctx, V.p.x, gy, 1.1, -V.p.y); G.drawShadow(ctx, V.e.x, gy, 1.1, -V.e.y);
   var pose = V.phase === 'air' ? 'jump' : (V.phase === 'result' && V.t < 25) ? 'clash' : 'idle';
   goatSq('p', V.p, gy, function () { G.drawGoatArt(ctx, V.p.x, gy + V.p.y, 1.1, st.look, 1, 0, pose); });
   goatSq('e', V.e, gy, function () { G.drawGoatArt(ctx, V.e.x, gy + V.e.y, 1.1, B.ai, -1, 0, pose); });
   if (V.phase === 'result' && V.t < 25) text('💥', W / 2, gy - 40, 40);
+  if (FX.enabled) FX.drawScene(ctx); ctx.restore();
   text(B.msg, W / 2, 90, 15, '#a03000');
   var y0 = H * 0.76;
   if (B.phase === 'quiz' && QUIZ_ENABLED) {
@@ -337,6 +339,7 @@ function drawDdl() {
   ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(0, 0, W, 60);
   text(DG.lv.id + '. ' + DG.lv.name, W / 2, 22, 16, '#c05a00');
   text('顶撞 ' + DG.shots + '/' + DG.max + '  ·  ' + DG.lv.teach, W / 2, 44, 11, '#555');
+  var sk = FX.enabled ? FX.shakeOff() : [0, 0]; ctx.save(); ctx.translate(sk[0], sk[1]); // 屏震只作用于场景层（顶栏/按钮不抖）
   // 草堆
   DG.lv.hays.forEach(function (h) {
     ctx.fillStyle = 'rgba(180,140,40,0.55)'; ctx.beginPath(); ctx.arc(h.x, h.y, h.r, 0, 7); ctx.fill();
@@ -362,6 +365,7 @@ function drawDdl() {
       }
     }
   }
+  if (FX.enabled) FX.drawScene(ctx); ctx.restore();
   if (DG.msg) text(DG.msg, W / 2, H - 150, 14, '#a03000');
   var y0 = H - 130;
   if (DG.phase === 'aim') {
@@ -414,8 +418,7 @@ function loop(ts) {
   }
   if (typeof ts === 'number') FX.step(ts);
   clock.frames++;
-  var sk = FX.enabled && (st.scene === 'battle' || st.scene === 'ddl') ? FX.shakeOff() : [0, 0]; // 屏震只作用于渲染层
-  ctx.save(); ctx.translate(sk[0], sk[1]); render(); if (FX.enabled) FX.draw(ctx, W, H); ctx.restore();
+  render(); if (FX.enabled) FX.drawFlash(ctx, W, H); // HUD 不抖；场景层在各 draw 内平移
   requestAnimationFrame(loop);
 }
 function render() { st.buttons = [];

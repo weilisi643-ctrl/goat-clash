@@ -138,3 +138,9 @@ screenshots/p8_01_jump、p8_02_clash、p8_03_jump_debug、p8_04_clash_debug、p8
 - 回归（与 v2 基准完全一致）：对战帧哈希 af021cef…86ce / 9074 帧 ✅，p6 输出 sha256 8de1a12a…8885 ✅，410 例 fe6ea1d9…4548 ✅，10 关全三星 ✅，tools/battle_check.js 7 组 AI 胜率/帧数/伤害输出与 v2 逐字节相同 ✅，30/60/120/144/抖动帧率进度仍一致 ✅。主包约 0.45MB。
 - 截图（同一虚拟时刻、同一种子，before=FX 关 / after=FX 开）：screenshots/p9_01_jump、p9_02_clash_hitstop（接触后 30ms：after 仍定格在接触位置+白闪+冲击波）、p9_03_clash_spark（160ms）、p9_04_land（520ms）、p9_05_ddl_hay、p9_06_ddl_confetti，各 _before/_after；录屏 screenshots/p9_clash_fx.webm（真实时间 3 次对撞，FX 开）。脚本 tools/p9_fx_shots.py。
 - 风险：屏震会让 HUD 一起抖（整画面平移）；顿帧期间画面与物理有 ≤100ms 不同步，之后瞬间追上（输家被击退的起点会"跳"一下，录屏可见，后续可改为顿帧后插值追帧）；对撞扬尘 y 略低于地面线。
+
+## 8. FX 修正（仅渲染层）
+1. 屏震只作用于场景层（对战：影子/羊/💥/粒子；顶顶乐：草堆/物体/羊/瞄准/粒子），HUD、按钮、文字不抖；白闪在最上层不平移。
+2. 顿帧结束后 100ms cubic ease-out 插值，显示位置从冻结快照追上物理位置，击退起点不跳；物理不受影响。
+3. 对撞扬尘与起跳/落地尘都用地面线 GY()+45。
+回归：p6 sha 8de1a12a…（对战哈希 af021cef…86ce / 9074 帧）、410 例 fe6ea1d9…4548、AI 统计逐字节一致、L1–L10 全部达成、30/60/120/144/45抖动 Hz 结果一致。截图 screenshots/p10_*，录屏 screenshots/p10_clash_fx.webm。

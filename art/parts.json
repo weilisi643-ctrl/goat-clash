@@ -14,6 +14,10 @@
   995
  ],
  "note": "部件为全画布尺寸，左上角对齐直接叠放，offset 均为 0。各部件像素不重叠（硬切分），按 draw_order 叠加与 v7 逐像素一致。每个部件内部仍按 v7 图层顺序 wool→knee→body→beard→face→horn 绘制、同样换色。pivot 为全画布像素坐标，小图乘 0.3125。",
+ "optional_underlay": {
+  "part": "joint_fill",
+  "draw": "在所有部件之前先画（最底层），只在头/腿/尾转动时开启；它是各关节切线外侧 28px 的 v7 原像素，填补转动后露出的楔形缺口。开启后静止合成不再逐像素等于 v7（部件半透明边缘会透出它），所以静止时关掉。"
+ },
  "part_draw_order": [
   "leg_back_far",
   "leg_front_far",
@@ -140,6 +144,16 @@
      "parts/idle/head/straight_idle.png",
      "parts/idle/head/spiral_idle.png",
      "parts/idle/head/branch_idle.png"
+    ],
+    "joint_fill": [
+     "parts/idle/joint_fill/fluffy_idle.png",
+     "parts/idle/joint_fill/short_idle.png",
+     "parts/idle/joint_fill/spots_idle.png",
+     "parts/idle/joint_fill/cloud_idle.png",
+     "parts/idle/joint_fill/spots_mask_idle.png",
+     "parts/idle/joint_fill/knee_idle.png",
+     "parts/idle/joint_fill/body_idle.png",
+     "parts/idle/joint_fill/face_idle.png"
     ]
    },
    "horn_root": [
@@ -253,6 +267,17 @@
      "parts/jump/head/straight_jump.png",
      "parts/jump/head/spiral_jump.png",
      "parts/jump/head/branch_jump.png"
+    ],
+    "joint_fill": [
+     "parts/jump/joint_fill/fluffy_jump.png",
+     "parts/jump/joint_fill/short_jump.png",
+     "parts/jump/joint_fill/spots_jump.png",
+     "parts/jump/joint_fill/cloud_jump.png",
+     "parts/jump/joint_fill/spots_mask_jump.png",
+     "parts/jump/joint_fill/knee_jump.png",
+     "parts/jump/joint_fill/body_jump.png",
+     "parts/jump/joint_fill/beard_jump.png",
+     "parts/jump/joint_fill/face_jump.png"
     ]
    },
    "horn_root": [
@@ -370,6 +395,17 @@
      "parts/clash/head/straight_clash.png",
      "parts/clash/head/spiral_clash.png",
      "parts/clash/head/branch_clash.png"
+    ],
+    "joint_fill": [
+     "parts/clash/joint_fill/fluffy_clash.png",
+     "parts/clash/joint_fill/short_clash.png",
+     "parts/clash/joint_fill/spots_clash.png",
+     "parts/clash/joint_fill/cloud_clash.png",
+     "parts/clash/joint_fill/spots_mask_clash.png",
+     "parts/clash/joint_fill/knee_clash.png",
+     "parts/clash/joint_fill/body_clash.png",
+     "parts/clash/joint_fill/beard_clash.png",
+     "parts/clash/joint_fill/face_clash.png"
     ]
    },
    "horn_root": [
