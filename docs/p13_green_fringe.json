@@ -1,0 +1,260 @@
+{
+ "summary": {
+  "pre": {
+   "fringe_green": 13454,
+   "pinholes": 2774,
+   "green_tint": 0
+  },
+  "post": {
+   "fringe_green": 8480,
+   "pinholes": 2060,
+   "green_tint": 0
+  }
+ },
+ "detail": {
+  "pre": {
+   "idle_fluffy_#ffffff": [
+    202,
+    150,
+    0
+   ],
+   "idle_fluffy_#333333": [
+    201,
+    150,
+    0
+   ],
+   "idle_short_#ffffff": [
+    2430,
+    205,
+    0
+   ],
+   "idle_short_#333333": [
+    2432,
+    205,
+    0
+   ],
+   "idle_spots_#ffffff": [
+    191,
+    151,
+    0
+   ],
+   "idle_spots_#333333": [
+    190,
+    151,
+    0
+   ],
+   "idle_cloud_#ffffff": [
+    444,
+    165,
+    0
+   ],
+   "idle_cloud_#333333": [
+    445,
+    165,
+    0
+   ],
+   "jump_fluffy_#ffffff": [
+    70,
+    114,
+    0
+   ],
+   "jump_fluffy_#333333": [
+    69,
+    114,
+    0
+   ],
+   "jump_short_#ffffff": [
+    1200,
+    176,
+    0
+   ],
+   "jump_short_#333333": [
+    1200,
+    176,
+    0
+   ],
+   "jump_spots_#ffffff": [
+    73,
+    120,
+    0
+   ],
+   "jump_spots_#333333": [
+    74,
+    120,
+    0
+   ],
+   "jump_cloud_#ffffff": [
+    389,
+    83,
+    0
+   ],
+   "jump_cloud_#333333": [
+    388,
+    83,
+    0
+   ],
+   "clash_fluffy_#ffffff": [
+    70,
+    51,
+    0
+   ],
+   "clash_fluffy_#333333": [
+    70,
+    51,
+    0
+   ],
+   "clash_short_#ffffff": [
+    1314,
+    44,
+    0
+   ],
+   "clash_short_#333333": [
+    1313,
+    44,
+    0
+   ],
+   "clash_spots_#ffffff": [
+    70,
+    70,
+    0
+   ],
+   "clash_spots_#333333": [
+    70,
+    70,
+    0
+   ],
+   "clash_cloud_#ffffff": [
+    274,
+    58,
+    0
+   ],
+   "clash_cloud_#333333": [
+    275,
+    58,
+    0
+   ]
+  },
+  "post": {
+   "idle_fluffy_#ffffff": [
+    86,
+    87,
+    0
+   ],
+   "idle_fluffy_#333333": [
+    86,
+    87,
+    0
+   ],
+   "idle_short_#ffffff": [
+    1619,
+    122,
+    0
+   ],
+   "idle_short_#333333": [
+    1615,
+    122,
+    0
+   ],
+   "idle_spots_#ffffff": [
+    90,
+    87,
+    0
+   ],
+   "idle_spots_#333333": [
+    90,
+    87,
+    0
+   ],
+   "idle_cloud_#ffffff": [
+    310,
+    113,
+    0
+   ],
+   "idle_cloud_#333333": [
+    309,
+    113,
+    0
+   ],
+   "jump_fluffy_#ffffff": [
+    26,
+    82,
+    0
+   ],
+   "jump_fluffy_#333333": [
+    26,
+    82,
+    0
+   ],
+   "jump_short_#ffffff": [
+    810,
+    170,
+    0
+   ],
+   "jump_short_#333333": [
+    810,
+    170,
+    0
+   ],
+   "jump_spots_#ffffff": [
+    30,
+    75,
+    0
+   ],
+   "jump_spots_#333333": [
+    30,
+    75,
+    0
+   ],
+   "jump_cloud_#ffffff": [
+    124,
+    80,
+    0
+   ],
+   "jump_cloud_#333333": [
+    124,
+    80,
+    0
+   ],
+   "clash_fluffy_#ffffff": [
+    32,
+    63,
+    0
+   ],
+   "clash_fluffy_#333333": [
+    32,
+    63,
+    0
+   ],
+   "clash_short_#ffffff": [
+    898,
+    33,
+    0
+   ],
+   "clash_short_#333333": [
+    897,
+    33,
+    0
+   ],
+   "clash_spots_#ffffff": [
+    31,
+    50,
+    0
+   ],
+   "clash_spots_#333333": [
+    31,
+    50,
+    0
+   ],
+   "clash_cloud_#ffffff": [
+    187,
+    68,
+    0
+   ],
+   "clash_cloud_#333333": [
+    187,
+    68,
+    0
+   ]
+  }
+ }
+}

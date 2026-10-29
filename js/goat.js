@@ -157,7 +157,8 @@ function drawGoatArt(ctx, x, y, s, look, face, t, pose) {
   ctx.save(); ctx.translate(x, footY); ctx.scale(face < 0 ? -1 : 1, 1);
   m.draw_order.forEach(function (tpl) {
     var key = tpl.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose);
-    var col = tpl.indexOf('{wool}') >= 0 ? look.woolColor : key.indexOf('wool/knee') === 0 ? KNEE : tpl.indexOf('{horn}') >= 0 ? look.hornColor : null;
+    var col = tpl.indexOf('{wool}') >= 0 || key.indexOf('beard/') === 0 ? look.woolColor :  // v8c 胡子与羊毛同色（manifest kind=gray_mask 时生效，kind=color 时 layer() 原样返回）
+      key.indexOf('wool/knee') === 0 ? KNEE : tpl.indexOf('{horn}') >= 0 ? look.hornColor : null;
     var L = layer(key, col); if (L) ctx.drawImage(L, -ax * size, -ay * sz, size, sz);
   });
   ctx.restore();

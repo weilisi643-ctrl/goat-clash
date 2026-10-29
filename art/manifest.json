@@ -95,8 +95,9 @@
  "recolor": {
   "gray_mask": "羊毛类灰度图：RGB = 灰度/255 × 目标色（multiply），alpha 保留；羊毛用 data.woolColors，knee 默认 #a8774a",
   "gray_mask_mid": "羊角：底色中灰 128 = 目标色本身，RGB = clamp(灰度/128 × 目标色)，亮部为高光、暗部为纹理；用 data.hornColors",
-  "color": "彩色原样绘制，不换色（body 含蹄子、耳内粉色；face 含眼鼻嘴；beard 胡子固定白色）",
-  "spots_mask": "spots 已把斑点烘焙成深灰；spots_mask_* 可另上第二色"
+  "color": "彩色原样绘制，不换色（body 含蹄子、耳内粉色；face 含眼鼻嘴）",
+  "spots_mask": "spots 已把斑点烘焙成深灰；spots_mask_* 可另上第二色",
+  "beard": "v8c 起胡子为灰度 mask，与羊毛同色：RGB = 灰度/255 × woolColor（同 data.woolColors），保留明暗层次；最亮约 250"
  },
  "ids": {
   "wools": [
@@ -125,8 +126,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 32691,
-   "small_bytes": 2399
+   "bytes": 32673,
+   "small_bytes": 2428
   },
   {
    "file": "face/face_idle.png",
@@ -140,8 +141,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 20390,
-   "small_bytes": 1792
+   "bytes": 20388,
+   "small_bytes": 1796
   },
   {
    "file": "beard/beard_idle.png",
@@ -154,9 +155,9 @@
     360,
     320
    ],
-   "kind": "color",
-   "bytes": 10443,
-   "small_bytes": 1413
+   "kind": "gray_mask",
+   "bytes": 7732,
+   "small_bytes": 1317
   },
   {
    "file": "wool/knee_idle.png",
@@ -185,8 +186,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 262289,
-   "small_bytes": 19889
+   "bytes": 256356,
+   "small_bytes": 19674
   },
   {
    "file": "wool/short_idle.png",
@@ -200,8 +201,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 217276,
-   "small_bytes": 16429
+   "bytes": 216879,
+   "small_bytes": 16437
   },
   {
    "file": "wool/spots_mask_idle.png",
@@ -215,8 +216,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 200709,
-   "small_bytes": 20411
+   "bytes": 201269,
+   "small_bytes": 20236
   },
   {
    "file": "wool/spots_idle.png",
@@ -230,8 +231,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 289084,
-   "small_bytes": 20821
+   "bytes": 283432,
+   "small_bytes": 20056
   },
   {
    "file": "wool/cloud_idle.png",
@@ -245,8 +246,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 270832,
-   "small_bytes": 21583
+   "bytes": 263268,
+   "small_bytes": 20785
   },
   {
    "file": "horn/curl_idle.png",
@@ -320,8 +321,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 20217,
-   "small_bytes": 1824
+   "bytes": 20208,
+   "small_bytes": 1835
   },
   {
    "file": "face/face_jump.png",
@@ -335,8 +336,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 14596,
-   "small_bytes": 1599
+   "bytes": 14597,
+   "small_bytes": 1585
   },
   {
    "file": "beard/beard_jump.png",
@@ -349,9 +350,9 @@
     360,
     320
    ],
-   "kind": "color",
-   "bytes": 8792,
-   "small_bytes": 1342
+   "kind": "gray_mask",
+   "bytes": 6742,
+   "small_bytes": 1288
   },
   {
    "file": "wool/knee_jump.png",
@@ -380,8 +381,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 194060,
-   "small_bytes": 14109
+   "bytes": 191033,
+   "small_bytes": 14031
   },
   {
    "file": "wool/short_jump.png",
@@ -395,8 +396,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 164030,
-   "small_bytes": 11850
+   "bytes": 164803,
+   "small_bytes": 11614
   },
   {
    "file": "wool/spots_mask_jump.png",
@@ -410,8 +411,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 144464,
-   "small_bytes": 14321
+   "bytes": 145159,
+   "small_bytes": 13378
   },
   {
    "file": "wool/spots_jump.png",
@@ -425,8 +426,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 215800,
-   "small_bytes": 14701
+   "bytes": 212716,
+   "small_bytes": 14879
   },
   {
    "file": "wool/cloud_jump.png",
@@ -440,8 +441,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 200141,
-   "small_bytes": 14623
+   "bytes": 195879,
+   "small_bytes": 14542
   },
   {
    "file": "horn/curl_jump.png",
@@ -515,8 +516,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 24513,
-   "small_bytes": 1997
+   "bytes": 24491,
+   "small_bytes": 1977
   },
   {
    "file": "face/face_clash.png",
@@ -530,8 +531,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 14994,
-   "small_bytes": 1612
+   "bytes": 14991,
+   "small_bytes": 1623
   },
   {
    "file": "beard/beard_clash.png",
@@ -544,9 +545,9 @@
     360,
     320
    ],
-   "kind": "color",
-   "bytes": 9657,
-   "small_bytes": 1364
+   "kind": "gray_mask",
+   "bytes": 7459,
+   "small_bytes": 1297
   },
   {
    "file": "wool/knee_clash.png",
@@ -575,8 +576,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 192472,
-   "small_bytes": 14413
+   "bytes": 189623,
+   "small_bytes": 14291
   },
   {
    "file": "wool/short_clash.png",
@@ -590,8 +591,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 158974,
-   "small_bytes": 11342
+   "bytes": 159192,
+   "small_bytes": 11607
   },
   {
    "file": "wool/spots_mask_clash.png",
@@ -605,8 +606,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 141627,
-   "small_bytes": 14502
+   "bytes": 141777,
+   "small_bytes": 14056
   },
   {
    "file": "wool/spots_clash.png",
@@ -620,8 +621,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 207538,
-   "small_bytes": 15475
+   "bytes": 204786,
+   "small_bytes": 15283
   },
   {
    "file": "wool/cloud_clash.png",
@@ -635,8 +636,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 196592,
-   "small_bytes": 14900
+   "bytes": 193438,
+   "small_bytes": 15151
   },
   {
    "file": "horn/curl_clash.png",
@@ -774,5 +775,7 @@
   ]
  },
  "horn_bbox_note": "alpha>0 的外接框，画布 1152x1024，右侧余量 = 1151 - x1",
- "horn_rotation_method": "各姿态角 = 待机角同一张图（不镜像、不重生成、不缩放），仅绕角根整体旋转。测量：face 图层瞳孔质心→鼻嘴质心连线角，待机 42.6°、起跳 45.4°、对撞 96.8°（图像坐标，向下为正）。起跳 rotation=-2.8°，对撞 rotation=-54.6°（PIL 逆时针为正，负值=顺时针低头）。远侧角与近侧角合成后一起旋转。"
+ "horn_rotation_method": "各姿态角 = 待机角同一张图（不镜像、不重生成、不缩放），仅绕角根整体旋转。测量：face 图层瞳孔质心→鼻嘴质心连线角，待机 42.6°、起跳 45.4°、对撞 96.8°（图像坐标，向下为正）。起跳 rotation=-2.8°，对撞 rotation=-54.6°（PIL 逆时针为正，负值=顺时针低头）。远侧角与近侧角合成后一起旋转。",
+ "edge_fix": "v8b: fix_edges.py 去绿边/胡子喉部方块（并入羊毛、下巴轮廓圆角、纹理自然填充）/图层间针孔（build.py 之后运行）",
+ "beard_recolor": "gray_mask × woolColor"
 }

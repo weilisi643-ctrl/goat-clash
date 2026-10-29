@@ -164,3 +164,9 @@ screenshots/p8_01_jump、p8_02_clash、p8_03_jump_debug、p8_04_clash_debug、p8
 - UI 将整体重做：v2.1 中的按钮调亮、标题传色、emoji 居中保留为当前默认主题的一部分（不再继续打磨）。
 - 新增 js/theme.js（颜色/圆角/字体位图或系统/按钮与面板 nine|solid+描边+阴影/缓动/间距/effects 强度），js/ui.js 提供 drawButton/drawPanel/drawText/drawBg，main.js 的 btn/panel/text/bg 全部委托。js/visual_config.js 改为 theme.effects 兼容入口。字段说明 docs/theme.md。
 - 默认主题与 v2.1（dfcaa6d）逐像素一致（p12 四个场景差异 bbox=None）；theme_demo.py 演示 solid 主题。回归与 v2 一致。
+
+## 12. v2.3 美术修复接入（v8c 整图）
+- 接入 goat-game 修好的 v7 整图（beard 6、wool 24 及 v8 修复的 body/face/wool 等，共 49 个大图/_320 文件）+ art/manifest.json；art/parts、parts.json、_v8_pre/_v8b_pre/_v8c_pre、fix_compare_* 未接入（packOptions `^art/_[^/]+/` 排除下划线备份目录）。
+- manifest 核对：poses（anchor/horn_root/head_box/foot_y）、horn_bboxes、draw_order 与提交版一致；仅新增 edge_fix 说明、recolor.beard、beard_recolor，beard 三个文件 kind 由 color → gray_mask。
+- 渲染：goat.js 中 beard 层与 wool 共用 woolColor 着色和 layer() 离屏缓存（manifest kind=gray_mask 时生效）。
+- 绿边检测（tools/p13_shots.py，s=7 绿底合成，3 姿势×4 毛型×2 毛色）：内部绿色像素 13454 → 8480，闭合小孔 2774 → 2060，图层自身偏绿 0 → 0。详见 docs/p13_green_fringe.json。
