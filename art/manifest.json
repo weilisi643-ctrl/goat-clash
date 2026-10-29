@@ -126,8 +126,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 31362,
-   "small_bytes": 2376
+   "bytes": 30908,
+   "small_bytes": 2373
   },
   {
    "file": "face/face_idle.png",
@@ -141,8 +141,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 20315,
-   "small_bytes": 1791
+   "bytes": 15505,
+   "small_bytes": 1600
   },
   {
    "file": "beard/beard_idle.png",
@@ -186,8 +186,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 257146,
-   "small_bytes": 18489
+   "bytes": 257063,
+   "small_bytes": 16013
   },
   {
    "file": "wool/short_idle.png",
@@ -201,8 +201,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 217769,
-   "small_bytes": 13901
+   "bytes": 219928,
+   "small_bytes": 15075
   },
   {
    "file": "wool/spots_mask_idle.png",
@@ -216,8 +216,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 201269,
-   "small_bytes": 12838
+   "bytes": 201518,
+   "small_bytes": 13002
   },
   {
    "file": "wool/spots_idle.png",
@@ -231,8 +231,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 284068,
-   "small_bytes": 18087
+   "bytes": 283804,
+   "small_bytes": 18894
   },
   {
    "file": "wool/cloud_idle.png",
@@ -246,8 +246,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 263129,
-   "small_bytes": 16318
+   "bytes": 263397,
+   "small_bytes": 16906
   },
   {
    "file": "horn/curl_idle.png",
@@ -261,8 +261,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 62984,
-   "small_bytes": 3468
+   "bytes": 60970,
+   "small_bytes": 3023
   },
   {
    "file": "horn/straight_idle.png",
@@ -276,8 +276,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 32440,
-   "small_bytes": 2273
+   "bytes": 30272,
+   "small_bytes": 2014
   },
   {
    "file": "horn/spiral_idle.png",
@@ -291,8 +291,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 38163,
-   "small_bytes": 2493
+   "bytes": 35509,
+   "small_bytes": 2244
   },
   {
    "file": "horn/branch_idle.png",
@@ -306,8 +306,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 57083,
-   "small_bytes": 3199
+   "bytes": 50943,
+   "small_bytes": 2816
   },
   {
    "file": "body/body_jump.png",
@@ -321,8 +321,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 19578,
-   "small_bytes": 1807
+   "bytes": 19170,
+   "small_bytes": 1809
   },
   {
    "file": "face/face_jump.png",
@@ -336,8 +336,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 14564,
-   "small_bytes": 1606
+   "bytes": 12416,
+   "small_bytes": 1505
   },
   {
    "file": "beard/beard_jump.png",
@@ -381,8 +381,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 191594,
-   "small_bytes": 13014
+   "bytes": 191349,
+   "small_bytes": 13541
   },
   {
    "file": "wool/short_jump.png",
@@ -396,8 +396,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 167184,
-   "small_bytes": 10741
+   "bytes": 168221,
+   "small_bytes": 11559
   },
   {
    "file": "wool/spots_mask_jump.png",
@@ -411,8 +411,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 145159,
-   "small_bytes": 8696
+   "bytes": 145168,
+   "small_bytes": 8681
   },
   {
    "file": "wool/spots_jump.png",
@@ -426,8 +426,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 213283,
-   "small_bytes": 12731
+   "bytes": 213023,
+   "small_bytes": 13273
   },
   {
    "file": "wool/cloud_jump.png",
@@ -441,8 +441,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 196081,
-   "small_bytes": 11652
+   "bytes": 195986,
+   "small_bytes": 12606
   },
   {
    "file": "horn/curl_jump.png",
@@ -456,8 +456,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 65129,
-   "small_bytes": 3371
+   "bytes": 60710,
+   "small_bytes": 2973
   },
   {
    "file": "horn/straight_jump.png",
@@ -471,8 +471,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 32747,
-   "small_bytes": 2297
+   "bytes": 30323,
+   "small_bytes": 2038
   },
   {
    "file": "horn/spiral_jump.png",
@@ -486,8 +486,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 38339,
-   "small_bytes": 2498
+   "bytes": 35722,
+   "small_bytes": 2290
   },
   {
    "file": "horn/branch_jump.png",
@@ -501,8 +501,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 56928,
-   "small_bytes": 3259
+   "bytes": 51204,
+   "small_bytes": 2852
   },
   {
    "file": "body/body_clash.png",
@@ -531,8 +531,8 @@
     320
    ],
    "kind": "color",
-   "bytes": 14786,
-   "small_bytes": 1614
+   "bytes": 12306,
+   "small_bytes": 1455
   },
   {
    "file": "beard/beard_clash.png",
@@ -576,8 +576,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 190800,
-   "small_bytes": 13227
+   "bytes": 190379,
+   "small_bytes": 12987
   },
   {
    "file": "wool/short_clash.png",
@@ -591,8 +591,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 161857,
-   "small_bytes": 10870
+   "bytes": 163096,
+   "small_bytes": 10813
   },
   {
    "file": "wool/spots_mask_clash.png",
@@ -606,8 +606,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 141777,
-   "small_bytes": 9084
+   "bytes": 141767,
+   "small_bytes": 8764
   },
   {
    "file": "wool/spots_clash.png",
@@ -621,8 +621,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 205895,
-   "small_bytes": 13585
+   "bytes": 205401,
+   "small_bytes": 13437
   },
   {
    "file": "wool/cloud_clash.png",
@@ -636,8 +636,8 @@
     320
    ],
    "kind": "gray_mask",
-   "bytes": 194128,
-   "small_bytes": 12823
+   "bytes": 193921,
+   "small_bytes": 12629
   },
   {
    "file": "horn/curl_clash.png",
@@ -651,8 +651,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 66270,
-   "small_bytes": 3319
+   "bytes": 60409,
+   "small_bytes": 2955
   },
   {
    "file": "horn/straight_clash.png",
@@ -666,8 +666,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 32947,
-   "small_bytes": 2248
+   "bytes": 29936,
+   "small_bytes": 1972
   },
   {
    "file": "horn/spiral_clash.png",
@@ -681,8 +681,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 36121,
-   "small_bytes": 2420
+   "bytes": 32744,
+   "small_bytes": 2229
   },
   {
    "file": "horn/branch_clash.png",
@@ -696,8 +696,8 @@
     320
    ],
    "kind": "gray_mask_mid",
-   "bytes": 56453,
-   "small_bytes": 3274
+   "bytes": 51604,
+   "small_bytes": 2852
   }
  ],
  "horn_bboxes": {
@@ -776,7 +776,7 @@
  },
  "horn_bbox_note": "alpha>0 的外接框，画布 1152x1024，右侧余量 = 1151 - x1",
  "horn_rotation_method": "各姿态角 = 待机角同一张图（不镜像、不重生成、不缩放），仅绕角根整体旋转。测量：face 图层瞳孔质心→鼻嘴质心连线角，待机 42.6°、起跳 45.4°、对撞 96.8°（图像坐标，向下为正）。起跳 rotation=-2.8°，对撞 rotation=-54.6°（PIL 逆时针为正，负值=顺时针低头）。远侧角与近侧角合成后一起旋转。",
- "edge_fix": "v8b: fix_edges.py（build.py 之后、beard_gray.py 之前）：去绿边；颜色层半透明边缘去背景残色（alpha<160 取最近实色）；胡子喉部方块并入羊毛，下巴轮廓圆角+自然纹理填充；图层间针孔；羊毛垫在 body/face 抗锯齿边下面（不透底）；short/cloud/spots 在五官附近对齐 fluffy 轮廓；_320 羊毛边缘收紧。horn_edge.py（一次性）收紧角的半透明内沿。检查：_src/green_check.py",
+ "edge_fix": "v8b: fix_edges.py 去绿边/胡子喉部方块（并入羊毛、下巴轮廓圆角、纹理自然填充）/图层间针孔（build.py 之后运行）",
  "beard_recolor": "gray_mask × woolColor",
  "horn_edge_fix": "v8b: 角的半透明内沿收紧（alpha≥90 且不在最外 1px → 255），去除游戏里透出背景的绿边"
 }

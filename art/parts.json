@@ -162,7 +162,7 @@
     ]
    },
    "underlap_px_full_fluffy": {
-    "head<body": 9191,
+    "head<body": 10187,
     "leg_back_near<body": 3239,
     "leg_front_near<body": 5870,
     "leg_back_far<body": 8563,
@@ -230,8 +230,7 @@
      "parts/idle/body/cloud_idle.png",
      "parts/idle/body/spots_mask_idle.png",
      "parts/idle/body/body_idle.png",
-     "parts/idle/body/beard_idle.png",
-     "parts/idle/body/face_idle.png"
+     "parts/idle/body/beard_idle.png"
     ],
     "horn": [
      "parts/idle/horn/curl_idle.png",
@@ -365,7 +364,7 @@
     ]
    },
    "underlap_px_full_fluffy": {
-    "head<body": 7772,
+    "head<body": 8201,
     "leg_back_near<body": 4851,
     "leg_front_near<body": 6122,
     "leg_back_far<body": 2587,
@@ -432,8 +431,7 @@
      "parts/jump/body/spots_jump.png",
      "parts/jump/body/cloud_jump.png",
      "parts/jump/body/spots_mask_jump.png",
-     "parts/jump/body/knee_jump.png",
-     "parts/jump/body/face_jump.png"
+     "parts/jump/body/knee_jump.png"
     ],
     "horn": [
      "parts/jump/horn/curl_jump.png",
@@ -567,7 +565,7 @@
     ]
    },
    "underlap_px_full_fluffy": {
-    "head<body": 8065,
+    "head<body": 9144,
     "leg_back_near<body": 3429,
     "leg_front_near<body": 5647,
     "leg_back_far<body": 5008,
@@ -635,8 +633,7 @@
      "parts/clash/body/cloud_clash.png",
      "parts/clash/body/spots_mask_clash.png",
      "parts/clash/body/body_clash.png",
-     "parts/clash/body/beard_clash.png",
-     "parts/clash/body/face_clash.png"
+     "parts/clash/body/beard_clash.png"
     ],
     "horn": [
      "parts/clash/horn/curl_clash.png",

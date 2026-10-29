@@ -176,3 +176,9 @@ screenshots/p8_01_jump、p8_02_clash、p8_03_jump_debug、p8_04_clash_debug、p8
 - 渲染：drawGoatArt(…, pose, rot)；rot 为 0/缺省走整图路径（观感不变）；非 0 时按 part_draw_order 逐部件绘制，head/horn 绕 head pivot、tail 绕 tail pivot 旋转；补片画在最下层、不随转，a=-canvasDeg，|a|<1 不画，同号最近帧（≤7.5→5，≤12.5→10，否则 15），alpha=clamp((|a|-1)/4,0,1)，缺帧跳过。旋转只是展示，不读写物理；当前游戏内默认不旋转（ART.rot 调试覆盖）。
 - 已知问题：art/parts/*/{head,tail}_patch/*_320.png（139 个）为无透明的调色板 PNG（底色 #474C4C），渲染层检测到左上角不透明即跳过该帧并记录 ART.errors；全尺寸帧正常（p16_*_fullpatch 为开发对照）。需美术重新导出 _320。
 - 绿边（p13 同口径）：8480 → 808；针孔 2060 → 1176。
+
+## 17. v3.3 美术：_320 补丁 RGBA 重导出 + 深色羊毛下巴/喉咙随毛色（p13/p16）
+- 来源 /workspace/goat-game/art（备份 _v8d_pre 未同步/未提交）；manifest poses/horn_bboxes/draw_order/canvas/ids 不变；parts.json anchor/pivots/horn_root/joint_patch pivot 与文件列表不变；仅 files（去掉 parts/*/body/face_*.png 全尺寸条目）与 underlap 统计变化。
+- 139 个补丁 _320 均有 alpha，p16 渲染 ART.errors 为空。头/尾角度保持 0，无动画。
+- 绿边（同口径）：808→455；小孔 1176→734；坐标见 docs/p13_green_coords.json（wool→part→pose）。
+- 渲染层仅增加调试开关 ART.onlyPart（像素归属统计用，默认 null）。

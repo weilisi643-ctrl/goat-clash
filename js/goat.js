@@ -200,9 +200,10 @@ function drawParts(ctx, look, pose, rot, cw, chh, size, sz, ax, ay) {
   var need = layers.map(function (l) { return l.key; }); if (hp) need.push(hp.key); if (tp) need.push(tp.key);
   if (!ensurePartImgs(need)) return false;
   var X = function (px) { return (px / cw - ax) * size; }, Y = function (py) { return (py / chh - ay) * sz; };
-  [hp, tp].forEach(function (p) { if (!p) return; var L = layer(p.key, look.woolColor); if (!L) return; // 补片：最下层、不跟头/尾转
+  [hp, tp].forEach(function (p) { if (!p || ART.onlyPart) return; var L = layer(p.key, look.woolColor); if (!L) return; // 补片：最下层、不跟头/尾转
     ctx.save(); ctx.globalAlpha *= p.alpha; ctx.drawImage(L, -ax * size, -ay * sz, size, sz); ctx.restore(); });
   layers.forEach(function (l) {
+    if (ART.onlyPart && l.part !== ART.onlyPart) return; // 调试：只画某部件（像素归属统计用）
     var L = layer(l.key, colorFor(l.tpl, l.whole, look)); if (!L) return;
     var rp = l.part === 'head' || l.part === 'horn' ? 'head' : l.part === 'tail' ? 'tail' : null, d = rp ? (rot[rp] || 0) : 0;
     if (d) { var pv = piv[rp === 'head' ? 'head' : 'tail']; ctx.save(); ctx.translate(X(pv[0]), Y(pv[1])); ctx.rotate(d * Math.PI / 180); ctx.translate(-X(pv[0]), -Y(pv[1])); }
