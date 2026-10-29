@@ -4,7 +4,7 @@ from PIL import Image,ImageDraw
 import subprocess,time,os,json,sys,io,base64
 R=os.environ.get('ROOT') or os.path.abspath(os.path.join(os.path.dirname(__file__),'..'));d=os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))+'/screenshots/'
 TAG=os.environ.get('TAG','after');PORT=int(os.environ.get('PORT','8883'))
-INIT="""window.__q=[];window.__t=0;window.requestAnimationFrame=function(f){window.__q.push(f)};
+INIT="""try{localStorage.setItem("tutorialDone","true")}catch(e){};window.__q=[];window.__t=0;window.requestAnimationFrame=function(f){window.__q.push(f)};
 window.__run=function(ms){var end=__t+ms;while(__t<end-1e-9){__t=Math.min(end,__t+1000/60);var q=__q;__q=[];q.forEach(function(f){f(__t)});}};"""
 SEED="Math.random=(function(){var s=42;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296}})();"
 out={}

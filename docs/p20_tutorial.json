@@ -1,0 +1,143 @@
+{
+ "checks": [
+  [
+   "首次启动自动进入教学",
+   true,
+   ""
+  ],
+  [
+   "step1",
+   true,
+   ""
+  ],
+  [
+   "点击继续→step2",
+   true,
+   ""
+  ],
+  [
+   "选角度→step3",
+   true,
+   ""
+  ],
+  [
+   "完美区描边读现有常量",
+   true,
+   ""
+  ],
+  [
+   "起跳→step4",
+   true,
+   ""
+  ],
+  [
+   "自动 2 秒→step5",
+   true,
+   ""
+  ],
+  [
+   "结算页 tutResult",
+   true,
+   ""
+  ],
+  [
+   "tutorialDone 写入",
+   true,
+   ""
+  ],
+  [
+   "奖励羊毛色 樱花粉",
+   true,
+   ""
+  ],
+  [
+   "埋点 start/step1-6/end",
+   true,
+   "[\"tutorial_start\", 1, 2, 3, 4, 5, 6, \"tutorial_end\"]"
+  ],
+  [
+   "end 含 win/perfectCount",
+   true,
+   "{\"e\": \"tutorial_end\", \"t\": 1793271150494, \"win\": true, \"perfectCount\": 9}"
+  ],
+  [
+   "共享配置教学前后一致",
+   true,
+   "67f6d22e27cc64bd / 67f6d22e27cc64bd"
+  ],
+  [
+   "设置页",
+   true,
+   ""
+  ],
+  [
+   "重玩教学",
+   true,
+   ""
+  ],
+  [
+   "跳过→回主页且记录 skip{step}",
+   true,
+   "{\"e\": \"tutorial_skip\", \"t\": 1793271150641, \"step\": 1}"
+  ],
+  [
+   "中途退出不写 tutorialDone",
+   true,
+   ""
+  ],
+  [
+   "已完成不再自动进入",
+   true,
+   ""
+  ],
+  [
+   "无 JS 错误",
+   true,
+   "[]"
+  ]
+ ],
+ "cfg_before": "67f6d22e27cc64bd",
+ "events": [
+  {
+   "e": "tutorial_start",
+   "t": 1793271145448
+  },
+  {
+   "e": "tutorial_step",
+   "t": 1793271145448,
+   "n": 1
+  },
+  {
+   "e": "tutorial_step",
+   "t": 1793271148619,
+   "n": 2
+  },
+  {
+   "e": "tutorial_step",
+   "t": 1793271148668,
+   "n": 3
+  },
+  {
+   "e": "tutorial_step",
+   "t": 1793271148748,
+   "n": 4
+  },
+  {
+   "e": "tutorial_step",
+   "t": 1793271148997,
+   "n": 5
+  },
+  {
+   "e": "tutorial_step",
+   "t": 1793271150494,
+   "n": 6
+  },
+  {
+   "e": "tutorial_end",
+   "t": 1793271150494,
+   "win": true,
+   "perfectCount": 9
+  }
+ ],
+ "cfg_after": "67f6d22e27cc64bd"
+}

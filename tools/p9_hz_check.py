@@ -2,7 +2,7 @@
 from playwright.sync_api import sync_playwright
 import subprocess,time,json,random
 srv=subprocess.Popen(['python3','-m','http.server','8767'],cwd='/workspace/goat-game',stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);time.sleep(1)
-INIT="""window.__q=[];window.__t=0;var __js=7;function __jr(){__js=(__js*48271)%2147483647;return __js/2147483647}window.requestAnimationFrame=function(f){window.__q.push(f)};
+INIT="""try{localStorage.setItem("tutorialDone","true")}catch(e){};window.__q=[];window.__t=0;var __js=7;function __jr(){__js=(__js*48271)%2147483647;return __js/2147483647}window.requestAnimationFrame=function(f){window.__q.push(f)};
 window.__run=function(ms,hz,jit){var end=__t+ms;while(__t<end-1e-9){var dt=1000/hz;if(jit)dt*=(0.5+__jr());__t=Math.min(end,__t+dt);var q=__q;__q=[];q.forEach(function(f){f(__t)});}};"""
 res={}
 with sync_playwright() as p:

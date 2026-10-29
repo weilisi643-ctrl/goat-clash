@@ -52,6 +52,7 @@ module.exports = {
     hay: '#FCD800', hayAlpha: 0.85, hayStroke: '#B08A1E', target: '#FCD800',
     aim: '#FF4D4D', aimW: 3, aimDash: [8, 6], aimLen: 84, hint: '#2E6FD8', hintLen: 104, goatR: 18, hornW: 4
   },
+  tutorial: { dimAlpha: 0.55, holePad: 8, holeR: 14, tipY: 182, tipSize: 14, zoneColor: '#FCD800', zoneW: 3, zonePad: 4, skipW: 52, skipH: 30 }, // 新手教学：遮罩/提示/完美区描边（仅显示）
   shadow: { contactColor: '#2F3727', contactAlpha: 0.26, asset: null }, // 接触阴影：首页展示台与战斗共用；美术 contact_shadow 未接入前用 Canvas 径向渐变占位
   stage: { pedestal: '#F4FBE6', pedestalEdge: '#B9D98C', pedestalRx: 66, pedestalRy: 10, contactAlpha: 0.28 }, // 首页展示台（美术到位前 Canvas 占位）
   layout: { // 各屏布局令牌（相对 375×667；bottom 为距屏底）

@@ -131,4 +131,13 @@ function drawPedestal(ctx, x, y, s) { var S = TH.stage, k = s / 1.6, rx = S.pede
   ctx.fillStyle = S.pedestal; ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, 7); ctx.fill(); ctx.strokeStyle = ink(); ctx.lineWidth = 2; ctx.stroke();
   ctx.restore(); require('./goat.js').drawShadow(ctx, x, y - 1 * k, s * 0.9, 0); } // 接触阴影统一走 theme.shadow（与战斗同款）
 function dim(ctx, W, H) { ctx.fillStyle = TH.colors.dim; ctx.fillRect(0, 0, W, H); }
-module.exports = { drawPedestal: drawPedestal, drawPill: drawPill, drawBar: drawBar, drawMeter: drawMeter, sticker: sticker, dim: dim, measure: measure, sysFont: sysFont, drawTufts: drawTufts, TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };
+// 新手教学：遮罩挖洞高亮（evenodd，洞用内联圆角路径，不调 rr 以免 beginPath 清掉外框）
+function spotlight(ctx, W, H, holes) { var T = TH.tutorial; ctx.save(); ctx.fillStyle = 'rgba(0,0,0,' + T.dimAlpha + ')'; ctx.beginPath(); ctx.rect(0, 0, W, H);
+  (holes || []).forEach(function (h) { var p = T.holePad, x = h[0] - p, y = h[1] - p, w = h[2] + 2 * p, hh = h[3] + 2 * p, r = Math.min(T.holeR, w / 2, hh / 2);
+    ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + r, r); ctx.lineTo(x + w, y + hh - r); ctx.arcTo(x + w, y + hh, x + w - r, y + hh, r);
+    ctx.lineTo(x + r, y + hh); ctx.arcTo(x, y + hh, x, y + hh - r, r); ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath(); });
+  ctx.fill('evenodd'); ctx.restore(); }
+function drawTip(ctx, s, x, y) { return drawPill(ctx, s, x, y, true, TH.tutorial.tipSize); }
+function zoneOutline(ctx, x, y, w, z0, z1) { var T = TH.tutorial, h = TH.bar.meterH, p = T.zonePad; ctx.save(); ctx.strokeStyle = T.zoneColor; ctx.lineWidth = T.zoneW; ctx.setLineDash && ctx.setLineDash([6, 4]);
+  rr(ctx, x + w * z0 - p, y - p, w * (z1 - z0) + 2 * p, h + 2 * p, 6); ctx.stroke(); ctx.restore(); } // 只画：区间由调用方传入现有判定常量
+module.exports = { spotlight: spotlight, drawTip: drawTip, zoneOutline: zoneOutline, drawPedestal: drawPedestal, drawPill: drawPill, drawBar: drawBar, drawMeter: drawMeter, sticker: sticker, dim: dim, measure: measure, sysFont: sysFont, drawTufts: drawTufts, TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };

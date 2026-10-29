@@ -26,19 +26,19 @@ function text(s, x, y, size, style, align) { UI.drawText(ctx, s, x, y, size, sty
 function bg() { UI.drawBg(ctx, W, H);
   var fid = arenaFaction(); if (fid) UI.factionTint(ctx, W, H, fid); }
 function arenaFaction() { // 擂主相关画面按玩家牧场加色调（只显示牧场名，不显示省份）
-  var sc = st.scene, inArena = sc === 'arena' || sc === 'faction' || sc === 'arenaResult' || (sc === 'battle' && B && B.arena);
+  var sc = st.scene, inArena = sc === 'arena' || sc === 'faction' || sc === 'arenaResult' || (sc === 'battle' && B && B.arena && !B.arena.tutorial);
   return inArena && AR && AR.p ? AR.p.faction : null; }
 
 // ---------- 定制界面 ----------
 function cycle(k, arr, n) { st.idx[k] = (st.idx[k] + n + arr.length) % arr.length; }
-function syncLook() { var i = st.idx; st.look = { wool: D.wools[i.wool].id, woolColor: D.woolColors[i.wc], horn: D.horns[i.horn].id, hornColor: D.hornColors[i.hc] }; }
+function syncLook() { var i = st.idx; st.look = { wool: D.wools[i.wool].id, woolColor: woolColorList()[i.wc], horn: D.horns[i.horn].id, hornColor: D.hornColors[i.hc] }; }
 function drawCustom() {
   var L = LY.home; bg(); text('咩咩顶角王', W / 2, L.titleY, L.titleSize, 'title'); pill('打造你的山羊', W / 2, L.pillY);
   UI.drawPedestal(ctx, W / 2, L.goatY, L.goatS); G.drawGoatArt(ctx, W / 2, L.goatY, L.goatS, st.look, 1, 0); // 展示台：底座+接触阴影（占位）
   var s = stats(st.look), h = D.horns[st.idx.horn];
   text('体力 ' + s.hp + ' · 速度 ' + (s.spd >= 0 ? '+' : '') + s.spd + ' · 力量 +' + s.pow, W / 2, L.statsY, 14);
   ctx.save(); ctx.globalAlpha = 0.7; text(h.name + '：' + h.tip, W / 2, L.tipY, 11, 'muted'); ctx.restore(); // 角形说明降级
-  var rows = [['羊毛', 'wool', D.wools, D.wools[st.idx.wool].name], ['毛色', 'wc', D.woolColors, ''], ['角形', 'horn', D.horns, h.name], ['角色', 'hc', D.hornColors, '']];
+  var rows = [['羊毛', 'wool', D.wools, D.wools[st.idx.wool].name], ['毛色', 'wc', woolColorList(), ''], ['角形', 'horn', D.horns, h.name], ['角色', 'hc', D.hornColors, '']];
   rows.forEach(function (r, i) {
     var y = L.rowY + i * L.rowGap, aw = L.arrowW, x0 = L.rowX, x1 = W - L.rowX - aw, px = x0 + aw + 9, pw = x1 - 9 - px;
     btn(x0, y, aw, L.rowH, '◀', function () { cycle(r[1], r[2], -1); syncLook(); }, 'yellow', 16);
@@ -53,10 +53,11 @@ function drawCustom() {
   btn(L.sideX, H - L.sideBottom, L.sideW, L.sideH, '每日\n擂主', openArena, 'blue', 13);
   btn(W - L.sideX - L.sideW, H - L.sideBottom, L.sideW, L.sideH, '顶\n顶乐', openDdl, 'orange', 13);
   text('适度游戏益脑，沉迷游戏伤身', W / 2, H - 14, 10, 'muted');
+  btn(W - 64, 12, 52, 30, '设置', function () { st.scene = 'settings'; }, 'white', 13);
 }
 // ---------- 对战 ----------
 var B;
-function startMatch(arena) { // arena: {stage, cfg} 为擂主战；不传则为原有自由对战
+function startMatch(arena) { if (T.active && !(arena && arena.tutorial)) tutQuit(); // arena: {stage, cfg} 为擂主战；不传则为原有自由对战
   var ai = arena ? arena.cfg.look : { wool: pick(D.wools).id, woolColor: pick(D.woolColors), horn: pick(D.horns).id, hornColor: pick(D.hornColors) };
   B = { ai: ai, wins: [0, 0], round: 1, msg: '', arena: arena || null, hits: 0, guesses: 0, timingSum: 0, jumps: 0, timings: [] };
   if (arena) { B.stageCfg = arena.cfg.stages[arena.stage - 1]; B.ai = ai; }
@@ -105,6 +106,7 @@ function nextExchange() { // 每次对撞前：蓄力题（擂台可由 quizEnab
 }
 function jump() { // 玩家点击起跳；对手同步起跳
   if (B.phase !== 'charge') return;
+  if (T.active && T.step <= 3) tutStep(4);
   B.timing = 1 - Math.abs(B.meter - 0.8) / 0.8; if (B.timing < 0) B.timing = 0; // 0.8 为完美点
   B.timingSum += B.timing; B.jumps++; B.timings.push(B.timing);
   // physics v2：对手时机在起跳时决定（擂主=timingHit 命中则 1，否则 0–0.7；自由对战 0–1 随机），决定双方抛物线高度
@@ -142,6 +144,7 @@ function clash() {
   else B.roundEnd = -1;
 }
 function next() {
+  if (B.arena && B.arena.tutorial) { if (T.step === 4) tutStep(5); if (B.roundEnd >= 0 && (B.wins[0] === 2 || B.wins[1] === 2)) return tutEnd(); }
   if (B.roundEnd >= 0) {
     if (B.wins[0] === 2 || B.wins[1] === 2) { if (B.arena) return arenaStageEnd(); st.scene = 'over'; return; }
     B.round++; startRound();
@@ -160,14 +163,15 @@ function updateBattle() { // 固定步 1/60s：只改物理/逻辑状态，绘�
   if (B.phase === 'result') { var a0 = B.p.air, a1 = B.e.air; BP.stepRecover(B.p, LW * 0.25, LW); BP.stepRecover(B.e, LW * 0.75, LW);
     if (a0 && !B.p.air) FX.ev('land', { id: 'p', x: B.p.x, y: GY() + 45 }); if (a1 && !B.e.air) FX.ev('land', { id: 'e', x: B.e.x, y: GY() + 45 }); }
   B.t++;
+  if (T.active && T.step === 4 && B.phase === 'result' && B.t >= 120) tutStep(5); // 教学第 4 步自动 2 秒
   if (B.phase === 'charge') { B.meter += 0.018 * B.dir; if (B.meter > 1 || B.meter < 0) B.dir *= -1; }
 }
 function drawBattle() {
   var L = LY.battle; bg(); var gy = H * 0.72 - 40;
   pill('第 ' + B.round + ' 回合 · 三局两胜', W / 2, L.pillY, false, 13);
   text(B.wins[0] + ' : ' + B.wins[1], W / 2, L.scoreY, L.scoreSize, 'score');
-  hpBar(20, L.hpY, B.p.hp, stats(st.look).hp, '你', false); hpBar(W - 20 - hpW(), L.hpY, B.e.hp, eMaxHp(), B.arena ? '擂主·' + B.arena.cfg.name : '电脑', true);
-  if (B.arena) text('每日擂主 第 ' + B.arena.stage + ' 场' + (A.REASONING_ENABLED ? ' · 线索 Lv' + B.stageCfg.clueLv : ''), W / 2, L.arenaY, 12, 'muted');
+  hpBar(20, L.hpY, B.p.hp, stats(st.look).hp, '你', false); hpBar(W - 20 - hpW(), L.hpY, B.e.hp, eMaxHp(), B.arena ? (B.arena.tutorial ? B.arena.cfg.name : '擂主·' + B.arena.cfg.name) : '电脑', true);
+  if (B.arena && !B.arena.tutorial) text('每日擂主 第 ' + B.arena.stage + ' 场' + (A.REASONING_ENABLED ? ' · 线索 Lv' + B.stageCfg.clueLv : ''), W / 2, L.arenaY, 12, 'muted');
   var V = (FX.enabled && FX.view(B)) || { p: B.p, e: B.e, t: B.t, phase: B.phase }; // 顿帧定格+插值追帧：只影响显示，物理照常推进
   var sk = FX.enabled ? FX.shakeOff() : [0, 0], X = sceneXf(sk); ctx.save(); ctx.translate(X.tx, X.ty); ctx.scale(X.k, X.k); // 物理坐标 → 屏幕：唯一变换（羊/影子/特效/粒子/💥 全走这里）
   G.drawShadow(ctx, V.p.x, gy, 1.1, -V.p.y); G.drawShadow(ctx, V.e.x, gy, 1.1, -V.e.y);
@@ -195,12 +199,13 @@ function drawBattle() {
       : (B.arena && B.stageCfg.angleReveal === 'hidden') ? '对手角度隐藏 · 选你的角度' : '对手架势：' + ANGN[B.e.ang] + '角度 · 选你的角度';
     pill(hint, W / 2, hintY, true, 13);
     ANG.forEach(function (a, i) { var sel = B.p.ang === a;
-      btn(W / 2 - 3 * L.angleW / 2 - 15 + i * (L.angleW + 15), aY, L.angleW, L.angleH, ANGN[a], function () { B.p.ang = a; }, sel ? 'sel' : 'white', 22); });
-    UI.drawMeter(ctx, 52, H - L.meterBottom, W - 104, B.meter, 0.72, 0.88);
+      btn(W / 2 - 3 * L.angleW / 2 - 15 + i * (L.angleW + 15), aY, L.angleW, L.angleH, ANGN[a], function () { B.p.ang = a; if (T.active && T.step === 2) tutStep(3); }, sel ? 'sel' : 'white', 22); });
+    UI.drawMeter(ctx, 52, H - L.meterBottom, W - 104, B.meter, PERFECT_ZONE[0], PERFECT_ZONE[1]);
     btn(W / 2 - L.jumpW / 2, H - L.jumpBottom, L.jumpW, L.jumpH, '起跳顶角！', jump, 'main', 24);
   }
   if (B.phase === 'result' && B.arena && B.reveal) pill(B.reveal, W / 2, hintY, true, 13);
   if (B.phase === 'result' && B.t > 30) btn(W / 2 - L.jumpW / 2, H - L.jumpBottom, L.jumpW, L.jumpH, B.roundEnd >= 0 ? '下一回合' : '继续', next, 'main', 24);
+  if (B.arena && B.arena.tutorial) drawTutorial();
 }
 // 对战场景变换（只渲染）：屏幕 = 物理 × k + (tx, ty)。k = min(1, W/LW) × sceneZoom，以地面线 fy0 为缩放基线、场地水平居中
 function sceneXf(sk) { var L = LY.battle, gy = H * 0.72 - 40, fy0 = gy + 45, k = Math.min(1, W / LW) * (L.sceneZoom || 1); sk = sk || [0, 0];
@@ -436,6 +441,52 @@ function drawDdlResult() {
   btn(W / 2 - 115, by + 66, 105, 40, '选关', function () { st.scene = 'ddlSelect'; }, 'yellow', 16);
   btn(W / 2 + 10, by + 66, 105, 40, '返回首页', function () { st.scene = 'custom'; }, 'blue', 16);
 }
+// ---------- 新手教学战（design/08）：只用现有对战流程，独立 stageCfg，不改共享配置/判定常量 ----------
+var PERFECT_ZONE = [0.72, 0.88]; // 力量条完美区（原 drawMeter 常量，教学描边只读）
+var TUT_TIPS = { 1: '两只羊同时跳起，用羊角顶对方！', 2: '对手的角度写在上面，选一个不被它克制的角度', 3: '指针走到金色区时点「起跳顶角」', 4: '完美起跳就是这一下，越准越有力！' };
+var TUT_MISS = '差一点，再试试看准金色区', TUT_WIN = '赢了！去挑选你的羊毛和羊角吧', TUT_LOSE = '没关系，看准金色区再来一次';
+var TUT_REWARD = '#F4B6C2', TUT_REWARD_NAME = '樱花粉';
+function isNode() { return typeof process !== 'undefined' && !!(process.versions && process.versions.node); }
+function sget(k) { try { if (typeof wx !== 'undefined' && wx.getStorageSync) return wx.getStorageSync(k); if (typeof localStorage !== 'undefined') return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) {} return null; }
+function sset(k, v) { try { if (typeof wx !== 'undefined' && wx.setStorageSync) return wx.setStorageSync(k, v); if (typeof localStorage !== 'undefined') localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+var T = { active: false, step: 0, unlocked: sget('woolUnlocked') || [], reward: false };
+function woolColorList() { return D.woolColors.concat(T.unlocked.filter(function (c) { return D.woolColors.indexOf(c) < 0; })); }
+function track(e, d) { var L = sget('tutorialEvents') || []; var o = { e: e, t: Date.now() }; for (var k in (d || {})) o[k] = d[k]; L.push(o); sset('tutorialEvents', L.slice(-200)); }
+function tutorialCfg() { // 每次新建：不引用、不修改共享的擂主/自由对战配置
+  return { tutorial: true, stage: 1, cfg: { id: 'tutorial', name: '小白羊', look: { wool: 'fluffy', woolColor: '#FFFFFF', horn: 'curl', hornColor: D.hornColors[0] },
+    stancePref: A.CLUES.stances.map(function (x) { return x.id; }),
+    stages: [{ angleReveal: 'public', ai: { timingHit: 0, powBonus: 0, hpBonus: 0, readAcc: 0, counterPick: 0 }, clueLv: 1, playerHorn: 'curl', bestOf: 3 }] } };
+}
+function startTutorial() { T.active = true; T.step = 0; T.reward = false; track('tutorial_start'); startMatch(tutorialCfg()); tutStep(1); }
+function tutStep(n) { if (!T.active || n <= T.step) return; T.step = n; track('tutorial_step', { n: n }); }
+function tutDone(reward) { sset('tutorialDone', true); T.active = false;
+  if (reward && T.unlocked.indexOf(TUT_REWARD) < 0) { T.unlocked.push(TUT_REWARD); sset('woolUnlocked', T.unlocked); T.reward = true; } }
+function tutSkip() { track('tutorial_skip', { step: T.step }); tutDone(false); st.scene = 'custom'; }
+function tutQuit() { T.active = false; } // 中途离开不算完成，下次启动再进
+function tutEnd() { var win = B.wins[0] === 2, pc = B.timings.filter(function (t) { return t >= 0.9; }).length; tutStep(6);
+  track('tutorial_end', { win: win, perfectCount: pc }); tutDone(true); T.last = { win: win, perfect: pc }; st.scene = 'tutResult'; }
+function drawTutorial() { var L = LY.battle, TT = TH.tutorial, s = T.step, holes = [], tip = TUT_TIPS[s];
+  if (s === 1) { var X = sceneXf(), gy = X.gy; [B.p.x, B.e.x].forEach(function (x) { var a = toScreen(x - 48, gy - 48), b = toScreen(x + 48, gy + 48); holes.push([a[0], a[1], b[0] - a[0], b[1] - a[1]]); }); }
+  else if (s === 2) { holes.push([W / 2 - 150, H - L.hintBottom - 15, 300, 30]); holes.push([W / 2 - 3 * L.angleW / 2 - 15, H - L.angleBottom, 3 * L.angleW + 30, L.angleH]); }
+  else if (s === 3) { holes.push([52, H - L.meterBottom, W - 104, TH.bar.meterH]); holes.push([W / 2 - L.jumpW / 2, H - L.jumpBottom, L.jumpW, L.jumpH]); }
+  else if (s === 4) { holes.push([W / 2 - 140, L.msgY - 15, 280, 30]); if (!(B.timing >= 0.9)) tip = TUT_MISS; }
+  if (s >= 1 && s <= 4) { UI.spotlight(ctx, W, H, holes); UI.drawTip(ctx, tip, W / 2, TT.tipY); }
+  if (s === 3 && B.phase === 'charge') UI.zoneOutline(ctx, 52, H - L.meterBottom, W - 104, PERFECT_ZONE[0], PERFECT_ZONE[1]);
+  if (s === 1) st.buttons.push({ x: 0, y: 0, w: W, h: H, cb: function () { tutStep(2); }, label: '教学:继续' });
+  btn(W - 64, 12, TT.skipW, TT.skipH, '跳过', tutSkip, 'white', 13); // 右上角常驻
+}
+function drawTutResult() { var R = LY.result, L = T.last; resultCard(L.win, L.win ? '胜 利 !' : '再接再厉');
+  G.drawShadow(ctx, W / 2, R.goatY, R.goatS, 0); G.drawGoatArt(ctx, W / 2, R.goatY, R.goatS, st.look, 1, 0);
+  text(L.win ? TUT_WIN : TUT_LOSE, W / 2, R.lineY, 15);
+  text('完美起跳 ' + L.perfect + ' 次' + (T.reward ? ' · 获得羊毛色「' + TUT_REWARD_NAME + '」' : ''), W / 2, R.subY, 13, 'accent');
+  if (L.win) btn(W / 2 - R.btnW / 2, R.btnY, R.btnW, R.btnH, '去换装', function () { st.scene = 'custom'; }, 'main', 23);
+  else btn(W / 2 - R.btnW / 2, R.btnY, R.btnW, R.btnH, '再来一局', function () { startMatch(); }, 'main', 23);
+  btn(W / 2 - R.btn2W / 2, R.btn2Y, R.btn2W, R.btn2H, '回主页', function () { st.scene = 'custom'; }, 'blue', 17);
+}
+function drawSettings() { bg(); text('设置', W / 2, 60, 34, 'title');
+  btn(W / 2 - 100, 140, 200, 52, '重玩教学', startTutorial, 'main', 20);
+  btn(W / 2 - 60, H - 90, 120, 44, '返回', function () { st.scene = 'custom'; }, 'gray', 16);
+}
 // 固定时间步：按真实经过时间累加，每步 STEP=1/60s 跑一次 update；单帧最多补 MAX_STEPS 步（防螺旋死亡），渲染每帧一次。
 // 无时间戳调用（回归脚本 raf()）= 恰好 1 步，与 v2 基准逐帧一致。
 var STEP = 1000 / 60, MAX_STEPS = 5, clock = { last: null, acc: 0, steps: 0, frames: 0, dropped: 0 };
@@ -462,6 +513,7 @@ function render() { st.buttons = [];
   else if (st.scene === 'arena') drawArena(); else if (st.scene === 'faction') drawFaction();
   else if (st.scene === 'arenaResult') drawArenaResult();
   else if (st.scene === 'ddlSelect') drawDdlSelect(); else if (st.scene === 'ddl') drawDdl(); else if (st.scene === 'ddlResult') drawDdlResult();
+  else if (st.scene === 'tutResult') drawTutResult(); else if (st.scene === 'settings') drawSettings();
   else drawOver();
 }
 wx.onTouchStart(function (e) { var t = e.touches[0], x = t.clientX, y = t.clientY;
@@ -478,9 +530,10 @@ if (typeof document !== 'undefined') {
   });
   document.addEventListener('mouseup', function () { if (DG) DG.drag = null; });
 }
-module.exports = { LW: LW, QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
+module.exports = { T: T, startTutorial: startTutorial, tutorialCfg: tutorialCfg, woolColorList: woolColorList, PERFECT_ZONE: PERFECT_ZONE, LW: LW, QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
   sceneXf: sceneXf, toScreen: toScreen, toWorld: toWorld, startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
   openArena: openArena, startArenaStage: startArenaStage, chooseFaction: chooseFaction, setNow: function (ms) { nowOverride = ms; },
   FX: FX, UI: UI, clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,
   openDdl: openDdl, enterDdl: enterDdl, fireDdl: function () { if (DG) DDL.fire(DG); } };
+if (!isNode() && !sget('tutorialDone') && !(typeof window !== 'undefined' && window.__NO_TUTORIAL)) startTutorial(); // 首次启动自动进入教学
 loop();
