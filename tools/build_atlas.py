@@ -15,6 +15,6 @@ cols=6;cw=max(i.width for i in ims);ch=max(i.height for i in ims);rows=(len(ims)
 sheet=Image.new('RGBA',(cols*cw,rows*ch),(0,0,0,0));frames={}
 for n,(k,im) in enumerate(zip(keys,ims)):
   x,y=(n%cols)*cw,(n//cols)*ch;sheet.paste(im,(x,y));frames[k]=[x,y,im.width,im.height]
-sheet.save(A+'atlas/goat_core.png',optimize=True)
+sheet.save(A+'atlas/goat_core_320.png',optimize=True)
 json.dump({'image':'art/atlas/goat_core_320.png','frames':frames},open(A+'atlas/goat_core.json','w'),ensure_ascii=False)
-print(len(keys),'frames',sheet.size,os.path.getsize(A+'atlas/goat_core.png'),'bytes; singles',sum(os.path.getsize(A+k+'_320.png') for k in keys))
+print(len(keys),'frames',sheet.size,os.path.getsize(A+'atlas/goat_core_320.png'),'bytes; singles',sum(os.path.getsize(A+k+'_320.png') for k in keys))
