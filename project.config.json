@@ -51,6 +51,14 @@
    {
     "type": "file",
     "value": "index.html"
+   },
+   {
+    "type": "folder",
+    "value": "_backup_physics_v1"
+   },
+   {
+    "type": "folder",
+    "value": "docs"
    }
   ]
  }

@@ -1,4 +1,4 @@
-var D = require('./data.js'), G = require('./goat.js'), A = require('./arena.js'), DDL = require('./ddl.js');
+var D = require('./data.js'), BP = require('./battle_physics.js'), G = require('./goat.js'), A = require('./arena.js'), DDL = require('./ddl.js');
 var canvas = wx.createCanvas(), ctx = canvas.getContext('2d');
 var info = wx.getSystemInfoSync(), W = info.windowWidth, H = info.windowHeight;
 canvas.width = W; canvas.height = H;
@@ -98,13 +98,15 @@ function jump() { // 玩家点击起跳；对手同步起跳
   if (B.phase !== 'charge') return;
   B.timing = 1 - Math.abs(B.meter - 0.8) / 0.8; if (B.timing < 0) B.timing = 0; // 0.8 为完美点
   B.timingSum += B.timing; B.jumps++; B.timings.push(B.timing);
-  B.p.vy = -9; B.e.vy = -9; B.phase = 'air'; B.t = 0;
+  // physics v2：对手时机在起跳时决定（擂主=timingHit 命中则 1，否则 0–0.7；自由对战 0–1 随机），决定双方抛物线高度
+  B.eTiming = B.arena ? (Math.random() < B.stageCfg.ai.timingHit ? 1 : Math.random() * 0.7) : Math.random();
+  BP.startJump(B.p, B.timing); BP.startJump(B.e, B.eTiming); B.p.kv = B.e.kv = 0; B.phase = 'air'; B.t = 0;
 }
 function clash() {
   var ps = stats(st.look), es = stats(B.ai);
   var pp = 20 + ps.pow + B.p.bonus + B.timing * 30 + ps.spd * 0.3;
   if (B.arena) { // 擂主战：AI 参数 + 角力推理倍率（design/03 接入示例）
-    var ai = B.stageCfg.ai, eT = Math.random() < ai.timingHit ? 1 : Math.random() * 0.7;
+    var ai = B.stageCfg.ai, eT = B.eTiming;
     var ep = 20 + es.pow + ai.powBonus + eT * 30 + es.spd * 0.3;
     B.e.readHit = A.REASONING_ENABLED && Math.random() < ai.readAcc;
     var m = A.multipliers({ pWin: ps.win, eWin: es.win, pAng: B.p.ang, eAng: B.e.ang, guess: B.p.guess, eReadHit: B.e.readHit });
@@ -113,13 +115,15 @@ function clash() {
     else if (B.stageCfg.angleReveal === 'hidden') B.reveal = '对手角度揭晓：' + ANGN[B.e.ang];
     else B.reveal = '';
   } else {
-    var ep = 20 + es.pow + (Math.random() * 25 + 5) + es.spd * 0.3;
+    var ep = 20 + es.pow + (B.eTiming * 25 + 5) + es.spd * 0.3; // 与 v1 同分布（5–30 均匀）
     // 角形 vs 角度 石头剪刀布：自己的角形克制对方选择的角度时 x1.3
     if (ps.win === B.e.ang) pp *= 1.3; if (es.win === B.p.ang) ep *= 1.3;
   }
-  var d = Math.round(Math.abs(pp - ep));
-  if (pp >= ep) { B.e.hp -= d + 8; B.msg = '咚！你赢了这次对撞，造成 ' + (d + 8); }
-  else { B.p.hp -= d + 8; B.msg = '哎呀！被顶了 ' + (d + 8); }
+  var c = B.contact || { dy: 0, align: 1 };
+  pp *= BP.heightMul(B.p.y, B.e.y); ep *= BP.heightMul(B.e.y, B.p.y); // 角判定点高度差：居高临下 ±3%
+  var d = BP.damage(pp, ep, c.align); BP.knockback(B.p, B.e, pp, ep); B.lastClash = { pp: pp, ep: ep, dmg: d, dy: c.dy, align: c.align };
+  if (pp >= ep) { B.e.hp -= d; B.msg = '咚！你赢了这次对撞，造成 ' + d; }
+  else { B.p.hp -= d; B.msg = '哎呀！被顶了 ' + d; }
   B.phase = 'result'; B.t = 0;
   if (B.p.hp <= 0 || B.e.hp <= 0) { var w = B.p.hp > 0 ? 0 : 1; B.wins[w]++; B.roundEnd = w; }
   else B.roundEnd = -1;
@@ -130,16 +134,21 @@ function next() {
     B.round++; startRound();
   } else nextExchange();
 }
+function updateBattle() { // 固定步 1/60s：只改物理/逻辑状态，绘制在 drawBattle
+  if (B.phase === 'air') { // physics v2：解析抛物线 + 按 art v7 角根判定点检测接触
+    BP.stepAir(B.p, 1); BP.stepAir(B.e, -1); var hc = BP.contact(B.p, B.e);
+    if (hc) { BP.resolvePenetration(B.p, B.e, hc); B.contact = hc; clash(); }
+    else if (!B.p.air && !B.e.air) { B.contact = null; B.p.y = B.e.y = 0; } // 理论不可达（落地前必接触）；保险
+  }
+  if (B.phase === 'result') { BP.stepRecover(B.p, W * 0.25, W); BP.stepRecover(B.e, W * 0.75, W); }
+  B.t++;
+  if (B.phase === 'charge') { B.meter += 0.018 * B.dir; if (B.meter > 1 || B.meter < 0) B.dir *= -1; }
+}
 function drawBattle() {
   bg(); var gy = H * 0.72 - 40;
   text('第 ' + B.round + ' 回合  (三局两胜)  ' + B.wins[0] + ' : ' + B.wins[1], W / 2, 30, 16);
   hpBar(20, 50, B.p.hp, stats(st.look).hp, '你'); hpBar(W / 2 + 10, 50, B.e.hp, eMaxHp(), B.arena ? '擂主·' + B.arena.cfg.name : '电脑');
   if (B.arena) text('每日擂主 第 ' + B.arena.stage + ' 场' + (A.REASONING_ENABLED ? ' · 线索 Lv' + B.stageCfg.clueLv : ''), W / 2, 112, 12, '#666');
-  [B.p, B.e].forEach(function (g) { if (B.phase === 'air') { g.vy += 0.45; g.y += g.vy; } });
-  if (B.phase === 'air') { B.p.x += 4; B.e.x -= 4; if (B.p.x >= W / 2 - 50) clash(); }
-  if (B.phase === 'result' && B.t < 20) { B.p.x -= 3; B.e.x += 3; }
-  if (B.phase === 'result') { B.p.y = Math.min(0, B.p.y + 4); B.e.y = B.p.y; if (B.p.x < W * 0.25) B.p.x = W * 0.25; }
-  B.t++;
   G.drawShadow(ctx, B.p.x, gy, 1.1, -B.p.y); G.drawShadow(ctx, B.e.x, gy, 1.1, -B.e.y);
   var pose = B.phase === 'air' ? 'jump' : (B.phase === 'result' && B.t < 25) ? 'clash' : 'idle';
   G.drawGoatArt(ctx, B.p.x, gy + B.p.y, 1.1, st.look, 1, 0, pose);
@@ -160,7 +169,6 @@ function drawBattle() {
     ANG.forEach(function (a, i) { btn(W / 2 - 130 + i * 90, y0 + 12, 80, 40, ANGN[a] + '角度', function () { makeGuess(a); }, '#cfe8ff'); });
     text('提示：有的线索是假动作，有的线索永远不会骗人', W / 2, y0 + 72, 12, '#666');
   } else if (B.phase === 'charge') {
-    B.meter += 0.018 * B.dir; if (B.meter > 1 || B.meter < 0) B.dir *= -1;
     if (B.arena && A.REASONING_ENABLED) text('你的预判：' + (B.p.guess ? ANGN[B.p.guess] + '角度' : '无') + ' | 选择你的角度', W / 2, y0 - 5, 14);
     else if (B.arena && B.stageCfg.angleReveal === 'hidden') text('对手角度隐藏 | 选择你的角度', W / 2, y0 - 5, 14);
     else text('对手架势：' + ANGN[B.e.ang] + '角度 | 选择你的角度', W / 2, y0 - 5, 14);
@@ -300,6 +308,10 @@ function drawObj(b) {
   if (b.type === 'sheep') text(b.awake ? '!' : 'z', b.x, b.y - b.r - 8, 12, '#666');
   if (b.type === 'rock') text('石', b.x, b.y, 11, '#fff');
 }
+function updateDdl() {
+  if (DG.phase === 'flying') DDL.tick(DG);
+  if (DG.phase === 'aim') { DG.meter += 0.018 * DG.dir; if (DG.meter > 1 || DG.meter < 0) DG.dir *= -1; DG.aimPower = Math.max(0, Math.min(1, DG.meter)); }
+}
 function drawDdl() {
   // 天空 + 场地
   var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#bfe9ff'); g.addColorStop(1, '#e8f8c8');
@@ -334,13 +346,10 @@ function drawDdl() {
       }
     }
   }
-  if (DG.phase === 'flying') DDL.tick(DG);
   if (DG.msg) text(DG.msg, W / 2, H - 150, 14, '#a03000');
   var y0 = H - 130;
   if (DG.phase === 'aim') {
     text('拖动瞄准 · 角度 ' + Math.round(DG.aimAngle) + '°', W / 2, y0, 13);
-    DG.meter += 0.018 * DG.dir; if (DG.meter > 1 || DG.meter < 0) DG.dir *= -1;
-    DG.aimPower = Math.max(0, Math.min(1, DG.meter));
     ctx.fillStyle = '#ddd'; ctx.fillRect(40, y0 + 14, W - 80, 14);
     ctx.fillStyle = '#7bd36b'; ctx.fillRect(40 + (W - 80) * 0.85, y0 + 14, (W - 80) * 0.15, 14); // 提示高力区
     ctx.fillStyle = '#e33'; ctx.fillRect(40 + (W - 80) * DG.meter - 3, y0 + 10, 6, 22);
@@ -372,13 +381,30 @@ function drawDdlResult() {
   btn(W / 2 - 80, H * 0.7 + 108, 160, 44, '返回首页', function () { st.scene = 'custom'; }, '#dddddd');
 }
 
-function loop() { st.buttons = [];
+// 固定时间步：按真实经过时间累加，每步 STEP=1/60s 跑一次 update；单帧最多补 MAX_STEPS 步（防螺旋死亡），渲染每帧一次。
+// 无时间戳调用（回归脚本 raf()）= 恰好 1 步，与 v2 基准逐帧一致。
+var STEP = 1000 / 60, MAX_STEPS = 5, clock = { last: null, acc: 0, steps: 0, frames: 0, dropped: 0 };
+function update() {
+  if (st.scene === 'battle') updateBattle(); else if (st.scene === 'ddl' && DG) updateDdl();
+  clock.steps++;
+}
+function loop(ts) {
+  if (typeof ts !== 'number') update();
+  else {
+    if (clock.last === null) clock.last = ts;
+    clock.acc += Math.max(0, ts - clock.last); clock.last = ts;
+    var n = 0; while (clock.acc >= STEP && n < MAX_STEPS) { update(); clock.acc -= STEP; n++; }
+    if (n === MAX_STEPS && clock.acc >= STEP) { clock.dropped += Math.floor(clock.acc / STEP); clock.acc %= STEP; }
+  }
+  clock.frames++; render(); requestAnimationFrame(loop);
+}
+function render() { st.buttons = [];
   if (st.scene === 'custom') drawCustom(); else if (st.scene === 'battle') drawBattle();
   else if (st.scene === 'arena') drawArena(); else if (st.scene === 'faction') drawFaction();
   else if (st.scene === 'arenaResult') drawArenaResult();
   else if (st.scene === 'ddlSelect') drawDdlSelect(); else if (st.scene === 'ddl') drawDdl(); else if (st.scene === 'ddlResult') drawDdlResult();
   else drawOver();
-  requestAnimationFrame(loop); }
+}
 wx.onTouchStart(function (e) { var t = e.touches[0], x = t.clientX, y = t.clientY;
   if (st.scene === 'ddl' && DG && DG.phase === 'aim') {
     for (var i = st.buttons.length - 1; i >= 0; i--) { var b = st.buttons[i]; if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) { b.cb(); return; } }
@@ -396,5 +422,6 @@ if (typeof document !== 'undefined') {
 module.exports = { QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
   startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
   openArena: openArena, startArenaStage: startArenaStage, chooseFaction: chooseFaction, setNow: function (ms) { nowOverride = ms; },
+  clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,
   openDdl: openDdl, enterDdl: enterDdl, fireDdl: function () { if (DG) DDL.fire(DG); } };
 loop();

@@ -1,0 +1,95 @@
+{
+ "free_good": {
+  "games": 300,
+  "winRate": 0.717,
+  "maxFrames": 3670,
+  "stuck": 0,
+  "exchPerGame": 18.93,
+  "airFramesAvg": 0,
+  "dmgAvg": null,
+  "hornPenFrames": 0,
+  "maxHornPen": 0,
+  "crossFrames": 0
+ },
+ "free_avg": {
+  "games": 300,
+  "winRate": 0.577,
+  "maxFrames": 3772,
+  "stuck": 0,
+  "exchPerGame": 20.5,
+  "airFramesAvg": 0,
+  "dmgAvg": null,
+  "hornPenFrames": 0,
+  "maxHornPen": 0,
+  "crossFrames": 0
+ },
+ "free_bad": {
+  "games": 300,
+  "winRate": 0.413,
+  "maxFrames": 3526,
+  "stuck": 0,
+  "exchPerGame": 18.31,
+  "airFramesAvg": 0,
+  "dmgAvg": null,
+  "hornPenFrames": 0,
+  "maxHornPen": 0,
+  "crossFrames": 0
+ },
+ "arena1_good": {
+  "games": 300,
+  "winRate": 0.707,
+  "maxFrames": 3490,
+  "stuck": 0,
+  "exchPerGame": 17.42,
+  "airFramesAvg": 0,
+  "dmgAvg": null,
+  "hornPenFrames": 0,
+  "maxHornPen": 0,
+  "crossFrames": 0
+ },
+ "arena1_avg": {
+  "games": 300,
+  "winRate": 0.653,
+  "maxFrames": 3540,
+  "stuck": 0,
+  "exchPerGame": 19.04,
+  "airFramesAvg": 0,
+  "dmgAvg": null,
+  "hornPenFrames": 0,
+  "maxHornPen": 0,
+  "crossFrames": 0
+ },
+ "arena2_good": {
+  "games": 300,
+  "winRate": 0.48,
+  "maxFrames": 3427,
+  "stuck": 0,
+  "exchPerGame": 20.2,
+  "airFramesAvg": 0,
+  "dmgAvg": null,
+  "hornPenFrames": 0,
+  "maxHornPen": 0,
+  "crossFrames": 0
+ },
+ "arena2_avg": {
+  "games": 300,
+  "winRate": 0.31,
+  "maxFrames": 3956,
+  "stuck": 0,
+  "exchPerGame": 22.02,
+  "airFramesAvg": 0,
+  "dmgAvg": null,
+  "hornPenFrames": 0,
+  "maxHornPen": 0,
+  "crossFrames": 0
+ },
+ "ddl": {
+  "shots": 5241,
+  "timeouts": 0,
+  "maxOverlap": 5.773,
+  "overlapFrames": 4,
+  "maxSteps": 137,
+  "solved410": 12,
+  "nan": 0
+ }
+}
