@@ -103,9 +103,18 @@ function loadArt() {
   });
   // 懒加载：首屏只加载公共层 + 默认毛型/角型（全部姿态）；其余毛型/角型按需加载，空闲时后台预取
   var keys = Object.keys(list), core = keys.filter(isCore); ART.rest = keys.filter(function (k) { return !isCore(k); });
-  ART.pending = core.length;
-  core.forEach(function (k) { loadWhole(k, function () { if (--ART.pending === 0) { ART.ready = true; measureFeet(); } }); });
+  var fin = function () { if (--ART.pending === 0) { ART.ready = true; measureFeet(); } };
+  var atlas = null; try { atlas = ART.atlasOn !== false && artLoadJSON(ATLAS); } catch (e) { atlas = null; } // 图集可选：缺失/失败静默回退单图
+  if (!atlas) { ART.pending = core.length; return core.forEach(function (k) { loadWhole(k, fin); }); }
+  var inA = core.filter(function (k) { return atlas.frames[k]; }), miss = core.filter(function (k) { return !atlas.frames[k]; });
+  ART.pending = miss.length + 1; ART.atlas = { frames: inA.length, miss: miss };
+  miss.forEach(function (k) { loadWhole(k, fin); }); // 缺帧回退整图单文件
+  var sheet = newImage();
+  sheet.onload = function () { inA.forEach(function (k) { var f = atlas.frames[k], c = newCanvas(f[2], f[3]); c.getContext('2d').drawImage(sheet, f[0], f[1], f[2], f[3], 0, 0, f[2], f[3]); ART.imgs[k] = c; (ART.src9 = ART.src9 || {})[k] = { sheet: sheet, f: f }; }); fin(); };
+  sheet.onerror = function () { ART.pending += inA.length; inA.forEach(function (k) { loadWhole(k, fin); }); fin(); };
+  sheet.src = atlas.image;
 }
+var ATLAS = 'art/atlas/goat_core.json';
 var DEF_LOOK = { wool: 'fluffy', horn: 'curl' }, LAZY = { prefetchPerFrame: 2, prefetchDelayFrames: 30 };
 function isCore(k) { var M = ART.man.ids, w = M.wools.filter(function (x) { return k.indexOf('/' + x + '_') >= 0 && k.indexOf('wool/') === 0; })[0], h = k.indexOf('horn/') === 0;
   return w ? w === DEF_LOOK.wool : h ? k.indexOf('/' + DEF_LOOK.horn + '_') >= 0 : true; }
@@ -128,7 +137,7 @@ function hex(c) { c = c.replace('#', ''); if (c.length === 3) c = c[0] + c[0] + 
 // 换色并缓存到离屏 canvas：key+颜色只算一次
 function layer(key, color) {
   var img = ART.imgs[key]; if (!img) return null;
-  var kind = kindOf(key); if (kind === 'color' || !color) return img;
+  var kind = kindOf(key); if (kind === 'color' || !color) return (ART.src9 && ART.src9[key]) || img; // 图集帧：绘制时直接从图集按源矩形取（与单图采样一致）
   var ck = key + '|' + color; if (ART.cache[ck]) return ART.cache[ck];
   var w = img.width, h = img.height, c = newCanvas(w, h), x = c.getContext('2d');
   x.drawImage(img, 0, 0); var d = x.getImageData(0, 0, w, h), p = d.data, t = hex(color), div = kind === 'gray_mask_mid' ? 128 : 255;
@@ -224,18 +233,19 @@ function drawParts(ctx, look, pose, rot, cw, chh, size, sz, ax, ay) {
   if (!ensurePartImgs(need)) return false;
   var X = function (px) { return (px / cw - ax) * size; }, Y = function (py) { return (py / chh - ay) * sz; };
   patches.forEach(function (p) { if (!p || ART.onlyPart) return; var L = layer(p.key, look.woolColor); if (!L) return; // 补片：最下层、不跟头/尾转
-    ctx.save(); ctx.globalAlpha *= p.alpha; ctx.drawImage(L, -ax * size, -ay * sz, size, sz); ctx.restore(); });
+    ctx.save(); ctx.globalAlpha *= p.alpha; drawL(ctx, L, -ax * size, -ay * sz, size, sz); ctx.restore(); });
   layers.forEach(function (l) {
     if (ART.onlyPart && l.part !== ART.onlyPart) return; // 调试：只画某部件（像素归属统计用）
     var L = layer(l.key, colorFor(l.tpl, l.whole, look)); if (!L) return;
     var rp = l.part === 'horn' ? 'head' : l.part === 'body' ? null : l.part, d = rp ? (rot[rp] || 0) : 0; // horn 跟随 head；腿绕各自 pivot
     if (d) { var pv = piv[rp]; ctx.save(); ctx.translate(X(pv[0]), Y(pv[1])); ctx.rotate(d * Math.PI / 180); ctx.translate(-X(pv[0]), -Y(pv[1])); }
-    ctx.drawImage(L, -ax * size, -ay * sz, size, sz);
+    drawL(ctx, L, -ax * size, -ay * sz, size, sz);
     if (d) ctx.restore();
   });
   return true;
 }
 module.exports.drawParts = drawParts;
+function drawL(ctx, L, x, y, w, h) { if (L.sheet) { var f = L.f; ctx.drawImage(L.sheet, f[0], f[1], f[2], f[3], x, y, w, h); } else ctx.drawImage(L, x, y, w, h); }
 function colOf(tpl, key, look) { return tpl.indexOf('{wool}') >= 0 || key.indexOf('beard/') === 0 ? look.woolColor : // v8c 胡子与羊毛同色（manifest kind=gray_mask 时生效，kind=color 时 layer() 原样返回）
   key.indexOf('wool/knee') === 0 ? KNEE : tpl.indexOf('{horn}') >= 0 ? look.hornColor : null; }
 var COMP = {}, COMP_N = 0, COMP_MAX = 24; // 合成缓存上限（超出清空重建）
@@ -243,7 +253,7 @@ function composite(m, look, pose) { var ck = [pose, look.wool, look.woolColor, l
   var ref = ART.imgs['body/body_' + pose]; if (!ref || typeof document === 'undefined' && !(typeof wx !== 'undefined')) return null;
   var c; try { c = newCanvas(ref.width, ref.height); } catch (e) { return null; } var x = c.getContext('2d');
   m.draw_order.forEach(function (tpl) { var key = tpl.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose);
-    var L = layer(key, colOf(tpl, key, look)); if (L) x.drawImage(L, 0, 0, ref.width, ref.height); });
+    var L = layer(key, colOf(tpl, key, look)); if (L) drawL(x, L, 0, 0, ref.width, ref.height); });
   if (++COMP_N > COMP_MAX) { COMP = {}; COMP_N = 1; } return (COMP[ck] = c); }
 var KNEE = '#a8774a', ART_SCALE = 0.1; // 画布高 1024 → 102.4*s 像素（宽按实际图片比例），与旧程序化羊大小相当
 // x,y 与旧 drawGoat 相同（身体中心，脚底在 y+40*s）；pose: idle|jump|clash
@@ -268,7 +278,7 @@ function drawGoatArt(ctx, x, y, s, look, face, t, pose, rot) { // rot: 可选 {h
   else m.draw_order.forEach(function (tpl) {
     var key = tpl.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose);
     var col = colOf(tpl, key, look);
-    var L = layer(key, col); if (L) ctx.drawImage(L, -ax * size, -ay * sz, size, sz);
+    var L = layer(key, col); if (L) drawL(ctx, L, -ax * size, -ay * sz, size, sz);
   });
   ctx.restore();
   if (ART.debug) { // 调试叠加：物理位置/脚底线/旧程序化角点 vs 贴图角根，仅渲染
