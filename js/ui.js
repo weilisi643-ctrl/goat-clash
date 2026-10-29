@@ -46,7 +46,7 @@ function factionTint(ctx, W, H, id) { var T = VC.factionTint, c = tintOf(id); if
   ctx.globalAlpha = T.topAlpha; var g = grad(ctx.createLinearGradient(0, 0, 0, H * T.topHeight), [[0, c], [1, 'rgba(255,255,255,0)']]); if (g) { ctx.fillStyle = g; ctx.fillRect(0, 0, W, H * T.topHeight); } ctx.restore(); }
 // ---- tween.js：场景切换时标题弹出、按钮淡入上浮（显示用，命中区不变）----
 var grp = new TWEEN.Group(), anim = { pop: 1, fade: 1 }, last = null, t = 0;
-function update(ms, scene) { t = ms;
+function update(ms, scene) { t = ms; if (fontState === 'idle' && ms > 0) lazyFont();
   if (scene !== last) { var M = TH.motion; last = scene; anim.pop = M.titlePopFrom; anim.fade = 0; grp.removeAll();
     new TWEEN.Tween(anim, grp).to({ pop: 1 }, M.titlePopMs).easing(ease(M.titleEasing)).start(ms);
     new TWEEN.Tween(anim, grp).to({ fade: 1 }, M.fadeMs).easing(ease(M.fadeEasing)).start(ms); }
@@ -54,28 +54,50 @@ function update(ms, scene) { t = ms;
 function lighten(col, k) { if (!(k > 1) || !/^#[0-9a-f]{6}$/i.test(col)) return col; var n = parseInt(col.slice(1), 16), o = '#';
   [16, 8, 0].forEach(function (b) { var v = Math.min(255, Math.round(((n >> b) & 255) * k)); o += (v < 16 ? '0' : '') + v.toString(16); }); return o; }
 function ease(n) { var a = String(n || 'Linear.None').split('.'), g = TWEEN.Easing[a[0]]; return (g && g[a[1] || 'None']) || TWEEN.Easing.Linear.None; }
-// ---- 字体：站酷快乐体子集，小游戏 wx.loadFont / 浏览器 FontFace；未加载完或缺字时回退字体逐字补 ----
-var FAM = TH.font.family;
-(function loadFont() { var F = TH.font; if (!F.file) return;
-  try { if (typeof wx !== 'undefined' && wx.loadFont) { var fam = wx.loadFont(F.file); if (fam) FAM = fam; return; }
-    if (typeof FontFace !== 'undefined' && typeof document !== 'undefined' && document.fonts) { var ff = new FontFace(F.family, 'url(' + F.file + ')');
-      ff.load().then(function (f) { document.fonts.add(f); }, function () {}); } } catch (e) {} })();
-function sysFont(size) { return TH.font.weight + ' ' + size + 'px ' + FAM + ',' + TH.font.fallback; }
+// ---- 字体：站酷快乐体子集（tools/gen_font_subset.py 生成）。只用浏览器 FontFace 懒加载（首帧后再加载，不用 wx.loadFont）；
+// 未加载完/缺字回退系统字体，加载完成后 FAM 切换、下一帧自动重绘。动态文本（昵称等）一律系统字体（drawText style.sys / sysText）。
+var FAM = null, fontState = 'idle';
+function lazyFont() { var F = TH.font; if (fontState !== 'idle' || !F.file) return; fontState = 'loading';
+  try { if (typeof FontFace !== 'undefined' && typeof document !== 'undefined' && document.fonts) { var ff = new FontFace(F.family, 'url(' + F.file + ')');
+      ff.load().then(function (f) { document.fonts.add(f); FAM = F.family; fontState = 'ready'; }, function () { fontState = 'failed'; }); } else fontState = 'none'; } catch (e) { fontState = 'failed'; } }
+function sysFont(size, dyn) { return TH.font.weight + ' ' + size + 'px ' + (FAM && !dyn ? FAM + ',' : '') + TH.font.fallback; }
 // ---- 统一绘制：按钮 / 面板 / 文字 / 背景 都读主题 ----
 function rr(ctx, x, y, w, h, r) { r = Math.max(0, Math.min(r, w / 2, h / 2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
   ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 function ink() { return TH.colors.ink; }
+// 16 个符号代码绘制（字体子集不含）：←↑→↓■□▲△▼◆○●★☆✓✕
+var SYM = '←↑→↓■□▲△▼◆○●★☆✓✕';
+function hasSym(L) { for (var i = 0; i < SYM.length; i++) if (L.indexOf(SYM[i]) >= 0) return true; return false; }
+function drawSym(ctx, c, cx, cy, sz, mode) { var r = sz * 0.36; ctx.save(); ctx.translate(cx, cy); ctx.beginPath(); var fill = true;
+  if ('←↑→↓'.indexOf(c) >= 0) { ctx.rotate({ '→': 0, '↓': Math.PI / 2, '←': Math.PI, '↑': -Math.PI / 2 }[c]); ctx.moveTo(-r, 0); ctx.lineTo(r * 0.9, 0); ctx.moveTo(r * 0.2, -r * 0.7); ctx.lineTo(r, 0); ctx.lineTo(r * 0.2, r * 0.7); fill = false; }
+  else if (c === '■' || c === '□') { ctx.rect(-r * 0.85, -r * 0.85, r * 1.7, r * 1.7); fill = c === '■'; }
+  else if ('▲△▼'.indexOf(c) >= 0) { var d = c === '▼' ? -1 : 1; ctx.moveTo(0, -r * d); ctx.lineTo(r, r * 0.8 * d); ctx.lineTo(-r, r * 0.8 * d); ctx.closePath(); fill = c !== '△'; }
+  else if (c === '◆') { ctx.moveTo(0, -r); ctx.lineTo(r * 0.8, 0); ctx.lineTo(0, r); ctx.lineTo(-r * 0.8, 0); ctx.closePath(); }
+  else if (c === '○' || c === '●') { ctx.arc(0, 0, r * 0.9, 0, 7); fill = c === '●'; }
+  else if (c === '★' || c === '☆') { for (var k = 0; k < 10; k++) { var a = -Math.PI / 2 + k * Math.PI / 5, q = k % 2 ? r * 0.45 : r; ctx.lineTo(Math.cos(a) * q, Math.sin(a) * q); } ctx.closePath(); fill = c === '★'; }
+  else if (c === '✓') { ctx.moveTo(-r * 0.8, 0); ctx.lineTo(-r * 0.2, r * 0.6); ctx.lineTo(r * 0.9, -r * 0.7); fill = false; }
+  else if (c === '✕') { ctx.moveTo(-r * 0.7, -r * 0.7); ctx.lineTo(r * 0.7, r * 0.7); ctx.moveTo(r * 0.7, -r * 0.7); ctx.lineTo(-r * 0.7, r * 0.7); fill = false; }
+  if (mode === 'stroke') { ctx.stroke(); } else if (fill) ctx.fill(); else { ctx.lineWidth = Math.max(1.5, sz * 0.11); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = ctx.fillStyle; ctx.stroke(); }
+  ctx.restore(); }
+function symText(ctx, L, x, y, size, mode) { // mode: 'fill' | 'stroke'；按 textAlign 排版，逐字绘制
+  var cs = chars(L), ws = cs.map(function (c) { return SYM.indexOf(c) >= 0 ? size * 0.9 : ctx.measureText(c).width; }), tw = ws.reduce(function (a, b) { return a + b; }, 0);
+  var al = ctx.textAlign, cx = al === 'center' ? x - tw / 2 : al === 'right' ? x - tw : x; ctx.save(); ctx.textAlign = 'left';
+  cs.forEach(function (c, i) { if (SYM.indexOf(c) >= 0) drawSym(ctx, c, cx + ws[i] / 2, y, size, mode); else if (mode === 'stroke') ctx.strokeText(c, cx, y); else ctx.fillText(c, cx, y); cx += ws[i]; });
+  ctx.restore(); }
+function fillT(ctx, L, x, y, size) { if (hasSym(L)) symText(ctx, L, x, y, size, 'fill'); else ctx.fillText(L, x, y); }
+function strokeT(ctx, L, x, y, size) { if (hasSym(L)) symText(ctx, L, x, y, size, 'stroke'); else ctx.strokeText(L, x, y); }
 // 文字：style 为 theme.text 的样式名，或直接给颜色；多行用 \n
 function drawText(ctx, s, x, y, size, style, align) { size = size || 16; s = String(s);
-  var S = (style && TH.text[style]) || { fill: style || TH.colors.text }, big = S.rotate != null;
+  var S = (typeof style === 'object' && style) || (style && TH.text[style]) || { fill: style || TH.colors.text }, big = S.rotate != null;
   ctx.save(); ctx.translate(x, y); if (big) { var k = anim.pop; ctx.scale(k, k); ctx.rotate(S.rotate * Math.PI / 180); }
-  ctx.font = sysFont(size); ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+  ctx.font = sysFont(size, S.sys); ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
   var lines = s.split('\n'), lh = size * 1.12, y0 = -(lines.length - 1) * lh / 2;
   lines.forEach(function (L, i) { var yy = y0 + i * lh;
-    if (S.shadow) { ctx.fillStyle = ink(); ctx.strokeStyle = ink(); ctx.lineWidth = S.stroke || 0; if (S.stroke) ctx.strokeText(L, S.shadow[0], yy + S.shadow[1]); ctx.fillText(L, S.shadow[0], yy + S.shadow[1]); }
-    if (S.stroke) { ctx.strokeStyle = ink(); ctx.lineWidth = S.stroke; ctx.strokeText(L, 0, yy); }
-    ctx.fillStyle = S.fill; ctx.fillText(L, 0, yy); });
+    if (S.shadow) { ctx.fillStyle = ink(); ctx.strokeStyle = ink(); ctx.lineWidth = S.stroke || 0; if (S.stroke) strokeT(ctx, L, S.shadow[0], yy + S.shadow[1], size); fillT(ctx, L, S.shadow[0], yy + S.shadow[1], size); }
+    if (S.stroke) { ctx.strokeStyle = ink(); ctx.lineWidth = S.stroke; strokeT(ctx, L, 0, yy, size); }
+    ctx.fillStyle = S.fill; fillT(ctx, L, 0, yy, size); });
   ctx.restore(); }
+function sysText(ctx, s, x, y, size, color, align) { drawText(ctx, s, x, y, size, { fill: color || TH.colors.text, sys: true }, align); } // 动态文本（昵称）：系统字体
 function measure(ctx, s, size) { ctx.font = sysFont(size); var m = ctx.measureText(String(s)); return m && m.width || String(s).length * size; }
 // 贴纸块：白/彩底 + 粗黑描边 + 底部厚边（main 草绿厚边 / 其余黑投影）
 function sticker(ctx, x, y, w, h, r, fill, edgeH, edgeCol, sw) {
@@ -149,4 +171,4 @@ function spotlight(ctx, W, H, holes) { var T = TH.tutorial; ctx.save(); ctx.fill
 function drawTip(ctx, s, x, y) { return drawPill(ctx, s, x, y, true, TH.tutorial.tipSize); }
 function zoneOutline(ctx, x, y, w, z0, z1) { var T = TH.tutorial, h = TH.bar.meterH, p = T.zonePad; ctx.save(); ctx.strokeStyle = TH.colors[T.zoneColor] || T.zoneColor; ctx.lineWidth = T.zoneW; ctx.setLineDash && ctx.setLineDash([6, 4]);
   rr(ctx, x + w * z0 - p, y - p, w * (z1 - z0) + 2 * p, h + 2 * p, 6); ctx.stroke(); ctx.restore(); } // 只画：区间由调用方传入现有判定常量
-module.exports = { press: press, darken: darken, spotlight: spotlight, drawTip: drawTip, zoneOutline: zoneOutline, drawPedestal: drawPedestal, drawPill: drawPill, drawBar: drawBar, drawMeter: drawMeter, sticker: sticker, dim: dim, measure: measure, sysFont: sysFont, drawTufts: drawTufts, TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };
+module.exports = { sysText: sysText, drawSym: drawSym, SYM: SYM, fontState: function () { return fontState; }, press: press, darken: darken, spotlight: spotlight, drawTip: drawTip, zoneOutline: zoneOutline, drawPedestal: drawPedestal, drawPill: drawPill, drawBar: drawBar, drawMeter: drawMeter, sticker: sticker, dim: dim, measure: measure, sysFont: sysFont, drawTufts: drawTufts, TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };

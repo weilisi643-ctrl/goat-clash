@@ -1,5 +1,6 @@
-# 站酷快乐体（ZCOOL KuaiLe，SIL OFL 1.1）按用到的字符裁切子集 → art/ui/font/kuaile.ttf（运行时 wx.loadFont / FontFace 加载）
+# 站酷快乐体（ZCOOL KuaiLe，SIL OFL 1.1）按用到的字符裁切子集 → art/ui/font/kuaile.ttf（运行时浏览器 FontFace 懒加载；不用 wx.loadFont）
 # 字符来源：js/*.js 全部字符串字面量 + 运行时数据 JSON（关卡/擂主/线索/牧场名）+ ASCII 可打印字符
+# 对照 art/ui_v3/font/charset.txt（2026-10-29）：charset 多出的 583 字来自美术元数据 JSON 注释/文档（manifest/parts/fx/assets/theme_tokens、index.html 注释），游戏内不显示，不纳入；未发现漏扫的显示源文件。教学文案在 js/tutorial_cfg.js（已在 js/*.js 扫描范围）。
 import os,re,glob,json,subprocess,sys
 R=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..')
 SRC=os.environ.get('KUAILE_TTF','/workspace/goat-game/art/_fonts/ZCOOLKuaiLe-Regular.ttf')

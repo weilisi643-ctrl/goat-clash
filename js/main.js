@@ -443,19 +443,17 @@ function drawDdlResult() {
 }
 // ---------- 新手教学战（design/08）：只用现有对战流程，独立 stageCfg，不改共享配置/判定常量 ----------
 var PERFECT_ZONE = [0.72, 0.88]; // 力量条完美区（原 drawMeter 常量，教学描边只读）
-var TUT_TIPS = { 1: '两只羊同时跳起，用羊角顶对方！', 2: '对手的角度写在上面，选一个不被它克制的角度', 3: '指针走到金色区时点「起跳顶角」', 4: '完美起跳就是这一下，越准越有力！' };
-var TUT_MISS = '差一点，再试试看准金色区', TUT_WIN = '赢了！去挑选你的羊毛和羊角吧', TUT_LOSE = '没关系，看准金色区再来一次';
-var TUT_REWARD = '#F4B6C2', TUT_REWARD_NAME = '樱花粉';
+var TC = require('./tutorial_cfg.js'), TUT_TIPS = TC.tips, TUT_MISS = TC.miss, TUT_WIN = TC.win, TUT_LOSE = TC.lose;
+var TUT_REWARD = TC.reward.color, TUT_REWARD_NAME = TC.reward.name;
 function isNode() { return typeof process !== 'undefined' && !!(process.versions && process.versions.node); }
 function sget(k) { try { if (typeof wx !== 'undefined' && wx.getStorageSync) return wx.getStorageSync(k); if (typeof localStorage !== 'undefined') return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) {} return null; }
 function sset(k, v) { try { if (typeof wx !== 'undefined' && wx.setStorageSync) return wx.setStorageSync(k, v); if (typeof localStorage !== 'undefined') localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 var T = { active: false, step: 0, unlocked: sget('woolUnlocked') || [], reward: false };
 function woolColorList() { return D.woolColors.concat(T.unlocked.filter(function (c) { return D.woolColors.indexOf(c) < 0; })); }
 function track(e, d) { var L = sget('tutorialEvents') || []; var o = { e: e, t: Date.now() }; for (var k in (d || {})) o[k] = d[k]; L.push(o); sset('tutorialEvents', L.slice(-200)); }
-function tutorialCfg() { // 每次新建：不引用、不修改共享的擂主/自由对战配置
-  return { tutorial: true, stage: 1, cfg: { id: 'tutorial', name: '小白羊', look: { wool: 'fluffy', woolColor: '#FFFFFF', horn: 'curl', hornColor: D.hornColors[0] },
-    stancePref: A.CLUES.stances.map(function (x) { return x.id; }),
-    stages: [{ angleReveal: 'public', ai: { timingHit: 0, powBonus: 0, hpBonus: 0, readAcc: 0, counterPick: 0 }, clueLv: 1, playerHorn: 'curl', bestOf: 3 }] } };
+function tutorialCfg() { // 每次新建（深拷贝配置）：不引用、不修改共享的擂主/自由对战配置
+  var o = JSON.parse(JSON.stringify(TC.opponent)); o.look.hornColor = D.hornColors[0];
+  return { tutorial: true, stage: 1, cfg: { id: o.id, name: o.name, look: o.look, stancePref: A.CLUES.stances.map(function (x) { return x.id; }), stages: [o.stage] } };
 }
 function startTutorial() { T.active = true; T.step = 0; T.reward = false; track('tutorial_start'); startMatch(tutorialCfg()); tutStep(1); }
 function tutStep(n) { if (!T.active || n <= T.step) return; T.step = n; track('tutorial_step', { n: n }); }
