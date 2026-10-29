@@ -3,7 +3,7 @@ from playwright.sync_api import sync_playwright
 from PIL import Image,ImageStat
 import subprocess,time,sys,os,json
 R=os.path.abspath(os.path.join(os.path.dirname(__file__),'..'));d=R+'/screenshots/'
-ROOTS=[('orig','/tmp/wt_2286c4b'),('v2','/tmp/wt_5b84a85'),('v21',R)]
+ROOTS=json.loads(os.environ['ROOTS']) if os.environ.get('ROOTS') else [('orig','/tmp/wt_2286c4b'),('v2','/tmp/wt_5b84a85'),('v21',R)]
 INIT="""window.__q=[];window.__t=0;window.requestAnimationFrame=function(f){window.__q.push(f)};
 window.__run=function(ms){var end=__t+ms;while(__t<end-1e-9){__t=Math.min(end,__t+1000/60);var q=__q;__q=[];q.forEach(function(f){f(__t)});}};"""
 SEED="Math.random=(function(){var s=42;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296}})();"

@@ -1,5 +1,5 @@
 // UI 渲染层（第二步）：位图字体、九宫格按钮/面板、暗角、阵营色调、tween.js 缓动。只画不改任何游戏/物理状态；不用 Math.random。
-var TWEEN = require('../libs/tween.umd.js'), VC = require('./visual_config.js');
+var TWEEN = require('../libs/tween.umd.js'), VC = require('./visual_config.js'), TH = require('./theme.js');
 function newImage() { if (typeof wx !== 'undefined' && wx.createImage) return wx.createImage(); if (typeof Image !== 'undefined') { var im = new Image(); im.crossOrigin = 'anonymous'; return im; } return null; }
 function newCanvas(w, h) { var c = (typeof document !== 'undefined' && document.createElement) ? document.createElement('canvas') : (typeof wx !== 'undefined' ? wx.createCanvas() : null);
   if (c) { c.width = w; c.height = h; } return c; }
@@ -14,15 +14,15 @@ function tinted(p, col) { var k = p + col; if (TC[k]) return TC[k]; var im = img
   g.fillStyle = col; g.fillRect(0, 0, c.width, c.height); g.globalCompositeOperation = 'multiply'; g.drawImage(im, 0, 0);
   g.globalCompositeOperation = 'destination-in'; g.drawImage(im, 0, 0); g.globalCompositeOperation = 'source-over'; return (TC[k] = c); }
 // ---- 位图字体 ----
-var FONT = loadJSON('art/ui/font.json');
+var FONT = TH.font.bitmap.enabled ? loadJSON(TH.font.bitmap.atlas) : null;
 if (FONT) Object.keys(FONT.styles).forEach(function (k) { img('art/' + FONT.styles[k].file); });
 function chars(s) { return Array.from ? Array.from(s) : s.split(''); }
 function isEmoji(c) { var cp = c.codePointAt ? c.codePointAt(0) : c.charCodeAt(0); return cp >= 0x2190 && !(cp >= 0x4e00 && cp <= 0x9fff) && !(cp >= 0x3000 && cp <= 0x303f) && !(cp >= 0xff00 && cp <= 0xffef); }
 function bmText(ctx, s, x, y, size, style, color) { // color：title 风格可传入颜色（蒙版字体乘色） // 返回 false 则调用方回退到系统字体
-  if (!FONT || !FONT.styles[style]) return false; if (color && style === 'title' && FONT.styles.title_mask) style = 'title_mask'; var S = FONT.styles[style], im = style === 'title_mask' ? tinted('art/' + S.file, color) : img('art/' + S.file); if (!im) return false;
+  if (!FONT || !FONT.styles[style]) return false; if (color && style === TH.font.bitmap.titleStyle && FONT.styles[TH.font.bitmap.titleColorStyle]) style = TH.font.bitmap.titleColorStyle; var S = FONT.styles[style], im = style === TH.font.bitmap.titleColorStyle ? tinted('art/' + S.file, color) : img('art/' + S.file); if (!im) return false;
   var cs = chars(String(s)), k = size / S.px, tw = 0, ws = [];
   for (var i = 0; i < cs.length; i++) { var c = cs[i], gl = S.glyphs[c];
-    if (gl) ws.push((gl[2] - S.pad * 2) * k); else if (c === ' ') ws.push(size * 0.3); else if (isEmoji(c)) { ctx.font = 'bold ' + Math.round(size * 0.9) + 'px sans-serif'; ws.push(ctx.measureText(c).width); } else return false; tw += ws[i]; }
+    if (gl) ws.push((gl[2] - S.pad * 2) * k); else if (c === ' ') ws.push(size * 0.3); else if (isEmoji(c)) { ctx.font = sysFont(Math.round(size * TH.font.bitmap.emojiScale)); ws.push(ctx.measureText(c).width); } else return false; tw += ws[i]; }
   var cx = x - tw / 2, h = S.h * k, top = y - (S.cy != null ? S.cy : S.h / 2) * k; // 字形视觉中心对齐 y，emoji 同以 y 居中
   for (var j = 0; j < cs.length; j++) { var g2 = S.glyphs[cs[j]];
     if (g2) ctx.drawImage(im, g2[0], g2[1], g2[2], S.h, cx - S.pad * k, top, g2[2] * k, h);
@@ -47,10 +47,35 @@ function factionTint(ctx, W, H, id) { var T = VC.factionTint, c = tintOf(id); if
 // ---- tween.js：场景切换时标题弹出、按钮淡入上浮（显示用，命中区不变）----
 var grp = new TWEEN.Group(), anim = { pop: 1, fade: 1 }, last = null, t = 0;
 function update(ms, scene) { t = ms;
-  if (scene !== last) { last = scene; anim.pop = 0.6; anim.fade = 0; grp.removeAll();
-    new TWEEN.Tween(anim, grp).to({ pop: 1 }, 380).easing(TWEEN.Easing.Back.Out).start(ms);
-    new TWEEN.Tween(anim, grp).to({ fade: 1 }, 260).easing(TWEEN.Easing.Quadratic.Out).start(ms); }
+  if (scene !== last) { var M = TH.motion; last = scene; anim.pop = M.titlePopFrom; anim.fade = 0; grp.removeAll();
+    new TWEEN.Tween(anim, grp).to({ pop: 1 }, M.titlePopMs).easing(ease(M.titleEasing)).start(ms);
+    new TWEEN.Tween(anim, grp).to({ fade: 1 }, M.fadeMs).easing(ease(M.fadeEasing)).start(ms); }
   grp.update(ms); }
 function lighten(col, k) { if (!(k > 1) || !/^#[0-9a-f]{6}$/i.test(col)) return col; var n = parseInt(col.slice(1), 16), o = '#';
   [16, 8, 0].forEach(function (b) { var v = Math.min(255, Math.round(((n >> b) & 255) * k)); o += (v < 16 ? '0' : '') + v.toString(16); }); return o; }
-module.exports = { VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };
+function ease(n) { var a = String(n || 'Linear.None').split('.'), g = TWEEN.Easing[a[0]]; return (g && g[a[1] || 'None']) || TWEEN.Easing.Linear.None; }
+function sysFont(size) { return TH.font.weight + ' ' + size + 'px ' + TH.font.family; }
+// ---- 统一绘制：按钮 / 面板 / 文字 / 背景 都读主题 ----
+function rr(ctx, x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function box(ctx, S, x, y, w, h, col) { // S = TH.button / TH.panel
+  var sh = S.shadow || {}; if (sh.blur || sh.offsetY) { ctx.shadowColor = sh.color; ctx.shadowBlur = sh.blur; ctx.shadowOffsetY = sh.offsetY; }
+  var ok = S.style === 'nine' && nine(ctx, S.image, x, y, w, h, col, S.slice);
+  if (!ok) { ctx.fillStyle = col; rr(ctx, x, y, w, h, S.radius); ctx.fill(); }
+  ctx.shadowColor = 'rgba(0,0,0,0)'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+  if (S.stroke && S.stroke.width > 0) { ctx.strokeStyle = S.stroke.color; ctx.lineWidth = S.stroke.width; rr(ctx, x, y, w, h, S.radius); ctx.stroke(); } }
+function drawText(ctx, s, x, y, size, c) { size = size || 16; var F = TH.font.bitmap, col = TH.colors.title || c;
+  if (size >= F.titleMinSize) { var k = anim.pop; ctx.save(); ctx.translate(x, y); ctx.scale(k, k); var ok = bmText(ctx, s, 0, 0, size, F.titleStyle, col); ctx.restore(); if (ok) return; }
+  else if (size >= F.bodyMinSize && bmText(ctx, s, x, y, size, F.bodyStyle)) return;
+  ctx.fillStyle = c || TH.colors.text; ctx.font = sysFont(size); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y); }
+function drawButton(ctx, x, y, w, h, label, color) { var B = TH.button, M = TH.motion, a = anim.fade, oy = (1 - a) * M.buttonRise, col = color || TH.colors.buttonDefault;
+  ctx.save(); ctx.globalAlpha = M.buttonMinAlpha + (1 - M.buttonMinAlpha) * a;
+  box(ctx, B, x, y + oy, w, h, B.style === 'nine' ? lighten(col, B.brightness) : col);
+  var fs = Math.min(B.fontSize, h * B.fontSizeRatio), cx = x + w / 2, cy = y + oy + h / 2 + B.textOffsetY;
+  if (!bmText(ctx, label, cx, cy, fs, TH.font.bitmap.bodyStyle)) { ctx.fillStyle = TH.colors.buttonText; ctx.font = sysFont(B.fontSize); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, cx, cy + B.sysTextOffsetY); }
+  ctx.restore(); }
+function drawPanel(ctx, x, y, w, h, alpha) { var P = TH.panel, M = TH.motion; ctx.save(); ctx.globalAlpha = (alpha || P.alpha) * (M.panelMinAlpha + (1 - M.panelMinAlpha) * anim.fade);
+  box(ctx, P, x, y, w, h, P.style === 'nine' ? P.tint : P.fill); ctx.restore(); }
+function drawBg(ctx, W, H) { var C = TH.colors, g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, C.skyTop); g.addColorStop(1, C.skyBottom);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.fillStyle = C.ground; ctx.fillRect(0, H * C.groundY, W, H * (1 - C.groundY)); }
+module.exports = { TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };

@@ -12,23 +12,14 @@ function stats(look) {
   var w = D.wools.filter(function (x) { return x.id === look.wool; })[0], h = D.horns.filter(function (x) { return x.id === look.horn; })[0];
   return { hp: 100 + w.hp, spd: w.spd, pow: h.pow, win: h.win };
 }
-function btn(x, y, w, h, label, cb, color) { // 九宫格按钮（灰度贴图乘色）；tween 淡入上浮只影响绘制，命中区不变
-  var a = UI.anim.fade, oy = (1 - a) * 10; ctx.save(); ctx.globalAlpha = 0.25 + 0.75 * a;
-  if (!UI.nine(ctx, 'art/ui/btn9.png', x, y + oy, w, h, UI.lighten(color || '#ffb347', UI.VC.button.brightness), 20)) { ctx.fillStyle = color || '#ffb347'; roundRect(x, y + oy, w, h, 12); ctx.fill(); }
-  var fs = Math.min(16, h * 0.42);
-  if (!UI.text(ctx, label, x + w / 2, y + oy + h / 2 - 1, fs, 'btn')) { ctx.fillStyle = '#4a2c00'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, x + w / 2, y + oy + h / 2 - 2); }
-  ctx.restore(); st.buttons.push({ x: x, y: y, w: w, h: h, cb: cb, label: label });
+function btn(x, y, w, h, label, cb, color) { // 统一按钮绘制读主题（js/theme.js）；动画只影响绘制，命中区不变
+  UI.drawButton(ctx, x, y, w, h, label, color); st.buttons.push({ x: x, y: y, w: w, h: h, cb: cb, label: label });
 }
-function panel(x, y, w, h, alpha) { ctx.save(); ctx.globalAlpha = (alpha || 0.92) * (0.3 + 0.7 * UI.anim.fade);
-  if (!UI.nine(ctx, 'art/ui/panel9.png', x, y, w, h, '#fff8e8', 20)) { ctx.fillStyle = 'rgba(255,255,255,0.85)'; roundRect(x, y, w, h, 10); ctx.fill(); } ctx.restore(); }
+function panel(x, y, w, h, alpha) { UI.drawPanel(ctx, x, y, w, h, alpha); }
 function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
   ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
-function text(s, x, y, size, c) { size = size || 16;
-  if (size >= 18) { var k = UI.anim.pop; ctx.save(); ctx.translate(x, y); ctx.scale(k, k); var ok = UI.text(ctx, s, 0, 0, size, 'title', c); ctx.restore(); if (ok) return; } // 标题：位图字体 + tween 弹出
-  else if (size >= 16 && UI.text(ctx, s, x, y, size, 'btn')) return;
-  ctx.fillStyle = c || '#333'; ctx.font = 'bold ' + (size || 16) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y); }
-function bg() { var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#bfe9ff'); g.addColorStop(1, '#fff6d8');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#8fd17a'; ctx.fillRect(0, H * 0.72, W, H * 0.28);
+function text(s, x, y, size, c) { UI.drawText(ctx, s, x, y, size, c); }
+function bg() { UI.drawBg(ctx, W, H);
   var fid = arenaFaction(); if (fid) UI.factionTint(ctx, W, H, fid); }
 function arenaFaction() { // 擂主相关画面按玩家牧场加色调（只显示牧场名，不显示省份）
   var sc = st.scene, inArena = sc === 'arena' || sc === 'faction' || sc === 'arenaResult' || (sc === 'battle' && B && B.arena);

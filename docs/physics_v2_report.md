@@ -159,3 +159,8 @@ screenshots/p8_01_jump、p8_02_clash、p8_03_jump_debug、p8_04_clash_debug、p8
 - 九宫格按钮调亮（btn9 主体 255→250、底边 222，乘色前按 brightness 提亮）；亮度见 docs/p12_button_luma.json。
 - 字形视觉中心写入 font.json（cy），文字与 emoji 都以 y 居中；标题支持传入颜色（title_mask 蒙版字体乘色）。
 - 回归与 v2 一致；截图 screenshots/p12_*（orig=2286c4b / v2=5b84a85 / v21）。
+
+## 11. UI 主题化（范围变更后）
+- UI 将整体重做：v2.1 中的按钮调亮、标题传色、emoji 居中保留为当前默认主题的一部分（不再继续打磨）。
+- 新增 js/theme.js（颜色/圆角/字体位图或系统/按钮与面板 nine|solid+描边+阴影/缓动/间距/effects 强度），js/ui.js 提供 drawButton/drawPanel/drawText/drawBg，main.js 的 btn/panel/text/bg 全部委托。js/visual_config.js 改为 theme.effects 兼容入口。字段说明 docs/theme.md。
+- 默认主题与 v2.1（dfcaa6d）逐像素一致（p12 四个场景差异 bbox=None）；theme_demo.py 演示 solid 主题。回归与 v2 一致。
