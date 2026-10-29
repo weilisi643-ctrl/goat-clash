@@ -130,3 +130,11 @@ screenshots/p8_01_jump、p8_02_clash、p8_03_jump_debug、p8_04_clash_debug、p8
 | 5Hz（卡顿，防螺旋） | 25 | 0.45 | 15 | — | — | — | — | — | 40 | 18 | 100 |
 
 30–144Hz 及抖动帧率下进度逐项一致（v1 循环在 30Hz 会慢一半、144Hz 快 2.4 倍）。5Hz 时每帧最多补 5 步，游戏按设计变慢而不是卡死。数据：docs/fixed_step_hz_check.json。
+
+## 7. 画面升级第一步（2026-10-29）
+- 新增 js/fx.js（3.8KB，固定 240 粒子池；自带 RNG，不调用 Math.random）：扬尘、草屑、火花、羊毛（输家毛色）、冠军彩带；冲击波圈、速度线、白闪、屏震、顿帧、挤压拉伸。未引入 tween.js（体积/必要性考虑，后续 UI 缓动再加并附 MIT 许可证）。
+- 事件来源（只读）：jump()（起跳尘+拉伸）、接触瞬间 clash（顿帧 60–100ms，按力度差线性；屏震 4–10px、220ms 衰减；白闪；冲击波；速度线；火花/羊毛/扬尘）、result 阶段落地（扬尘+草屑+挤压）、顶顶乐 Shot.ev 增量（wall/rock/break/hay）、回合胜/擂主胜/顶顶乐过关（彩带）。
+- 顿帧只冻结画面：drawBattle 在冻结期用接触瞬间的位置快照绘制，物理固定步照常推进；屏震只是 render 外层 ctx.translate；挤压拉伸只在 main.js 绕脚底 ctx.scale 包住 drawGoatArt 调用，goat.js 未改。`FX.enabled=false` 即关闭全部特效（用于 before 截图）。
+- 回归（与 v2 基准完全一致）：对战帧哈希 af021cef…86ce / 9074 帧 ✅，p6 输出 sha256 8de1a12a…8885 ✅，410 例 fe6ea1d9…4548 ✅，10 关全三星 ✅，tools/battle_check.js 7 组 AI 胜率/帧数/伤害输出与 v2 逐字节相同 ✅，30/60/120/144/抖动帧率进度仍一致 ✅。主包约 0.45MB。
+- 截图（同一虚拟时刻、同一种子，before=FX 关 / after=FX 开）：screenshots/p9_01_jump、p9_02_clash_hitstop（接触后 30ms：after 仍定格在接触位置+白闪+冲击波）、p9_03_clash_spark（160ms）、p9_04_land（520ms）、p9_05_ddl_hay、p9_06_ddl_confetti，各 _before/_after；录屏 screenshots/p9_clash_fx.webm（真实时间 3 次对撞，FX 开）。脚本 tools/p9_fx_shots.py。
+- 风险：屏震会让 HUD 一起抖（整画面平移）；顿帧期间画面与物理有 ≤100ms 不同步，之后瞬间追上（输家被击退的起点会"跳"一下，录屏可见，后续可改为顿帧后插值追帧）；对撞扬尘 y 略低于地面线。

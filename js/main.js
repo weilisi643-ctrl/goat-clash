@@ -1,4 +1,4 @@
-var D = require('./data.js'), BP = require('./battle_physics.js'), G = require('./goat.js'), A = require('./arena.js'), DDL = require('./ddl.js');
+var D = require('./data.js'), BP = require('./battle_physics.js'), FX = require('./fx.js'), G = require('./goat.js'), A = require('./arena.js'), DDL = require('./ddl.js');
 var canvas = wx.createCanvas(), ctx = canvas.getContext('2d');
 var info = wx.getSystemInfoSync(), W = info.windowWidth, H = info.windowHeight;
 canvas.width = W; canvas.height = H;
@@ -101,6 +101,7 @@ function jump() { // 玩家点击起跳；对手同步起跳
   // physics v2：对手时机在起跳时决定（擂主=timingHit 命中则 1，否则 0–0.7；自由对战 0–1 随机），决定双方抛物线高度
   B.eTiming = B.arena ? (Math.random() < B.stageCfg.ai.timingHit ? 1 : Math.random() * 0.7) : Math.random();
   BP.startJump(B.p, B.timing); BP.startJump(B.e, B.eTiming); B.p.kv = B.e.kv = 0; B.phase = 'air'; B.t = 0;
+  FX.ev('jump', { id: 'p', x: B.p.x, y: GY() + 44 }); FX.ev('jump', { id: 'e', x: B.e.x, y: GY() + 44 }); // 特效只读
 }
 function clash() {
   var ps = stats(st.look), es = stats(B.ai);
@@ -137,10 +138,15 @@ function next() {
 function updateBattle() { // 固定步 1/60s：只改物理/逻辑状态，绘制在 drawBattle
   if (B.phase === 'air') { // physics v2：解析抛物线 + 按 art v7 角根判定点检测接触
     BP.stepAir(B.p, 1); BP.stepAir(B.e, -1); var hc = BP.contact(B.p, B.e);
-    if (hc) { BP.resolvePenetration(B.p, B.e, hc); B.contact = hc; clash(); }
+    if (hc) { BP.resolvePenetration(B.p, B.e, hc); B.contact = hc;
+      var snap = { p: { x: B.p.x, y: B.p.y, vy: 0 }, e: { x: B.e.x, y: B.e.y, vy: 0 }, t: 0, phase: 'result' }; clash();
+      var hp = BP.hornPoint(B.p, 1, 'jump'), he = BP.hornPoint(B.e, -1, 'jump');
+      FX.ev('clash', { x: (hp[0] + he[0]) / 2, y: GY() + (hp[1] + he[1]) / 2, d: Math.abs(B.lastClash.pp - B.lastClash.ep), snap: snap, wool: (B.lastClash.pp >= B.lastClash.ep ? B.ai : st.look).woolColor });
+      if (B.roundEnd === 0) FX.ev('win', { x: W / 2, y: H * 0.45 }); }
     else if (!B.p.air && !B.e.air) { B.contact = null; B.p.y = B.e.y = 0; } // 理论不可达（落地前必接触）；保险
   }
-  if (B.phase === 'result') { BP.stepRecover(B.p, W * 0.25, W); BP.stepRecover(B.e, W * 0.75, W); }
+  if (B.phase === 'result') { var a0 = B.p.air, a1 = B.e.air; BP.stepRecover(B.p, W * 0.25, W); BP.stepRecover(B.e, W * 0.75, W);
+    if (a0 && !B.p.air) FX.ev('land', { id: 'p', x: B.p.x, y: GY() + 44 }); if (a1 && !B.e.air) FX.ev('land', { id: 'e', x: B.e.x, y: GY() + 44 }); }
   B.t++;
   if (B.phase === 'charge') { B.meter += 0.018 * B.dir; if (B.meter > 1 || B.meter < 0) B.dir *= -1; }
 }
@@ -149,11 +155,12 @@ function drawBattle() {
   text('第 ' + B.round + ' 回合  (三局两胜)  ' + B.wins[0] + ' : ' + B.wins[1], W / 2, 30, 16);
   hpBar(20, 50, B.p.hp, stats(st.look).hp, '你'); hpBar(W / 2 + 10, 50, B.e.hp, eMaxHp(), B.arena ? '擂主·' + B.arena.cfg.name : '电脑');
   if (B.arena) text('每日擂主 第 ' + B.arena.stage + ' 场' + (A.REASONING_ENABLED ? ' · 线索 Lv' + B.stageCfg.clueLv : ''), W / 2, 112, 12, '#666');
-  G.drawShadow(ctx, B.p.x, gy, 1.1, -B.p.y); G.drawShadow(ctx, B.e.x, gy, 1.1, -B.e.y);
-  var pose = B.phase === 'air' ? 'jump' : (B.phase === 'result' && B.t < 25) ? 'clash' : 'idle';
-  G.drawGoatArt(ctx, B.p.x, gy + B.p.y, 1.1, st.look, 1, 0, pose);
-  G.drawGoatArt(ctx, B.e.x, gy + B.e.y, 1.1, B.ai, -1, 0, pose);
-  if (B.phase === 'result' && B.t < 25) text('💥', W / 2, gy - 40, 40);
+  var V = (FX.enabled && FX.frozenView()) || { p: B.p, e: B.e, t: B.t, phase: B.phase }; // 顿帧：只冻结画面，物理照常推进
+  G.drawShadow(ctx, V.p.x, gy, 1.1, -V.p.y); G.drawShadow(ctx, V.e.x, gy, 1.1, -V.e.y);
+  var pose = V.phase === 'air' ? 'jump' : (V.phase === 'result' && V.t < 25) ? 'clash' : 'idle';
+  goatSq('p', V.p, gy, function () { G.drawGoatArt(ctx, V.p.x, gy + V.p.y, 1.1, st.look, 1, 0, pose); });
+  goatSq('e', V.e, gy, function () { G.drawGoatArt(ctx, V.e.x, gy + V.e.y, 1.1, B.ai, -1, 0, pose); });
+  if (V.phase === 'result' && V.t < 25) text('💥', W / 2, gy - 40, 40);
   text(B.msg, W / 2, 90, 15, '#a03000');
   var y0 = H * 0.76;
   if (B.phase === 'quiz' && QUIZ_ENABLED) {
@@ -179,6 +186,11 @@ function drawBattle() {
   }
   if (B.phase === 'result' && B.arena && B.reveal) text(B.reveal, W / 2, y0 + 10, 13, '#2a5ea0');
   if (B.phase === 'result' && B.t > 30) btn(W / 2 - 60, y0 + 40, 120, 44, B.roundEnd >= 0 ? '下一回合' : '继续', next);
+}
+function goatSq(id, g, gy, fn) { // 挤压拉伸：仅绕脚底缩放绘制，不改 goat.js
+  var k = FX.enabled ? FX.squash(id, g.vy) : [1, 1], fy = gy + g.y + 44;
+  if (k[0] === 1 && k[1] === 1) return fn();
+  ctx.save(); ctx.translate(g.x, fy); ctx.scale(k[0], k[1]); ctx.translate(-g.x, -fy); fn(); ctx.restore();
 }
 function hpBar(x, y, hp, max, n) { var w = W / 2 - 30; ctx.fillStyle = '#eee'; ctx.fillRect(x, y, w, 14);
   ctx.fillStyle = hp > max * 0.3 ? '#5cc85c' : '#e55'; ctx.fillRect(x, y, w * Math.max(0, hp) / max, 14); text(n + ' ' + Math.max(0, hp), x + w / 2, y + 7, 11); }
@@ -225,7 +237,7 @@ function startArenaStage(stage) {
   A.saveProgress(p); startMatch({ stage: stage, cfg: cfg });
 }
 function arenaStageEnd() {
-  var win = B.wins[0] === 2;
+  var win = B.wins[0] === 2; if (win) FX.ev('win', { x: W / 2, y: H * 0.35 }); // 冠军彩带
   var info = { hpPct: Math.max(0, B.p.hp) / stats(st.look).hp, hits: B.hits, guesses: B.guesses,
     timingAvg: B.jumps ? B.timingSum / B.jumps : 0, roundsLost: B.wins[1], timings: B.timings.slice() };
   var r = A.onStageEnd(AR.p, B.arena.stage, win, info, AR.champ.cfg); A.saveProgress(AR.p);
@@ -308,8 +320,12 @@ function drawObj(b) {
   if (b.type === 'sheep') text(b.awake ? '!' : 'z', b.x, b.y - b.r - 8, 12, '#666');
   if (b.type === 'rock') text('石', b.x, b.y, 11, '#fff');
 }
+function GY() { return H * 0.72 - 40; }
 function updateDdl() {
+  var sh = DG.shot, n0 = sh ? sh.ev.length : 0;
   if (DG.phase === 'flying') DDL.tick(DG);
+  if (sh) sh.ev.slice(n0).forEach(function (e) { var b = sh.B.filter(function (o) { return o.id === e[1]; })[0]; if (b) FX.ev('ddl', { k: e[0], x: b.x, y: b.y }); }); // 只读事件
+  if (sh && DG.phase === 'result') FX.ev('win', { x: W / 2, y: H * 0.3 });
   if (DG.phase === 'aim') { DG.meter += 0.018 * DG.dir; if (DG.meter > 1 || DG.meter < 0) DG.dir *= -1; DG.aimPower = Math.max(0, Math.min(1, DG.meter)); }
 }
 function drawDdl() {
@@ -389,14 +405,18 @@ function update() {
   clock.steps++;
 }
 function loop(ts) {
-  if (typeof ts !== 'number') update();
+  if (typeof ts !== 'number') { update(); FX.step(clock.steps * STEP); }
   else {
     if (clock.last === null) clock.last = ts;
     clock.acc += Math.max(0, ts - clock.last); clock.last = ts;
     var n = 0; while (clock.acc >= STEP && n < MAX_STEPS) { update(); clock.acc -= STEP; n++; }
     if (n === MAX_STEPS && clock.acc >= STEP) { clock.dropped += Math.floor(clock.acc / STEP); clock.acc %= STEP; }
   }
-  clock.frames++; render(); requestAnimationFrame(loop);
+  if (typeof ts === 'number') FX.step(ts);
+  clock.frames++;
+  var sk = FX.enabled && (st.scene === 'battle' || st.scene === 'ddl') ? FX.shakeOff() : [0, 0]; // 屏震只作用于渲染层
+  ctx.save(); ctx.translate(sk[0], sk[1]); render(); if (FX.enabled) FX.draw(ctx, W, H); ctx.restore();
+  requestAnimationFrame(loop);
 }
 function render() { st.buttons = [];
   if (st.scene === 'custom') drawCustom(); else if (st.scene === 'battle') drawBattle();
@@ -422,6 +442,6 @@ if (typeof document !== 'undefined') {
 module.exports = { QUIZ_ENABLED: QUIZ_ENABLED, st: st, G: G, D: D, get B() { return B; }, get AR() { return AR; }, get DG() { return DG; }, A: A, DDL: DDL,
   startMatch: startMatch, answer: answer, jump: jump, makeGuess: makeGuess,
   openArena: openArena, startArenaStage: startArenaStage, chooseFaction: chooseFaction, setNow: function (ms) { nowOverride = ms; },
-  clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,
+  FX: FX, clock: clock, STEP: STEP, MAX_STEPS: MAX_STEPS,
   openDdl: openDdl, enterDdl: enterDdl, fireDdl: function () { if (DG) DDL.fire(DG); } };
 loop();

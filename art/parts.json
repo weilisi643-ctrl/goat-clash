@@ -43,12 +43,12 @@
      745
     ],
     "leg_front_near": [
-     637,
+     618,
      770
     ],
     "leg_front_far": [
-     696,
-     895
+     671,
+     770
     ],
     "tail": [
      204,
@@ -92,6 +92,7 @@
      "parts/idle/leg_front_far/spots_idle.png",
      "parts/idle/leg_front_far/cloud_idle.png",
      "parts/idle/leg_front_far/spots_mask_idle.png",
+     "parts/idle/leg_front_far/knee_idle.png",
      "parts/idle/leg_front_far/body_idle.png"
     ],
     "tail": [
@@ -270,11 +271,11 @@
      820
     ],
     "leg_front_near": [
-     627,
+     616,
      840
     ],
     "leg_front_far": [
-     744,
+     682,
      840
     ],
     "tail": [
@@ -319,6 +320,7 @@
      "parts/clash/leg_front_far/spots_clash.png",
      "parts/clash/leg_front_far/cloud_clash.png",
      "parts/clash/leg_front_far/spots_mask_clash.png",
+     "parts/clash/leg_front_far/knee_clash.png",
      "parts/clash/leg_front_far/body_clash.png",
      "parts/clash/leg_front_far/beard_clash.png"
     ],
