@@ -5,7 +5,7 @@ module.exports = {
   colors: {
     bg: '#CFFC98', tuft: '#B1D198', ink: '#2F3727', white: '#FFFFFF', muted: 'rgba(47,55,39,0.55)',
     green: '#8CCB4E', red: '#FF7A6B', yellow: '#FCD800', blue: '#2E6FD8', orange: '#FF9E3D', gray: '#C9CCC4', alert: '#E5482F',
-    dim: 'rgba(47,55,39,0.55)',
+    dim: 'rgba(47,55,39,0.55)', accentYellow: '#FCD800', resultDeepGreen: '#5E7A44', bgResult: '#779059', // ui_v3 theme_tokens
     // 兼容旧字段（v2.1 渐变天空，style 为 'gradient' 时使用）
     skyTop: '#bfe9ff', skyBottom: '#fff6d8', ground: '#8fd17a', groundY: 0.72, text: '#2F3727', title: null,
     buttonDefault: '#FFFFFF', buttonText: '#2F3727'
@@ -26,6 +26,7 @@ module.exports = {
   },
   button: {
     style: 'sticker', radius: 11, stroke: { width: 2, color: '#2F3727' },
+    depth: 6, depthColor: '#8CCB4E', resultDepthColor: '#5E7A44', pressedOffsetY: 6, pressedMs: 60, pressedDarken: 0.95, // ui_v3：主按钮厚底 6（按下整体下移=厚底，厚底消失）
     edge: 6, edgeColor: '#8CCB4E', shadowY: 3.5,   // main：底部草绿厚边 + 黑描边；其余：底部黑色投影
     fontSize: 22, fontSizeRatio: 0.42, textOffsetY: 0, pressed: 0,
     variants: { // 可点元素的颜色：fill / text / edge(main 厚边)
@@ -52,12 +53,12 @@ module.exports = {
     hay: '#FCD800', hayAlpha: 0.85, hayStroke: '#B08A1E', target: '#FCD800',
     aim: '#FF4D4D', aimW: 3, aimDash: [8, 6], aimLen: 84, hint: '#2E6FD8', hintLen: 104, goatR: 18, hornW: 4
   },
-  tutorial: { dimAlpha: 0.55, holePad: 8, holeR: 14, tipY: 182, tipSize: 14, zoneColor: '#FCD800', zoneW: 3, zonePad: 4, skipW: 52, skipH: 30 }, // 新手教学：遮罩/提示/完美区描边（仅显示）
-  shadow: { contactColor: '#2F3727', contactAlpha: 0.26, asset: null }, // 接触阴影：首页展示台与战斗共用；美术 contact_shadow 未接入前用 Canvas 径向渐变占位
-  stage: { pedestal: '#F4FBE6', pedestalEdge: '#B9D98C', pedestalRx: 66, pedestalRy: 10, contactAlpha: 0.28 }, // 首页展示台（美术到位前 Canvas 占位）
+  tutorial: { dimAlpha: 0.55, holePad: 8, holeR: 14, tipY: 182, tipSize: 14, zoneColor: 'accentYellow', zoneW: 3, zonePad: 4, skipW: 52, skipH: 30 }, // 新手教学：遮罩/提示/完美区描边（仅显示）
+  shadow: { contactColor: '#2F3727', contactAlpha: 0.26, asset: 'art/ui_v3/assets/contact_shadow@3x.png', assetW: 84, assetAspect: 0.3134, assetAlpha: 0.9, liftMinScale: 0.6, liftMinAlpha: 0.4 }, // 接触阴影：首页展示台与战斗共用；asset 未加载时用 Canvas 径向渐变占位（contactColor/alpha）
+  stage: { asset: 'art/ui_v3/assets/pedestal@3x.png', assetW: 142, assetH: 45, anchor: [0.5, 0.42], pedestal: '#F4FBE6', pedestalEdge: '#B9D98C', pedestalRx: 66, pedestalRy: 10, contactAlpha: 0.28 }, // 首页展示台（美术到位前 Canvas 占位）
   layout: { // 各屏布局令牌（相对 375×667；bottom 为距屏底）
     pad: 20, gap: 10,
-    home: { titleY: 104, titleSize: 50, pillY: 160, goatY: 254, goatS: 1.6, statsY: 350, tipY: 365, rowY: 374, rowGap: 45, rowH: 35, arrowW: 35, rowX: 47,
+    home: { titleY: 104, titleSize: 50, pillY: 160, goatY: 250, goatS: 1.6, statsY: 350, tipY: 365, rowY: 374, rowGap: 45, rowH: 35, arrowW: 35, rowX: 47,
       startW: 200, startH: 55, startBottom: 112, sideW: 55, sideH: 42, sideBottom: 97, sideX: 20 },
     battle: { // v3.5 三层：上 状态区（比分缩小）/ 中 对战区（整场物理→屏幕变换放大 sceneZoom）/ 下 操作区（起跳为主按钮）
       pillY: 30, scoreY: 66, scoreSize: 34, hpY: 112, hpLabelY: 101, hpW: 155, msgY: 146, arenaY: 92,
@@ -71,7 +72,7 @@ module.exports = {
   spacing: { screenPad: 20, gap: 10, rowGap: 49 },
   effects: { // 新风格：无光影/暗角；阵营只在顶部加一条细色带
     vignette: { enabled: false, color: '40,20,0', alpha: 0.1, inner: 0.5, outer: 0.8 },
-    factionTint: { enabled: true, alpha: 0, topAlpha: 0.18, topHeight: 0.14,
+    factionTint: { enabled: false, alpha: 0, topAlpha: 0.18, topHeight: 0.14,
       colors: { north: '#d9a441', northeast: '#5aa0d8', east: '#4fb39a', central: '#c9b04a', south: '#e2735a', southwest: '#8f7ad0', northwest: '#c98a52', faraway: '#7a8fa6' } },
     impactGlow: { enabled: true, ms: 220, alpha: 0.55, radius: 26, grow: 46, powerRadius: 20, burstAlpha: 0.8, burstSize: 80 }
   }

@@ -521,7 +521,7 @@ wx.onTouchStart(function (e) { var t = e.touches[0], x = t.clientX, y = t.client
     for (var i = st.buttons.length - 1; i >= 0; i--) { var b = st.buttons[i]; if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) { b.cb(); return; } }
     if (y > 60 && y < H - 140) { DG.drag = { x0: DG.lv.start.x, y0: DG.lv.start.y }; DG._tx = x; DG._ty = y; updateAimFromDrag(); return; }
   }
-  for (var i = st.buttons.length - 1; i >= 0; i--) { var b = st.buttons[i]; if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) { b.cb(); return; } }
+  for (var i = st.buttons.length - 1; i >= 0; i--) { var b = st.buttons[i]; if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) { UI.press(b); b.cb(); return; } }
 });
 if (typeof document !== 'undefined') {
   document.addEventListener('mousemove', function (e) {

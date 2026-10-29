@@ -84,10 +84,16 @@ function sticker(ctx, x, y, w, h, r, fill, edgeH, edgeCol, sw) {
   ctx.fillStyle = fill; rr(ctx, x, y, w, h, r); ctx.fill();
   if (sw > 0) { ctx.strokeStyle = ink(); ctx.lineWidth = sw; rr(ctx, x, y, w, h, r); ctx.stroke(); } }
 // 按钮：variant 为 theme.button.variants 的名字（旧调用传颜色时按白色处理）；命中区由调用方按 x,y,w,h 记录，绘制只在区内+厚边
-function drawButton(ctx, x, y, w, h, label, variant, fontSize) { var B = TH.button, M = TH.motion, a = anim.fade, oy = (1 - a) * M.buttonRise;
-  var V = B.variants[variant] || B.variants.white, main = !!V.main, eh = main ? B.edge : B.shadowY;
+var PRESS = null; // 按下态（只显示）：{x,y,w,h,t}
+function press(b) { PRESS = { x: b.x, y: b.y, w: b.w, h: b.h, t: t }; }
+function darken(col, k) { if (!/^#[0-9a-f]{6}$/i.test(col)) return col; var n = parseInt(col.slice(1), 16), o = '#';
+  [16, 8, 0].forEach(function (b) { var v = Math.round(((n >> b) & 255) * k); o += (v < 16 ? '0' : '') + v.toString(16); }); return o; }
+function drawButton(ctx, x, y, w, h, label, variant, fontSize, depthColor) { var B = TH.button, M = TH.motion, a = anim.fade, oy = (1 - a) * M.buttonRise;
+  var V = B.variants[variant] || B.variants.white, main = !!V.main, eh = main ? B.depth : B.shadowY, fill = V.fill;
+  var pr = PRESS && PRESS.x === x && PRESS.y === y && PRESS.w === w && PRESS.h === h && t - PRESS.t < B.pressedMs;
+  if (pr) { oy += main ? B.pressedOffsetY : eh; eh = 0; fill = darken(fill, B.pressedDarken); }
   ctx.save(); ctx.globalAlpha = M.buttonMinAlpha + (1 - M.buttonMinAlpha) * a;
-  sticker(ctx, x, y + oy, w, h - (main ? 0 : 0), Math.min(B.radius, h / 2), V.fill, eh, main ? B.edgeColor : null, B.stroke.width);
+  sticker(ctx, x, y + oy, w, h, Math.min(B.radius, h / 2), fill, eh, main ? (depthColor || B.depthColor) : null, B.stroke.width);
   var fs = fontSize || Math.min(B.fontSize, h * B.fontSizeRatio * (String(label).indexOf('\n') >= 0 ? 0.8 : 1));
   drawText(ctx, label, x + w / 2, y + oy + h / 2 + B.textOffsetY, fs, V.text);
   ctx.restore(); }
@@ -126,7 +132,10 @@ function drawBg(ctx, W, H) { var C = TH.colors;
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.fillStyle = C.ground; ctx.fillRect(0, H * C.groundY, W, H * (1 - C.groundY)); return; }
   ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H); drawTufts(ctx, W, H); }
 // 首页展示台：浅色椭圆底座 + 接触阴影（y/s 与 drawGoatArt 相同）
-function drawPedestal(ctx, x, y, s) { var S = TH.stage, k = s / 1.6, rx = S.pedestalRx * k, ry = S.pedestalRy * k, cy = y + 41 * s + 3 * k; // 与 goat.drawShadow 同一脚底规则（y+41s）
+function drawPedestal(ctx, x, y, s) { var S = TH.stage, k = s / 1.6, pim = S.asset && img(S.asset);
+  if (pim) { var pw = S.assetW * k, ph = S.assetH * k, fy = y + 41 * s; ctx.drawImage(pim, x - pw * S.anchor[0], fy - ph * S.anchor[1], pw, ph); // 底座顶面中心=脚锚点
+    require('./goat.js').drawShadow(ctx, x, y, s * 0.9, 0); return; }
+  var rx = S.pedestalRx * k, ry = S.pedestalRy * k, cy = y + 41 * s + 3 * k; // 与 goat.drawShadow 同一脚底规则（y+41s）
   ctx.save(); ctx.fillStyle = S.pedestalEdge; ctx.beginPath(); ctx.ellipse(x, cy + 4 * k, rx, ry, 0, 0, 7); ctx.fill();
   ctx.fillStyle = S.pedestal; ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, 7); ctx.fill(); ctx.strokeStyle = ink(); ctx.lineWidth = 2; ctx.stroke();
   ctx.restore(); require('./goat.js').drawShadow(ctx, x, y - 1 * k, s * 0.9, 0); } // 接触阴影统一走 theme.shadow（与战斗同款）
@@ -138,6 +147,6 @@ function spotlight(ctx, W, H, holes) { var T = TH.tutorial; ctx.save(); ctx.fill
     ctx.lineTo(x + r, y + hh); ctx.arcTo(x, y + hh, x, y + hh - r, r); ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath(); });
   ctx.fill('evenodd'); ctx.restore(); }
 function drawTip(ctx, s, x, y) { return drawPill(ctx, s, x, y, true, TH.tutorial.tipSize); }
-function zoneOutline(ctx, x, y, w, z0, z1) { var T = TH.tutorial, h = TH.bar.meterH, p = T.zonePad; ctx.save(); ctx.strokeStyle = T.zoneColor; ctx.lineWidth = T.zoneW; ctx.setLineDash && ctx.setLineDash([6, 4]);
+function zoneOutline(ctx, x, y, w, z0, z1) { var T = TH.tutorial, h = TH.bar.meterH, p = T.zonePad; ctx.save(); ctx.strokeStyle = TH.colors[T.zoneColor] || T.zoneColor; ctx.lineWidth = T.zoneW; ctx.setLineDash && ctx.setLineDash([6, 4]);
   rr(ctx, x + w * z0 - p, y - p, w * (z1 - z0) + 2 * p, h + 2 * p, 6); ctx.stroke(); ctx.restore(); } // 只画：区间由调用方传入现有判定常量
-module.exports = { spotlight: spotlight, drawTip: drawTip, zoneOutline: zoneOutline, drawPedestal: drawPedestal, drawPill: drawPill, drawBar: drawBar, drawMeter: drawMeter, sticker: sticker, dim: dim, measure: measure, sysFont: sysFont, drawTufts: drawTufts, TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };
+module.exports = { press: press, darken: darken, spotlight: spotlight, drawTip: drawTip, zoneOutline: zoneOutline, drawPedestal: drawPedestal, drawPill: drawPill, drawBar: drawBar, drawMeter: drawMeter, sticker: sticker, dim: dim, measure: measure, sysFont: sysFont, drawTufts: drawTufts, TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };

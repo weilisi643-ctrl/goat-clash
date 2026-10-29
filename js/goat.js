@@ -48,6 +48,9 @@ module.exports = { drawGoat: drawGoat };
 function shadowRGB() { var c = '#2F3727'; try { var T = require('./theme.js'); if (T.shadow && T.shadow.contactColor) c = T.shadow.contactColor; } catch (e) {} var n = parseInt(c.slice(1), 16); return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255); }
 function shadowAlpha() { try { var T = require('./theme.js'); if (T.shadow && T.shadow.contactAlpha != null) return T.shadow.contactAlpha; } catch (e) {} return 0.26; }
 function drawShadow(ctx, x, y, s, lift) { // 接触阴影（theme.shadow 令牌，#2F3727 低透明度；展示台与战斗共用）：中心/尺寸规则与物理位置对齐，径向渐变占位
+  var T = require('./theme.js').shadow || {}, im = T.asset && require('./ui.js').img(T.asset);
+  if (im) { var q = Math.max(0, Math.min(1, (lift || 0) / 160)), sc = 1 - (1 - T.liftMinScale) * q, w = T.assetW * s * sc, h = w * T.assetAspect; // 素材：离地缩放 1→0.6、alpha 1→0.4
+    ctx.save(); ctx.globalAlpha *= T.assetAlpha * (1 - (1 - T.liftMinAlpha) * q); ctx.drawImage(im, x - w / 2, y + 41 * s - h / 2, w, h); ctx.restore(); return; }
   var k = Math.max(0.4, 1 - (lift || 0) / 160), a = shadowAlpha() * k, rx = 40 * s * k, ry = 7 * s * k, cy = y + 41 * s, rgb = shadowRGB();
   ctx.save(); var g = ctx.createRadialGradient && ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
   if (g && g.addColorStop) { g.addColorStop(0, 'rgba(' + rgb + ',' + a.toFixed(3) + ')'); g.addColorStop(0.6, 'rgba(' + rgb + ',' + (a * 0.6).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + rgb + ',0)');
