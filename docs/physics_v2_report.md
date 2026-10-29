@@ -170,3 +170,9 @@ screenshots/p8_01_jump、p8_02_clash、p8_03_jump_debug、p8_04_clash_debug、p8
 - manifest 核对：poses（anchor/horn_root/head_box/foot_y）、horn_bboxes、draw_order 与提交版一致；仅新增 edge_fix 说明、recolor.beard、beard_recolor，beard 三个文件 kind 由 color → gray_mask。
 - 渲染：goat.js 中 beard 层与 wool 共用 woolColor 着色和 layer() 离屏缓存（manifest kind=gray_mask 时生效）。
 - 绿边检测（tools/p13_shots.py，s=7 绿底合成，3 姿势×4 毛型×2 毛色）：内部绿色像素 13454 → 8480，闭合小孔 2774 → 2060，图层自身偏绿 0 → 0。详见 docs/p13_green_fringe.json。
+
+## 16. v3.2 美术：颈部补丁/前腿过渡/下巴修圆/绿边清理 + 部件头尾旋转（p16）
+- 锚点核对：manifest poses(anchor/horn_root)/horn_bboxes/draw_order/canvas 与 a666a22 一致；parts.json anchor [511,995]、三姿态 pivots/horn_root/cut_arcs 与 _v8c_pre/parts.json 一致；joint_patch pivot = head/tail pivot。
+- 渲染：drawGoatArt(…, pose, rot)；rot 为 0/缺省走整图路径（观感不变）；非 0 时按 part_draw_order 逐部件绘制，head/horn 绕 head pivot、tail 绕 tail pivot 旋转；补片画在最下层、不随转，a=-canvasDeg，|a|<1 不画，同号最近帧（≤7.5→5，≤12.5→10，否则 15），alpha=clamp((|a|-1)/4,0,1)，缺帧跳过。旋转只是展示，不读写物理；当前游戏内默认不旋转（ART.rot 调试覆盖）。
+- 已知问题：art/parts/*/{head,tail}_patch/*_320.png（139 个）为无透明的调色板 PNG（底色 #474C4C），渲染层检测到左上角不透明即跳过该帧并记录 ART.errors；全尺寸帧正常（p16_*_fullpatch 为开发对照）。需美术重新导出 _320。
+- 绿边（p13 同口径）：8480 → 808；针孔 2060 → 1176。

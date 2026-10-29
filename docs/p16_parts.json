@@ -1,0 +1,121 @@
+{
+ "equiv": {
+  "idle_fluffy": 194,
+  "idle_short": 190,
+  "idle_spots": 214,
+  "idle_cloud": 218,
+  "jump_fluffy": 181,
+  "jump_short": 162,
+  "jump_spots": 206,
+  "jump_cloud": 203,
+  "clash_fluffy": 57,
+  "clash_short": 53,
+  "clash_spots": 102,
+  "clash_cloud": 62
+ },
+ "patch_rule": {
+  "0": null,
+  "1": {
+   "frame": "-5",
+   "alpha": 0
+  },
+  "2": {
+   "frame": "-5",
+   "alpha": 0.25
+  },
+  "3": {
+   "frame": "-5",
+   "alpha": 0.5
+  },
+  "5": {
+   "frame": "-5",
+   "alpha": 1
+  },
+  "10": {
+   "frame": "-10",
+   "alpha": 1
+  },
+  "15": {
+   "frame": "-15",
+   "alpha": 1
+  },
+  "-15": {
+   "frame": "+15",
+   "alpha": 1
+  },
+  "-12.6": {
+   "frame": "+15",
+   "alpha": 1
+  },
+  "-10": {
+   "frame": "+10",
+   "alpha": 1
+  },
+  "-7.6": {
+   "frame": "+10",
+   "alpha": 1
+  },
+  "-5": {
+   "frame": "+5",
+   "alpha": 1
+  },
+  "-3": {
+   "frame": "+5",
+   "alpha": 0.5
+  },
+  "-1": {
+   "frame": "+5",
+   "alpha": 0
+  },
+  "-0.5": null,
+  "0.5": null,
+  "7.5": {
+   "frame": "-5",
+   "alpha": 1
+  },
+  "12.5": {
+   "frame": "-10",
+   "alpha": 1
+  }
+ },
+ "errors": [],
+ "art_errors": [
+  "patch frame without alpha, skipped: parts/idle/head_patch/fluffy_idle_a+15",
+  "patch frame without alpha, skipped: parts/idle/head_patch/fluffy_idle_a+5",
+  "patch frame without alpha, skipped: parts/idle/head_patch/fluffy_idle_a-5",
+  "patch frame without alpha, skipped: parts/idle/head_patch/fluffy_idle_a-15",
+  "patch frame without alpha, skipped: parts/jump/head_patch/fluffy_jump_a+15",
+  "patch frame without alpha, skipped: parts/jump/head_patch/fluffy_jump_a+5",
+  "patch frame without alpha, skipped: parts/jump/head_patch/fluffy_jump_a-5",
+  "patch frame without alpha, skipped: parts/jump/head_patch/fluffy_jump_a-15",
+  "patch frame without alpha, skipped: parts/clash/head_patch/fluffy_clash_a+15",
+  "patch frame without alpha, skipped: parts/clash/head_patch/fluffy_clash_a+5",
+  "patch frame without alpha, skipped: parts/clash/head_patch/fluffy_clash_a-5",
+  "patch frame without alpha, skipped: parts/clash/head_patch/fluffy_clash_a-15",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/fluffy_idle_a+15",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/fluffy_idle_a+5",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/fluffy_idle_a-5",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/fluffy_idle_a-15",
+  "patch frame without alpha, skipped: parts/jump/tail_patch/fluffy_jump_a+15",
+  "patch frame without alpha, skipped: parts/jump/tail_patch/fluffy_jump_a-5",
+  "patch frame without alpha, skipped: parts/jump/tail_patch/fluffy_jump_a-15",
+  "patch frame without alpha, skipped: parts/clash/tail_patch/fluffy_clash_a+15",
+  "patch frame without alpha, skipped: parts/clash/tail_patch/fluffy_clash_a+5",
+  "patch frame without alpha, skipped: parts/clash/tail_patch/fluffy_clash_a-5",
+  "patch frame without alpha, skipped: parts/clash/tail_patch/fluffy_clash_a-15",
+  "patch frame without alpha, skipped: parts/idle/head_patch/fluffy_idle_a-15",
+  "patch frame without alpha, skipped: parts/idle/head_patch/short_idle_a-15",
+  "patch frame without alpha, skipped: parts/idle/head_patch/fluffy_idle_a+15",
+  "patch frame without alpha, skipped: parts/idle/head_patch/spots_idle_a+15",
+  "patch frame without alpha, skipped: parts/idle/head_patch/fluffy_idle_a-5",
+  "patch frame without alpha, skipped: parts/idle/head_patch/cloud_idle_a-5",
+  "patch frame without alpha, skipped: parts/idle/head_patch/fluffy_idle_a+5",
+  "patch frame without alpha, skipped: parts/idle/head_patch/cloud_idle_a+5",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/fluffy_idle_a-15",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/fluffy_idle_a+15",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/spots_idle_a+15",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/fluffy_idle_a-5",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/fluffy_idle_a+5",
+  "patch frame without alpha, skipped: parts/idle/tail_patch/cloud_idle_a+5"
+ ]
+}

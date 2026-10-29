@@ -87,6 +87,7 @@ function loadArt() {
   try { ART.man = artLoadJSON('art/manifest.json'); } catch (e) { ART.failed = true; ART.errors.push('manifest: ' + e.message); return; }
   Object.keys(POSE_SRC).forEach(function (pose) { var mp = POSE_SRC[pose].manifest; if (!mp) return;
     try { var mm = artLoadJSON(mp); if (mm.poses && mm.poses[pose]) ART.poseMan[pose] = mm; } catch (e) { ART.errors.push('pose manifest ' + mp + ': ' + e.message); } });
+  try { ART.parts = artLoadJSON('art/parts.json'); ART.partFiles = {}; indexParts(ART.parts); } catch (e) { ART.parts = null; ART.errors.push('parts: ' + e.message); }
   var m = ART.man, list = {};
   Object.keys(m.poses).forEach(function (pose) {
     m.draw_order.forEach(function (t) {
@@ -104,6 +105,7 @@ function loadArt() {
   });
 }
 function kindOf(key) {
+  if (ART.kindOv && ART.kindOv[key]) key = ART.kindOv[key];
   var f = ((ART.poseMan[poseOf(key)] || ART.man).files || []).filter(function (x) { return x.small === key + '_320.png'; })[0];
   if (f) return f.kind;
   return key.indexOf('horn/') === 0 ? 'gray_mask_mid' : key.indexOf('wool/') === 0 ? 'gray_mask' : 'color';
@@ -140,9 +142,79 @@ function artUsable(look, pose) {
   var need = ART.man.draw_order.map(function (t) { return t.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose); });
   return need.every(function (k) { return !!ART.imgs[k]; });
 }
+// ================= 部件（art/parts.json）：头/尾展示性旋转 + 关节补片（只渲染，不读写物理） =================
+// 旋转角为 0 时走上面的整图路径（观感与之前完全一致）；非 0 时按 parts.json 的 part_draw_order 逐部件绘制。
+// spots_mask 与整图路径一致不使用（整图 draw_order 无 spots_mask，且 packOptions 排除 spots_mask_）。
+ART.kindOv = {}; ART.rot = null; ART.patchFull = false; // patchFull：仅开发/截图用全尺寸补片（不入包）； // ART.rot = {head: 度, tail: 度} 调试/截图覆盖（canvas rotate 度数，正 = 顺时针）
+function indexParts(p) {
+  var add = function (f) { ART.partFiles[f.replace(/\.png$/, '')] = 1; };
+  Object.keys(p.poses || {}).forEach(function (pose) { var fl = p.poses[pose].files || {}; Object.keys(fl).forEach(function (k) { fl[k].forEach(add); }); });
+  var jp = (p.joint_patch || {}).poses || {};
+  Object.keys(jp).forEach(function (pose) { ['head_patch', 'tail_patch'].forEach(function (k) { ((jp[pose][k] || {}).files || []).forEach(add); }); });
+}
+function partLayers(look, pose) { // [{key, whole, part}]，按 part_draw_order × 部件内图层顺序；只返回 parts.json 中存在的文件
+  var out = [], m = ART.man;
+  ART.parts.part_draw_order.forEach(function (part) {
+    m.draw_order.forEach(function (tpl) {
+      if (tpl.indexOf('{horn}') >= 0 && part !== 'horn') return;
+      var whole = tpl.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose);
+      var key = 'parts/' + pose + '/' + part + '/' + whole.split('/')[1];
+      if (ART.partFiles[key]) { ART.kindOv[key] = whole; out.push({ key: key, whole: whole, part: part, tpl: tpl }); }
+    });
+  });
+  return out;
+}
+function patchKey(look, pose, which, a) { // a = -(canvas 度数)；返回 {key, alpha} 或 null
+  var aa = Math.abs(a); if (aa < 1) return null;
+  var n = aa <= 7.5 ? 5 : aa <= 12.5 ? 10 : 15;
+  var key = 'parts/' + pose + '/' + which + '/' + look.wool + '_' + pose + '_a' + (a > 0 ? '+' : '-') + n;
+  if (!ART.partFiles[key]) return null;
+  ART.kindOv[key] = 'wool/' + look.wool + '_' + pose;
+  return { key: key, alpha: Math.max(0, Math.min(1, (aa - 1) / 4)) };
+}
+function ensurePartImgs(keys) { // 惰性加载 _320，全部就绪才返回 true
+  var ok = true;
+  keys.forEach(function (k) {
+    if (ART.imgs[k] || (ART.imgs[k] === null && k.indexOf('_patch/') >= 0)) return; ok = false; if (ART.imgs[k] === null || (ART.loadingP || {})[k]) return;
+    ART.loadingP = ART.loadingP || {}; ART.loadingP[k] = 1;
+    var img = newImage(); img.onload = function () { ART.imgs[k] = patchOpaque(k, img) ? null : img; delete ART.loadingP[k]; };
+    img.onerror = function () { ART.imgs[k] = null; delete ART.loadingP[k]; ART.errors.push('load fail ' + k); }; img.src = srcOf(poseOf(k.split('/')[1] ? '_' + k.split('/')[1] : '')).base + k + (ART.patchFull && k.indexOf('_patch/') >= 0 ? '.png' : '_320.png');
+  });
+  return ok;
+}
+// 补片帧应为透明底；若左上角不透明（如 _320 导出丢了 alpha），视为无效帧并跳过（同"帧不存在"），记入 ART.errors
+function patchOpaque(k, img) {
+  if (k.indexOf('_patch/') < 0) return false;
+  try { var c = newCanvas(img.width, img.height), x = c.getContext('2d'); x.drawImage(img, 0, 0);
+    if (x.getImageData(0, 0, 1, 1).data[3] > 0) { ART.errors.push('patch frame without alpha, skipped: ' + k); return true; } } catch (e) {}
+  return false;
+}
+function colorFor(tpl, whole, look) {
+  return tpl.indexOf('{wool}') >= 0 || whole.indexOf('beard/') === 0 ? look.woolColor : whole.indexOf('wool/knee') === 0 ? KNEE : tpl.indexOf('{horn}') >= 0 ? look.hornColor : null;
+}
+// 在已 translate(x,footY)+scale(face) 的坐标系里绘制部件；返回 false 表示素材未就绪（调用方回退整图）
+function drawParts(ctx, look, pose, rot, cw, chh, size, sz, ax, ay) {
+  if (!ART.parts || !ART.parts.poses[pose]) return false;
+  var PP = ART.parts.poses[pose], piv = PP.pivots, layers = partLayers(look, pose);
+  var hp = patchKey(look, pose, 'head_patch', -(rot.head || 0)), tp = patchKey(look, pose, 'tail_patch', -(rot.tail || 0));
+  var need = layers.map(function (l) { return l.key; }); if (hp) need.push(hp.key); if (tp) need.push(tp.key);
+  if (!ensurePartImgs(need)) return false;
+  var X = function (px) { return (px / cw - ax) * size; }, Y = function (py) { return (py / chh - ay) * sz; };
+  [hp, tp].forEach(function (p) { if (!p) return; var L = layer(p.key, look.woolColor); if (!L) return; // 补片：最下层、不跟头/尾转
+    ctx.save(); ctx.globalAlpha *= p.alpha; ctx.drawImage(L, -ax * size, -ay * sz, size, sz); ctx.restore(); });
+  layers.forEach(function (l) {
+    var L = layer(l.key, colorFor(l.tpl, l.whole, look)); if (!L) return;
+    var rp = l.part === 'head' || l.part === 'horn' ? 'head' : l.part === 'tail' ? 'tail' : null, d = rp ? (rot[rp] || 0) : 0;
+    if (d) { var pv = piv[rp === 'head' ? 'head' : 'tail']; ctx.save(); ctx.translate(X(pv[0]), Y(pv[1])); ctx.rotate(d * Math.PI / 180); ctx.translate(-X(pv[0]), -Y(pv[1])); }
+    ctx.drawImage(L, -ax * size, -ay * sz, size, sz);
+    if (d) ctx.restore();
+  });
+  return true;
+}
+module.exports.drawParts = drawParts;
 var KNEE = '#a8774a', ART_SCALE = 0.1; // 画布高 1024 → 102.4*s 像素（宽按实际图片比例），与旧程序化羊大小相当
 // x,y 与旧 drawGoat 相同（身体中心，脚底在 y+40*s）；pose: idle|jump|clash
-function drawGoatArt(ctx, x, y, s, look, face, t, pose) {
+function drawGoatArt(ctx, x, y, s, look, face, t, pose, rot) { // rot: 可选 {head, tail} 展示性旋转（canvas 度数）
   look = normalizeLook(look); pose = pose || 'idle';
   if (!ART.man || !ART.man.poses[pose]) pose = 'idle';
   if (!artUsable(look, pose)) return drawGoat(ctx, x, y, s, look, face, t);
@@ -155,6 +227,8 @@ function drawGoatArt(ctx, x, y, s, look, face, t, pose) {
   var fix = ART.footFix[pose]; if (fix && Math.abs(fix.diff) > 6 && USE_FOOT_FIX) ay = fix.measuredY / ART.imgs['body/body_' + pose].height;
   var footY = y + 40 * s;
   ctx.save(); ctx.translate(x, footY); ctx.scale(face < 0 ? -1 : 1, 1);
+  rot = ART.rot || rot;
+  if (rot && (rot.head || rot.tail) && drawParts(ctx, look, pose, rot, cw, chh, size, sz, ax, ay)) { ctx.restore(); return; }
   m.draw_order.forEach(function (tpl) {
     var key = tpl.replace('{wool}', look.wool).replace('{horn}', look.horn).replace('{pose}', pose);
     var col = tpl.indexOf('{wool}') >= 0 || key.indexOf('beard/') === 0 ? look.woolColor :  // v8c 胡子与羊毛同色（manifest kind=gray_mask 时生效，kind=color 时 layer() 原样返回）
