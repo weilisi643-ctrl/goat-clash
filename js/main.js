@@ -369,9 +369,24 @@ function drawObj(b) {
   if (b.type === 'rock') text('石', b.x, b.y, 11, 'white');
 }
 function GY() { return H * 0.72 - 40; }
+var DT = null; // 顶顶乐失败球轨迹（只显示层：只读 shot 位置，不写回任何状态）
+function trailRec(sh) { var T = TH.field.trail;
+  if (!DT || DT.shot !== sh) DT = { shot: sh, lv: DG.lv.id, n: 0, paths: {}, show: false };
+  if (DT.n++ % T.every) return;
+  sh.B.forEach(function (b) { var q = DT.paths[b.id] || (DT.paths[b.id] = { goat: b === sh.goat, pts: [] }), l = q.pts[q.pts.length - 1];
+    if (!l || Math.abs(l[0] - b.x) + Math.abs(l[1] - b.y) > 0.5) q.pts.push([b.x, b.y]); }); }
+function drawTrail() { var T = TH.field.trail;
+  if (!DT || !DT.show || DT.lv !== DG.lv.id || (DG.phase !== 'aim' && DG.phase !== 'fail')) return;
+  ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  Object.keys(DT.paths).forEach(function (k) { var q = DT.paths[k], P = q.pts; if (P.length < 2) return;
+    ctx.globalAlpha = T.alpha; ctx.setLineDash(q.goat ? T.goatDash : T.ballDash); ctx.lineWidth = T.w + 2; ctx.strokeStyle = T.outline;
+    ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]); P.forEach(function (p) { ctx.lineTo(p[0], p[1]); }); ctx.stroke();
+    ctx.lineWidth = T.w; ctx.strokeStyle = q.goat ? T.goatColor : T.ballColor; ctx.stroke(); ctx.setLineDash([]);
+    var e = P[P.length - 1]; ctx.fillStyle = q.goat ? T.goatColor : T.ballColor; ctx.beginPath(); ctx.arc(e[0], e[1], T.endR, 0, 7); ctx.fill(); });
+  ctx.restore(); }
 function updateDdl() {
   var sh = DG.shot, n0 = sh ? sh.ev.length : 0;
-  if (DG.phase === 'flying') DDL.tick(DG);
+  if (DG.phase === 'flying') { DDL.tick(DG); if (sh) { trailRec(sh); if (!DG.shot) DT.show = DG.phase !== 'result'; } }
   if (sh) sh.ev.slice(n0).forEach(function (e) { var b = sh.B.filter(function (o) { return o.id === e[1]; })[0]; if (b) FX.ev('ddl', { k: e[0], x: b.x, y: b.y }); }); // 只读事件
   if (sh && DG.phase === 'result') FX.ev('win', { x: W / 2, y: H * 0.3 });
   if (DG.phase === 'aim') { DG.meter += 0.018 * DG.dir; if (DG.meter > 1 || DG.meter < 0) DG.dir *= -1; DG.aimPower = Math.max(0, Math.min(1, DG.meter)); }
@@ -390,6 +405,7 @@ function drawDdl() {
     ctx.strokeStyle = F.line; ctx.lineWidth = F.lineW; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(h.x, h.y, h.r, 0, 7); ctx.stroke(); ctx.setLineDash([]);
     text('草堆', h.x, h.y, 12);
   });
+  drawTrail(); // 上一次未过关顶撞的轨迹（压在物体下）
   DG.state.forEach(drawObj);
   if (FX.enabled) FX.drawScene(ctx); ctx.restore();
   if (DG.msg) pill(DG.msg, W / 2, H - TH.field.msgBottom, true, 13);

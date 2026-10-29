@@ -47,7 +47,8 @@ module.exports = {
     h: 15, radius: 7.5, stroke: 2, bg: '#FFFFFF', hp: '#8CCB4E', hpLow: '#FF7A6B', lowRatio: 0.3,
     meterH: 17, meterZone: '#8CCB4E', marker: '#FF4D4D', markerW: 6, markerH: 29
   },
-  field: { msgBottom: 162, // 顶顶乐场地
+  field: { trail: { every: 2, alpha: 0.9, w: 4, endR: 5, outline: '#3A3A3A', goatColor: '#FFFFFF', ballColor: '#FCD800', goatDash: [], ballDash: [6, 5] }, // 失败球轨迹线（只显示）
+    msgBottom: 162, // 顶顶乐场地
     bg: '#CFFC98', top: '#CFFC98', line: '#2F3727', lineW: 2,
     objects: { crate: '#E8B070', fragile: '#FFD9A0', ball: '#FFFFFF', rock: '#9AA19A', sheep: '#FFFFFF' }, fallback: '#DDDDDD',
     hay: '#FCD800', hayAlpha: 0.85, hayStroke: '#B08A1E', target: '#FCD800',
