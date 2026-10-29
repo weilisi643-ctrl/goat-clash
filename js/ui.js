@@ -54,28 +54,76 @@ function update(ms, scene) { t = ms;
 function lighten(col, k) { if (!(k > 1) || !/^#[0-9a-f]{6}$/i.test(col)) return col; var n = parseInt(col.slice(1), 16), o = '#';
   [16, 8, 0].forEach(function (b) { var v = Math.min(255, Math.round(((n >> b) & 255) * k)); o += (v < 16 ? '0' : '') + v.toString(16); }); return o; }
 function ease(n) { var a = String(n || 'Linear.None').split('.'), g = TWEEN.Easing[a[0]]; return (g && g[a[1] || 'None']) || TWEEN.Easing.Linear.None; }
-function sysFont(size) { return TH.font.weight + ' ' + size + 'px ' + TH.font.family; }
+// ---- 字体：站酷快乐体子集，小游戏 wx.loadFont / 浏览器 FontFace；未加载完或缺字时回退字体逐字补 ----
+var FAM = TH.font.family;
+(function loadFont() { var F = TH.font; if (!F.file) return;
+  try { if (typeof wx !== 'undefined' && wx.loadFont) { var fam = wx.loadFont(F.file); if (fam) FAM = fam; return; }
+    if (typeof FontFace !== 'undefined' && typeof document !== 'undefined' && document.fonts) { var ff = new FontFace(F.family, 'url(' + F.file + ')');
+      ff.load().then(function (f) { document.fonts.add(f); }, function () {}); } } catch (e) {} })();
+function sysFont(size) { return TH.font.weight + ' ' + size + 'px ' + FAM + ',' + TH.font.fallback; }
 // ---- 统一绘制：按钮 / 面板 / 文字 / 背景 都读主题 ----
-function rr(ctx, x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
+function rr(ctx, x, y, w, h, r) { r = Math.max(0, Math.min(r, w / 2, h / 2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
   ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
-function box(ctx, S, x, y, w, h, col) { // S = TH.button / TH.panel
-  var sh = S.shadow || {}; if (sh.blur || sh.offsetY) { ctx.shadowColor = sh.color; ctx.shadowBlur = sh.blur; ctx.shadowOffsetY = sh.offsetY; }
-  var ok = S.style === 'nine' && nine(ctx, S.image, x, y, w, h, col, S.slice);
-  if (!ok) { ctx.fillStyle = col; rr(ctx, x, y, w, h, S.radius); ctx.fill(); }
-  ctx.shadowColor = 'rgba(0,0,0,0)'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
-  if (S.stroke && S.stroke.width > 0) { ctx.strokeStyle = S.stroke.color; ctx.lineWidth = S.stroke.width; rr(ctx, x, y, w, h, S.radius); ctx.stroke(); } }
-function drawText(ctx, s, x, y, size, c) { size = size || 16; var F = TH.font.bitmap, col = TH.colors.title || c;
-  if (size >= F.titleMinSize) { var k = anim.pop; ctx.save(); ctx.translate(x, y); ctx.scale(k, k); var ok = bmText(ctx, s, 0, 0, size, F.titleStyle, col); ctx.restore(); if (ok) return; }
-  else if (size >= F.bodyMinSize && bmText(ctx, s, x, y, size, F.bodyStyle)) return;
-  ctx.fillStyle = c || TH.colors.text; ctx.font = sysFont(size); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y); }
-function drawButton(ctx, x, y, w, h, label, color) { var B = TH.button, M = TH.motion, a = anim.fade, oy = (1 - a) * M.buttonRise, col = color || TH.colors.buttonDefault;
+function ink() { return TH.colors.ink; }
+// 文字：style 为 theme.text 的样式名，或直接给颜色；多行用 \n
+function drawText(ctx, s, x, y, size, style, align) { size = size || 16; s = String(s);
+  var S = (style && TH.text[style]) || { fill: style || TH.colors.text }, big = S.rotate != null;
+  ctx.save(); ctx.translate(x, y); if (big) { var k = anim.pop; ctx.scale(k, k); ctx.rotate(S.rotate * Math.PI / 180); }
+  ctx.font = sysFont(size); ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+  var lines = s.split('\n'), lh = size * 1.12, y0 = -(lines.length - 1) * lh / 2;
+  lines.forEach(function (L, i) { var yy = y0 + i * lh;
+    if (S.shadow) { ctx.fillStyle = ink(); ctx.strokeStyle = ink(); ctx.lineWidth = S.stroke || 0; if (S.stroke) ctx.strokeText(L, S.shadow[0], yy + S.shadow[1]); ctx.fillText(L, S.shadow[0], yy + S.shadow[1]); }
+    if (S.stroke) { ctx.strokeStyle = ink(); ctx.lineWidth = S.stroke; ctx.strokeText(L, 0, yy); }
+    ctx.fillStyle = S.fill; ctx.fillText(L, 0, yy); });
+  ctx.restore(); }
+function measure(ctx, s, size) { ctx.font = sysFont(size); var m = ctx.measureText(String(s)); return m && m.width || String(s).length * size; }
+// 贴纸块：白/彩底 + 粗黑描边 + 底部厚边（main 草绿厚边 / 其余黑投影）
+function sticker(ctx, x, y, w, h, r, fill, edgeH, edgeCol, sw) {
+  if (edgeH > 0) { ctx.fillStyle = ink(); rr(ctx, x - sw / 2, y + edgeH - sw / 2, w + sw, h + sw, r); ctx.fill();
+    if (edgeCol) { ctx.fillStyle = edgeCol; rr(ctx, x, y + edgeH, w, h - sw / 2, r); ctx.fill(); } }
+  ctx.fillStyle = fill; rr(ctx, x, y, w, h, r); ctx.fill();
+  if (sw > 0) { ctx.strokeStyle = ink(); ctx.lineWidth = sw; rr(ctx, x, y, w, h, r); ctx.stroke(); } }
+// 按钮：variant 为 theme.button.variants 的名字（旧调用传颜色时按白色处理）；命中区由调用方按 x,y,w,h 记录，绘制只在区内+厚边
+function drawButton(ctx, x, y, w, h, label, variant, fontSize) { var B = TH.button, M = TH.motion, a = anim.fade, oy = (1 - a) * M.buttonRise;
+  var V = B.variants[variant] || B.variants.white, main = !!V.main, eh = main ? B.edge : B.shadowY;
   ctx.save(); ctx.globalAlpha = M.buttonMinAlpha + (1 - M.buttonMinAlpha) * a;
-  box(ctx, B, x, y + oy, w, h, B.style === 'nine' ? lighten(col, B.brightness) : col);
-  var fs = Math.min(B.fontSize, h * B.fontSizeRatio), cx = x + w / 2, cy = y + oy + h / 2 + B.textOffsetY;
-  if (!bmText(ctx, label, cx, cy, fs, TH.font.bitmap.bodyStyle)) { ctx.fillStyle = TH.colors.buttonText; ctx.font = sysFont(B.fontSize); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, cx, cy + B.sysTextOffsetY); }
+  sticker(ctx, x, y + oy, w, h - (main ? 0 : 0), Math.min(B.radius, h / 2), V.fill, eh, main ? B.edgeColor : null, B.stroke.width);
+  var fs = fontSize || Math.min(B.fontSize, h * B.fontSizeRatio * (String(label).indexOf('\n') >= 0 ? 0.8 : 1));
+  drawText(ctx, label, x + w / 2, y + oy + h / 2 + B.textOffsetY, fs, V.text);
   ctx.restore(); }
 function drawPanel(ctx, x, y, w, h, alpha) { var P = TH.panel, M = TH.motion; ctx.save(); ctx.globalAlpha = (alpha || P.alpha) * (M.panelMinAlpha + (1 - M.panelMinAlpha) * anim.fade);
-  box(ctx, P, x, y, w, h, P.style === 'nine' ? P.tint : P.fill); ctx.restore(); }
-function drawBg(ctx, W, H) { var C = TH.colors, g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, C.skyTop); g.addColorStop(1, C.skyBottom);
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.fillStyle = C.ground; ctx.fillRect(0, H * C.groundY, W, H * (1 - C.groundY)); }
-module.exports = { TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };
+  sticker(ctx, x, y, w, h, P.radius, P.fill, P.shadowY, null, P.stroke.width); ctx.restore(); }
+// 胶囊标签：dark=黑底白字（样稿“第 1 回合”），light=白底黑描边
+function drawPill(ctx, s, x, y, light, size) { var P = TH.pill, C = light ? P.light : P, fs = size || P.fontSize, w = measure(ctx, s, fs) + P.padX * 2, h = Math.max(P.h, fs + 8);
+  ctx.save(); ctx.fillStyle = C.fill; rr(ctx, x - w / 2, y - h / 2, w, h, h / 2); ctx.fill();
+  if (light) { ctx.strokeStyle = ink(); ctx.lineWidth = 2; ctx.stroke(); }
+  ctx.restore(); drawText(ctx, s, x, y, fs, C.text); return w; }
+// 血条：白底黑描边圆角，fromRight 时从右侧填充（对手）
+function drawBar(ctx, x, y, w, v, max, fromRight) { var B = TH.bar, k = Math.max(0, Math.min(1, v / max)), h = B.h;
+  ctx.save(); ctx.fillStyle = B.bg; rr(ctx, x, y, w, h, B.radius); ctx.fill(); ctx.save(); rr(ctx, x, y, w, h, B.radius); ctx.clip && ctx.clip();
+  ctx.fillStyle = k > B.lowRatio ? (fromRight ? B.hpLow : B.hp) : B.hpLow; if (!fromRight && k <= B.lowRatio) ctx.fillStyle = B.hpLow;
+  ctx.fillRect(fromRight ? x + w * (1 - k) : x, y, w * k, h); ctx.restore();
+  ctx.strokeStyle = ink(); ctx.lineWidth = B.stroke; rr(ctx, x, y, w, h, B.radius); ctx.stroke(); ctx.restore(); }
+// 蓄力条：白底 + 草绿高力区 + 红色描边游标
+function drawMeter(ctx, x, y, w, v, z0, z1) { var B = TH.bar, h = B.meterH;
+  ctx.save(); ctx.fillStyle = B.bg; rr(ctx, x, y, w, h, h / 2); ctx.fill(); ctx.save(); rr(ctx, x, y, w, h, h / 2); ctx.clip && ctx.clip();
+  ctx.fillStyle = B.meterZone; ctx.fillRect(x + w * z0, y, w * (z1 - z0), h); ctx.restore();
+  ctx.strokeStyle = ink(); ctx.lineWidth = B.stroke; rr(ctx, x, y, w, h, h / 2); ctx.stroke();
+  var mx = x + w * Math.max(0, Math.min(1, v)) - B.markerW / 2, my = y + h / 2 - B.markerH / 2;
+  ctx.fillStyle = B.marker; rr(ctx, mx, my, B.markerW, B.markerH, 3); ctx.fill(); ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore(); }
+// 背景：纯色草绿 + 确定性稀疏小草（V 形三笔），不消耗 Math.random
+var TUFTS = null;
+function tufts(W, H) { if (TUFTS && TUFTS.W === W && TUFTS.H === H) return TUFTS.list; var G = TH.background, s = G.tuftSeed, out = [];
+  function r() { s = (s * 48271) % 2147483647; return s / 2147483647; }
+  for (var i = 0; i < G.tufts; i++) out.push([10 + r() * (W - 30), 10 + r() * (H - 25)]); TUFTS = { W: W, H: H, list: out }; return out; }
+function drawTufts(ctx, W, H) { var G = TH.background, w = G.tuftW, h = G.tuftH;
+  ctx.save(); ctx.strokeStyle = TH.colors.tuft; ctx.lineWidth = G.tuftLine; ctx.lineCap = 'round';
+  tufts(W, H).forEach(function (p) { var x = p[0], y = p[1]; ctx.beginPath();
+    ctx.moveTo(x + w * 0.15, y + h); ctx.lineTo(x + w * 0.05, y + h * 0.33); ctx.moveTo(x + w * 0.35, y + h); ctx.lineTo(x + w * 0.4, y);
+    ctx.moveTo(x + w * 0.55, y + h); ctx.lineTo(x + w * 0.75, y + h * 0.42); ctx.stroke(); }); ctx.restore(); }
+function drawBg(ctx, W, H) { var C = TH.colors;
+  if (TH.background.style === 'gradient') { var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, C.skyTop); g.addColorStop(1, C.skyBottom);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.fillStyle = C.ground; ctx.fillRect(0, H * C.groundY, W, H * (1 - C.groundY)); return; }
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H); drawTufts(ctx, W, H); }
+function dim(ctx, W, H) { ctx.fillStyle = TH.colors.dim; ctx.fillRect(0, 0, W, H); }
+module.exports = { drawPill: drawPill, drawBar: drawBar, drawMeter: drawMeter, sticker: sticker, dim: dim, measure: measure, sysFont: sysFont, drawTufts: drawTufts, TH: TH, drawText: drawText, drawButton: drawButton, drawPanel: drawPanel, drawBg: drawBg, roundRect: rr, VC: VC, lighten: lighten, img: img, tinted: tinted, text: bmText, nine: nine, vignette: vignette, factionTint: factionTint, tintOf: tintOf, update: update, anim: anim, grad: grad, TWEEN: TWEEN };

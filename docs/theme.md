@@ -59,3 +59,10 @@
 
 ## 不在主题内（后续可扩展）
 顶顶乐场地的配色、血条、蓄力条、瞄准线目前仍写在 main.js 的绘制代码里。
+
+## v3 'ylgy-v3'（羊了个羊风格，p14）
+- 字体：站酷快乐体子集 art/ui/font/kuaile.ttf（824 字，tools/gen_font_subset.py 生成；OFL 许可见 OFL.txt）；缺字回退系统字体。
+- 令牌：colors / text styles / button 变体(main,white,sel,yellow,blue,orange,green,gray,red) / panel / pill / bar / field(顶顶乐场地、瞄准线) / layout(home,battle,result,list)。
+- battle.sceneShiftY：仅平移场景显示层，不影响物理坐标。
+- 顶顶乐玩家羊/瞄准线在控件之上绘制（起点 y≈600 与底部控件重叠）。
+- 验证：tools/p14_shots.py（Playwright 真实点击按钮中心走通全部流程，docs/p14_flow.json）。
