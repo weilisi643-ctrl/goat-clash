@@ -1,0 +1,238 @@
+{
+ "note": "透明 PNG，imagequant 压缩；logical_size = @2x/2（逻辑宽 375）；anchor 为归一化 (x,y)，0..1；动画建议仅供参考",
+ "title_perfect": {
+  "files": {
+   "@2x": "assets/title_perfect@2x.png",
+   "@3x": "assets/title_perfect@3x.png"
+  },
+  "size_px": {
+   "@2x": [
+    324,
+    112
+   ],
+   "@3x": [
+    486,
+    168
+   ]
+  },
+  "logical_size": [
+   162.0,
+   56.0
+  ],
+  "anchor": [
+   0.5,
+   0.5
+  ],
+  "usage": "“完美”对撞判定（时机完美）时在两羊上方弹出",
+  "anim_hint": "scale 0.6→1.1→1.0，220ms Back.Out；顿帧 hit-stop 60–80ms 后出现；停留 600ms 后上浮 12 并淡出 200ms",
+  "style": "字号 38（title_win 48 更重）、黄填充 + 黑描边 5 + 白色外描边 3 + 2 颗小星芒，旋转 -4°"
+ },
+ "title_win": {
+  "files": {
+   "@2x": "assets/title_win@2x.png",
+   "@3x": "assets/title_win@3x.png"
+  },
+  "size_px": {
+   "@2x": [
+    240,
+    121
+   ],
+   "@3x": [
+    360,
+    182
+   ]
+  },
+  "logical_size": [
+   120.0,
+   60.5
+  ],
+  "anchor": [
+   0.5,
+   0.6
+  ],
+  "usage": "结算卡顶部标题，压卡片上沿（卡片上沿对齐字高 60% 处）",
+  "anim_hint": "titlePopFrom 0.6，380ms Back.Out（与 theme.motion 一致）"
+ },
+ "title_lose": {
+  "files": {
+   "@2x": "assets/title_lose@2x.png",
+   "@3x": "assets/title_lose@3x.png"
+  },
+  "size_px": {
+   "@2x": [
+    196,
+    112
+   ],
+   "@3x": [
+    293,
+    168
+   ]
+  },
+  "logical_size": [
+   98.0,
+   56.0
+  ],
+  "anchor": [
+   0.5,
+   0.6
+  ],
+  "usage": "失败结算标题，同胜利位置；不加星星",
+  "anim_hint": "淡入 260ms + 下落 8，不弹跳"
+ },
+ "deco_star": {
+  "files": {
+   "@2x": "assets/deco_star@2x.png",
+   "@3x": "assets/deco_star@3x.png"
+  },
+  "size_px": {
+   "@2x": [
+    64,
+    64
+   ],
+   "@3x": [
+    96,
+    96
+   ]
+  },
+  "logical_size": [
+   32.0,
+   32.0
+  ],
+  "anchor": [
+   0.5,
+   0.5
+  ],
+  "usage": "胜利标题两侧各 1 颗，可选 1 颗小星，总数 ≤3",
+  "anim_hint": "标题出现后 120ms 依次 scale 0→1，160ms；之后不循环或极慢旋转 ±8°"
+ },
+ "deco_star_small": {
+  "files": {
+   "@2x": "assets/deco_star_small@2x.png",
+   "@3x": "assets/deco_star_small@3x.png"
+  },
+  "size_px": {
+   "@2x": [
+    44,
+    44
+   ],
+   "@3x": [
+    66,
+    66
+   ]
+  },
+  "logical_size": [
+   22.0,
+   22.0
+  ],
+  "anchor": [
+   0.5,
+   0.5
+  ],
+  "usage": "辅助小星",
+  "anim_hint": "同上"
+ },
+ "deco_dash": {
+  "files": {
+   "@2x": "assets/deco_dash@2x.png",
+   "@3x": "assets/deco_dash@3x.png"
+  },
+  "size_px": {
+   "@2x": [
+    40,
+    19
+   ],
+   "@3x": [
+    60,
+    28
+   ]
+  },
+  "logical_size": [
+   20.0,
+   9.5
+  ],
+  "anchor": [
+   0.5,
+   0.5
+  ],
+  "usage": "短线强调，可旋转放在标题外侧，单侧 ≤3 条",
+  "anim_hint": "从 0 长度伸出 100ms"
+ },
+ "deco_burst": {
+  "files": {
+   "@2x": "assets/deco_burst@2x.png",
+   "@3x": "assets/deco_burst@3x.png"
+  },
+  "size_px": {
+   "@2x": [
+    40,
+    55
+   ],
+   "@3x": [
+    60,
+    83
+   ]
+  },
+  "logical_size": [
+   20.0,
+   27.5
+  ],
+  "anchor": [
+   0.0,
+   1.0
+  ],
+  "usage": "三连短线组（已排好），放标题右上，anchor 左下角贴标题",
+  "anim_hint": "同 deco_dash"
+ },
+ "pedestal": {
+  "files": {
+   "@2x": "assets/pedestal@2x.png",
+   "@3x": "assets/pedestal@3x.png"
+  },
+  "size_px": {
+   "@2x": [
+    316,
+    100
+   ],
+   "@3x": [
+    474,
+    150
+   ]
+  },
+  "logical_size": [
+   158.0,
+   50.0
+  ],
+  "anchor": [
+   0.5,
+   0.42
+  ],
+  "usage": "首页展示台：山羊脚锚点(511,995 换算后)对齐 anchor（顶面椭圆中心）；先画底座再画羊；可等比缩放，宽≈羊身宽 1.1 倍",
+  "anim_hint": "静态；换装时可轻微 scaleY 0.96→1 回弹 120ms"
+ },
+ "contact_shadow": {
+  "files": {
+   "@2x": "assets/contact_shadow@2x.png",
+   "@3x": "assets/contact_shadow@3x.png"
+  },
+  "size_px": {
+   "@2x": [
+    268,
+    84
+   ],
+   "@3x": [
+    402,
+    126
+   ]
+  },
+  "logical_size": [
+   134.0,
+   42.0
+  ],
+  "anchor": [
+   0.5,
+   0.5
+  ],
+  "usage": "软接触阴影：首页放在底座顶面上（羊脚下）或对战中直接放地面，替换现有灰色椭圆影；alpha 已内置，可再乘 0.6–1",
+  "anim_hint": "跳跃时按离地高度缩放 1→0.6、alpha 1→0.4"
+ }
+}
