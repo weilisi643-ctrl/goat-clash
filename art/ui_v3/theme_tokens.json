@@ -1,0 +1,108 @@
+{
+ "name": "ui-v3-yanglegeyang",
+ "unit": "逻辑像素，设计宽 375（750 样稿 ÷2）；切图 @2x/@3x",
+ "colors": {
+  "bg": "#CFFC98",
+  "bgResult": "#779059",
+  "grassTuft": "#B1D198",
+  "primaryGreen": "#8CCB4E",
+  "resultDeepGreen": "#5E7A44",
+  "accentYellow": "#FCD800",
+  "accentBlue": "#2E6FD8",
+  "accentOrange": "#FF9E3D",
+  "accentRed": "#FF7A6B",
+  "alertRed": "#E5482F",
+  "markerRed": "#FF4D4D",
+  "cardWhite": "#FFFFFF",
+  "stroke": "#2F3727",
+  "text": "#2F3727",
+  "textSub": "#8A9081",
+  "textOnColor": "#FFFFFF",
+  "lockedGray": "#C9CCC4",
+  "disabledFill": "#EEF0EA",
+  "disabledStroke": "#B9BDB2",
+  "disabledText": "#A3A89B",
+  "pedestalTop": "#FFFFFF",
+  "pedestalSide": "#B1D198",
+  "shadowInk": "#2F3727"
+ },
+ "fontSize": {
+  "titleBig": 56,
+  "title": 48,
+  "score": 44,
+  "button": 20,
+  "buttonSmall": 16,
+  "body": 15,
+  "aux": 12,
+  "min": 12,
+  "titlePerfect": 38
+ },
+ "fontFamily": "ZCOOL KuaiLe（art/_fonts/ZCOOLKuaiLe-Regular.ttf，SIL OFL）；缺字回退 sans-serif bold",
+ "stroke": {
+  "button": 2,
+  "panel": 2.5,
+  "pill": 2,
+  "scoreText": 5,
+  "titleText": 6
+ },
+ "titleStroke": 6,
+ "titleShadow": 4,
+ "radius": {
+  "button": 11,
+  "buttonSmall": 9,
+  "pill": 999,
+  "panel": 18,
+  "levelCard": 14,
+  "hpBar": 8
+ },
+ "button": {
+  "primaryDepth": 6,
+  "smallDepth": 3.5,
+  "pressedOffsetY": "= depth（按下时整体下移 depth，厚底消失）",
+  "pressedMs": 60,
+  "heightPrimary": 44,
+  "heightSmall": 34,
+  "minTouch": 44
+ },
+ "shadow": {
+  "type": "实心硬投影，无模糊",
+  "color": "#2F3727",
+  "panelOffsetY": 6,
+  "buttonSmallOffsetY": 3.5,
+  "titleOffset": [
+   3,
+   4
+  ]
+ },
+ "spacing": {
+  "screenPad": 20,
+  "gap": 8,
+  "rowGap": 22,
+  "grassSafe": 16
+ },
+ "theme_js_mapping": {
+  "colors.skyTop / colors.skyBottom": "→ colors.bg（纯色，不再渐变，两键都填 #CFFC98）",
+  "colors.ground / groundY": "→ 取消地面色带：ground 填 #CFFC98 或 groundY=1",
+  "colors.text (#333333)": "→ colors.text #2F3727",
+  "colors.title (null)": "→ 保持 null（调用处传色：胜利=accentYellow，失败=lockedGray，常规=cardWhite）",
+  "colors.buttonDefault (#ffb347)": "→ cardWhite #FFFFFF（主按钮），次要按钮调用处传 accentBlue/accentYellow",
+  "colors.buttonText (#4a2c00)": "→ text #2F3727",
+  "font.family": "→ 'ZCOOL KuaiLe'（wx.loadFont 后），fallback sans-serif",
+  "button.style": "→ 'solid'（v3 规范为纯代码绘制；nine 切图仅作参考）",
+  "button.radius (12)": "→ radius.button 11",
+  "button.stroke {0}": "→ { width: 2, color: '#2F3727' }",
+  "button.shadow {0}": "→ { color: '#2F3727', blur: 0, offsetY: 3.5 }（主按钮的绿厚底需新增 button.depth / depthColor，现有代码无此键）",
+  "button.fontSize (16)": "→ fontSize.button 20",
+  "panel.tint / fill": "→ #FFFFFF，alpha 1",
+  "panel.radius (10)": "→ radius.panel 18",
+  "panel.stroke {0}": "→ { width: 2.5, color: '#2F3727' }",
+  "panel.shadow {0}": "→ { color: '#2F3727', blur: 0, offsetY: 6 }",
+  "spacing.screenPad (16)": "→ 20",
+  "effects.vignette.enabled": "→ false（风格指南：UI 无暗角/无渐变）",
+  "effects.factionTint.enabled": "→ false 或 alpha≤0.03",
+  "新增键（theme.js 现无）": "colors.bgResult, primaryGreen, accentYellow, accentBlue, lockedGray, disabled*, textSub; button.depth/depthColor/pressedOffsetY; fontSize.*; titleStroke/titleShadow"
+ },
+ "titlePerfectStroke": 5,
+ "titlePerfectShadow": 3,
+ "titlePerfectOuter": 3
+}

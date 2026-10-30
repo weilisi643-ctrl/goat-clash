@@ -1,0 +1,12 @@
+lv | target | adapt+pSnap | OK? | blind+pSnap | blind(no assist) | angleMagnet
+L1 第一顶 | 0.70 | 0.860 | OK | 0.767 | 0.795 | adapt+magnet=0.877 assist={"angleMagnet":true,"powerSnap":true}
+L2 歪歪草堆 | 0.35 | 0.665 | OK | 0.295 | 0.285 | adapt+magnet=0.667 assist={"angleMagnet":true,"powerSnap":true}
+L3 石头挡路 | 0.35 | 0.370 | OK | 0.135 | 0.095 | adapt+magnet=0.370 assist={"angleMagnet":false,"powerSnap":true}
+L4 接力顶 | 0.35 | 0.645 | OK | 0.130 | 0.140 | adapt+magnet=0.787 assist={"angleMagnet":true,"powerSnap":true}
+L5 脆脆箱 | 0.35 | 0.738 | OK | 0.338 | 0.340 | adapt+magnet=0.887 assist={"angleMagnet":true,"powerSnap":true}
+L6 别吵醒它 | 0.40 | 0.492 | OK | 0.445 | 0.300 | adapt+magnet=0.492 assist={"angleMagnet":true,"powerSnap":true}
+L7 两堆草 | 0.20 | 0.470 | OK | 0.055 | 0.048 | adapt+magnet=0.760 assist={"angleMagnet":true,"powerSnap":true}
+L8 石林弹球 | 0.35 | 0.530 | OK | 0.228 | 0.138 | adapt+magnet=0.530 assist={"angleMagnet":false,"powerSnap":true}
+L9 起床号 | 0.20 | 0.830 | OK | 0.207 | 0.155 | adapt+magnet=0.953 assist={"angleMagnet":true,"powerSnap":true}
+L10 牧场大扫除 | 0.20 | 0.242 | OK | 0.085 | 0.052 | adapt+magnet=0.220 assist={"angleMagnet":true,"powerSnap":true}
+miss []

@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "changeCooldownDays": 30,
+  "weekResetWeekday": 1,
+  "weekResetHourUTC8": 5,
+  "rankBy": "perCapita",
+  "score": {
+    "base": 8,
+    "timingMul": 6,
+    "hpPctMul": 4,
+    "flawlessBonus": 2,
+    "dailyCapPerUser": 20
+  },
+  "factions": [
+    {
+      "id": "north",
+      "name": "华北牧场",
+      "flag": "flag_north"
+    },
+    {
+      "id": "northeast",
+      "name": "东北牧场",
+      "flag": "flag_northeast"
+    },
+    {
+      "id": "east",
+      "name": "华东牧场",
+      "flag": "flag_east"
+    },
+    {
+      "id": "central",
+      "name": "华中牧场",
+      "flag": "flag_central"
+    },
+    {
+      "id": "south",
+      "name": "华南牧场",
+      "flag": "flag_south"
+    },
+    {
+      "id": "southwest",
+      "name": "西南牧场",
+      "flag": "flag_southwest"
+    },
+    {
+      "id": "northwest",
+      "name": "西北牧场",
+      "flag": "flag_northwest"
+    },
+    {
+      "id": "faraway",
+      "name": "远方牧场",
+      "flag": "flag_faraway"
+    }
+  ],
+  "rewards": {
+    "stage1Win": {
+      "grass": 20
+    },
+    "stage2Win": {
+      "card": "$cardId",
+      "titleProgress": 1
+    },
+    "titles": [
+      {
+        "days": 3,
+        "id": "t_rookie",
+        "name": "擂台新秀"
+      },
+      {
+        "days": 7,
+        "id": "t_seven",
+        "name": "七日顶角手"
+      },
+      {
+        "days": 15,
+        "id": "t_peak",
+        "name": "山巅守擂羊"
+      }
+    ],
+    "weeklyTop": {
+      "frame": "frame_week_top"
+    }
+  }
+}

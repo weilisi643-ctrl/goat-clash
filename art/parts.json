@@ -1,0 +1,1338 @@
+{
+ "version": 2,
+ "base": "art v8（v7 + fix_edges 去绿边）",
+ "canvas": [
+  1152,
+  1024
+ ],
+ "small_canvas": [
+  360,
+  320
+ ],
+ "anchor": [
+  511,
+  995
+ ],
+ "note": "horn 部件单独最后绘制，但跟随 head 的变换（同一 pivot、同一角度）。头和四肢画在 body 之下，这样它们的隐藏延伸区（underlap）随部件一起转动，能填补关节外沿的缺口。部件全画布、左上角对齐、offset 0。切线是以关节轴心为圆心的圆弧：部件绕 pivot 转动时切口沿圆弧滑动，不产生楔形缺口。每个部件内部按 v7 顺序 wool→knee→body→beard→face→horn 绘制、同样换色。pivot 为全画布像素坐标，小图乘 0.3125。",
+ "underlap_note": "隐藏重叠区：头、四条腿、尾巴的 wool（含 spots_mask、knee）越过关节切线向 body 里延伸 band 像素（头 60、腿 40、尾 35），只放在 body 在该羊毛款式下 alpha=255 的位置，所以静止合成与 v8 原图逐像素一致；部件转动时延伸区跟着转，补上切口和关节外沿的缝。远侧腿另向近侧腿下延伸（髋/肩 80px 内满强度，80→120px 线性渐隐，v8b 修前腿重叠台阶）。",
+ "joint_fill": "v1 的 joint_fill 已废弃（删除），由 underlap 取代",
+ "part_draw_order": [
+  "leg_back_far",
+  "leg_front_far",
+  "leg_back_near",
+  "leg_front_near",
+  "tail",
+  "head",
+  "body",
+  "horn"
+ ],
+ "beard_recolor": "beard 为灰度 mask，与羊毛同色：RGB = 灰度/255 × woolColor",
+ "layer_draw_order_within_part": [
+  "wool/{wool}",
+  "wool/spots_mask (仅 spots 款可选第二色)",
+  "wool/knee",
+  "body",
+  "beard",
+  "face",
+  "horn/{horn} (仅 horn 部件)"
+ ],
+ "rotation_tested": {
+  "head": "±15°",
+  "legs": "±12°",
+  "tail": "±15°"
+ },
+ "poses": {
+  "idle": {
+   "pivots": {
+    "head": [
+     690,
+     450
+    ],
+    "tail": [
+     250,
+     550
+    ],
+    "leg_back_near": [
+     235,
+     700
+    ],
+    "leg_back_far": [
+     320,
+     700
+    ],
+    "leg_front_near": [
+     625,
+     710
+    ],
+    "leg_front_far": [
+     680,
+     710
+    ],
+    "horn": [
+     690,
+     450
+    ],
+    "body": [
+     501,
+     584
+    ],
+    "body_alt_foot_anchor": [
+     511,
+     995
+    ]
+   },
+   "cut_arcs": {
+    "head": {
+     "center": [
+      690,
+      450
+     ],
+     "axis": [
+      0.41,
+      -0.91
+     ],
+     "radius": 95
+    },
+    "tail": {
+     "center": [
+      250,
+      550
+     ],
+     "axis": [
+      -1,
+      0
+     ],
+     "radius": 35
+    },
+    "leg_back_L": {
+     "center": [
+      235,
+      700
+     ],
+     "axis": [
+      0,
+      1
+     ],
+     "radius": 60
+    },
+    "leg_back_R": {
+     "center": [
+      320,
+      700
+     ],
+     "axis": [
+      0,
+      1
+     ],
+     "radius": 55
+    },
+    "leg_front_L": {
+     "center": [
+      625,
+      710
+     ],
+     "axis": [
+      0,
+      1
+     ],
+     "radius": 55
+    },
+    "leg_front_R": {
+     "center": [
+      680,
+      710
+     ],
+     "axis": [
+      0,
+      1
+     ],
+     "radius": 55
+    }
+   },
+   "leg_LR_note": "L/R=画面左/右，near/far 见 pivots",
+   "split_curves": {
+    "back_split_poly_x_of_y": [
+     0.005383,
+     -9.422366,
+     4379.686834
+    ],
+    "front_split_poly_x_of_y": [
+     0.011811,
+     642.905512
+    ]
+   },
+   "underlap_px_full_fluffy": {
+    "head<body": 10185,
+    "leg_back_near<body": 6214,
+    "leg_front_near<body": 5870,
+    "leg_back_far<body": 4868,
+    "leg_front_far<body": 2673,
+    "tail<body": 6816,
+    "leg_back_far<leg_back_near": 1915,
+    "leg_front_far<leg_front_near": 2125
+   },
+   "files": {
+    "leg_back_far": [
+     "parts/idle/leg_back_far/fluffy_idle.png",
+     "parts/idle/leg_back_far/short_idle.png",
+     "parts/idle/leg_back_far/spots_idle.png",
+     "parts/idle/leg_back_far/cloud_idle.png",
+     "parts/idle/leg_back_far/spots_mask_idle.png",
+     "parts/idle/leg_back_far/body_idle.png"
+    ],
+    "leg_front_far": [
+     "parts/idle/leg_front_far/fluffy_idle.png",
+     "parts/idle/leg_front_far/short_idle.png",
+     "parts/idle/leg_front_far/spots_idle.png",
+     "parts/idle/leg_front_far/cloud_idle.png",
+     "parts/idle/leg_front_far/spots_mask_idle.png",
+     "parts/idle/leg_front_far/knee_idle.png",
+     "parts/idle/leg_front_far/body_idle.png"
+    ],
+    "leg_back_near": [
+     "parts/idle/leg_back_near/fluffy_idle.png",
+     "parts/idle/leg_back_near/short_idle.png",
+     "parts/idle/leg_back_near/spots_idle.png",
+     "parts/idle/leg_back_near/cloud_idle.png",
+     "parts/idle/leg_back_near/spots_mask_idle.png",
+     "parts/idle/leg_back_near/body_idle.png"
+    ],
+    "leg_front_near": [
+     "parts/idle/leg_front_near/fluffy_idle.png",
+     "parts/idle/leg_front_near/short_idle.png",
+     "parts/idle/leg_front_near/spots_idle.png",
+     "parts/idle/leg_front_near/cloud_idle.png",
+     "parts/idle/leg_front_near/spots_mask_idle.png",
+     "parts/idle/leg_front_near/knee_idle.png",
+     "parts/idle/leg_front_near/body_idle.png"
+    ],
+    "tail": [
+     "parts/idle/tail/fluffy_idle.png",
+     "parts/idle/tail/short_idle.png",
+     "parts/idle/tail/spots_idle.png",
+     "parts/idle/tail/cloud_idle.png",
+     "parts/idle/tail/spots_mask_idle.png"
+    ],
+    "head": [
+     "parts/idle/head/fluffy_idle.png",
+     "parts/idle/head/short_idle.png",
+     "parts/idle/head/spots_idle.png",
+     "parts/idle/head/cloud_idle.png",
+     "parts/idle/head/spots_mask_idle.png",
+     "parts/idle/head/body_idle.png",
+     "parts/idle/head/beard_idle.png",
+     "parts/idle/head/face_idle.png"
+    ],
+    "body": [
+     "parts/idle/body/fluffy_idle.png",
+     "parts/idle/body/short_idle.png",
+     "parts/idle/body/spots_idle.png",
+     "parts/idle/body/cloud_idle.png",
+     "parts/idle/body/spots_mask_idle.png",
+     "parts/idle/body/body_idle.png",
+     "parts/idle/body/beard_idle.png"
+    ],
+    "horn": [
+     "parts/idle/horn/curl_idle.png",
+     "parts/idle/horn/straight_idle.png",
+     "parts/idle/horn/spiral_idle.png",
+     "parts/idle/horn/branch_idle.png"
+    ]
+   },
+   "horn_root": [
+    806,
+    277
+   ]
+  },
+  "jump": {
+   "pivots": {
+    "head": [
+     665,
+     470
+    ],
+    "tail": [
+     330,
+     650
+    ],
+    "leg_back_near": [
+     360,
+     780
+    ],
+    "leg_back_far": [
+     300,
+     760
+    ],
+    "leg_front_near": [
+     700,
+     640
+    ],
+    "leg_front_far": [
+     770,
+     610
+    ],
+    "horn": [
+     665,
+     470
+    ],
+    "body": [
+     525,
+     621
+    ],
+    "body_alt_foot_anchor": [
+     511,
+     995
+    ]
+   },
+   "cut_arcs": {
+    "head": {
+     "center": [
+      665,
+      470
+     ],
+     "axis": [
+      0.41,
+      -0.91
+     ],
+     "radius": 90
+    },
+    "tail": {
+     "center": [
+      330,
+      650
+     ],
+     "axis": [
+      -0.95,
+      -0.3
+     ],
+     "radius": 40
+    },
+    "leg_back_L": {
+     "center": [
+      300,
+      760
+     ],
+     "axis": [
+      -0.4,
+      0.92
+     ],
+     "radius": 50
+    },
+    "leg_back_R": {
+     "center": [
+      360,
+      780
+     ],
+     "axis": [
+      -0.45,
+      0.89
+     ],
+     "radius": 60
+    },
+    "leg_front_L": {
+     "center": [
+      700,
+      640
+     ],
+     "axis": [
+      -0.5,
+      0.87
+     ],
+     "radius": 45
+    },
+    "leg_front_R": {
+     "center": [
+      770,
+      610
+     ],
+     "axis": [
+      -0.2,
+      0.98
+     ],
+     "radius": 45
+    }
+   },
+   "leg_LR_note": "L/R=画面左/右，near/far 见 pivots",
+   "split_curves": {
+    "back_split_poly_x_of_y": [
+     0.001394,
+     -2.886216,
+     1713.318224
+    ],
+    "front_split_poly_x_of_y": [
+     -0.733333,
+     1222.0
+    ]
+   },
+   "underlap_px_full_fluffy": {
+    "head<body": 8200,
+    "leg_back_near<body": 4941,
+    "leg_front_near<body": 6098,
+    "leg_back_far<body": 2494,
+    "leg_front_far<body": 3252,
+    "tail<body": 4605,
+    "leg_back_far<leg_back_near": 2097,
+    "leg_front_far<leg_front_near": 366
+   },
+   "files": {
+    "leg_back_far": [
+     "parts/jump/leg_back_far/fluffy_jump.png",
+     "parts/jump/leg_back_far/short_jump.png",
+     "parts/jump/leg_back_far/spots_jump.png",
+     "parts/jump/leg_back_far/cloud_jump.png",
+     "parts/jump/leg_back_far/spots_mask_jump.png",
+     "parts/jump/leg_back_far/body_jump.png"
+    ],
+    "leg_front_far": [
+     "parts/jump/leg_front_far/fluffy_jump.png",
+     "parts/jump/leg_front_far/short_jump.png",
+     "parts/jump/leg_front_far/spots_jump.png",
+     "parts/jump/leg_front_far/cloud_jump.png",
+     "parts/jump/leg_front_far/spots_mask_jump.png",
+     "parts/jump/leg_front_far/knee_jump.png",
+     "parts/jump/leg_front_far/body_jump.png"
+    ],
+    "leg_back_near": [
+     "parts/jump/leg_back_near/fluffy_jump.png",
+     "parts/jump/leg_back_near/short_jump.png",
+     "parts/jump/leg_back_near/spots_jump.png",
+     "parts/jump/leg_back_near/cloud_jump.png",
+     "parts/jump/leg_back_near/spots_mask_jump.png",
+     "parts/jump/leg_back_near/body_jump.png"
+    ],
+    "leg_front_near": [
+     "parts/jump/leg_front_near/fluffy_jump.png",
+     "parts/jump/leg_front_near/short_jump.png",
+     "parts/jump/leg_front_near/spots_jump.png",
+     "parts/jump/leg_front_near/cloud_jump.png",
+     "parts/jump/leg_front_near/spots_mask_jump.png",
+     "parts/jump/leg_front_near/knee_jump.png",
+     "parts/jump/leg_front_near/body_jump.png"
+    ],
+    "tail": [
+     "parts/jump/tail/fluffy_jump.png",
+     "parts/jump/tail/short_jump.png",
+     "parts/jump/tail/spots_jump.png",
+     "parts/jump/tail/cloud_jump.png",
+     "parts/jump/tail/spots_mask_jump.png"
+    ],
+    "head": [
+     "parts/jump/head/fluffy_jump.png",
+     "parts/jump/head/short_jump.png",
+     "parts/jump/head/spots_jump.png",
+     "parts/jump/head/cloud_jump.png",
+     "parts/jump/head/spots_mask_jump.png",
+     "parts/jump/head/body_jump.png",
+     "parts/jump/head/beard_jump.png",
+     "parts/jump/head/face_jump.png"
+    ],
+    "body": [
+     "parts/jump/body/fluffy_jump.png",
+     "parts/jump/body/short_jump.png",
+     "parts/jump/body/spots_jump.png",
+     "parts/jump/body/cloud_jump.png",
+     "parts/jump/body/spots_mask_jump.png",
+     "parts/jump/body/knee_jump.png"
+    ],
+    "horn": [
+     "parts/jump/horn/curl_jump.png",
+     "parts/jump/horn/straight_jump.png",
+     "parts/jump/horn/spiral_jump.png",
+     "parts/jump/horn/branch_jump.png"
+    ]
+   },
+   "horn_root": [
+    782,
+    326
+   ]
+  },
+  "clash": {
+   "pivots": {
+    "head": [
+     720,
+     730
+    ],
+    "tail": [
+     270,
+     615
+    ],
+    "leg_back_near": [
+     210,
+     770
+    ],
+    "leg_back_far": [
+     290,
+     790
+    ],
+    "leg_front_near": [
+     610,
+     800
+    ],
+    "leg_front_far": [
+     670,
+     800
+    ],
+    "horn": [
+     720,
+     730
+    ],
+    "body": [
+     478,
+     698
+    ],
+    "body_alt_foot_anchor": [
+     511,
+     995
+    ]
+   },
+   "cut_arcs": {
+    "head": {
+     "center": [
+      720,
+      730
+     ],
+     "axis": [
+      0.98,
+      0.2
+     ],
+     "radius": 85
+    },
+    "tail": {
+     "center": [
+      270,
+      615
+     ],
+     "axis": [
+      -1,
+      0
+     ],
+     "radius": 35
+    },
+    "leg_back_L": {
+     "center": [
+      210,
+      770
+     ],
+     "axis": [
+      -0.3,
+      0.95
+     ],
+     "radius": 50
+    },
+    "leg_back_R": {
+     "center": [
+      290,
+      790
+     ],
+     "axis": [
+      0,
+      1
+     ],
+     "radius": 45
+    },
+    "leg_front_L": {
+     "center": [
+      610,
+      800
+     ],
+     "axis": [
+      0.2,
+      0.98
+     ],
+     "radius": 50
+    },
+    "leg_front_R": {
+     "center": [
+      670,
+      800
+     ],
+     "axis": [
+      0.4,
+      0.92
+     ],
+     "radius": 45
+    }
+   },
+   "leg_LR_note": "L/R=画面左/右，near/far 见 pivots",
+   "split_curves": {
+    "back_split_poly_x_of_y": [
+     0.003124,
+     -5.546444,
+     2679.775819
+    ],
+    "front_split_poly_x_of_y": [
+     0.217391,
+     477.391304
+    ]
+   },
+   "underlap_px_full_fluffy": {
+    "head<body": 9144,
+    "leg_back_near<body": 3263,
+    "leg_front_near<body": 5647,
+    "leg_back_far<body": 5067,
+    "leg_front_far<body": 927,
+    "tail<body": 5120,
+    "leg_back_far<leg_back_near": 181,
+    "leg_front_far<leg_front_near": 1326
+   },
+   "files": {
+    "leg_back_far": [
+     "parts/clash/leg_back_far/fluffy_clash.png",
+     "parts/clash/leg_back_far/short_clash.png",
+     "parts/clash/leg_back_far/spots_clash.png",
+     "parts/clash/leg_back_far/cloud_clash.png",
+     "parts/clash/leg_back_far/spots_mask_clash.png",
+     "parts/clash/leg_back_far/body_clash.png"
+    ],
+    "leg_front_far": [
+     "parts/clash/leg_front_far/fluffy_clash.png",
+     "parts/clash/leg_front_far/short_clash.png",
+     "parts/clash/leg_front_far/spots_clash.png",
+     "parts/clash/leg_front_far/cloud_clash.png",
+     "parts/clash/leg_front_far/spots_mask_clash.png",
+     "parts/clash/leg_front_far/knee_clash.png",
+     "parts/clash/leg_front_far/body_clash.png"
+    ],
+    "leg_back_near": [
+     "parts/clash/leg_back_near/fluffy_clash.png",
+     "parts/clash/leg_back_near/short_clash.png",
+     "parts/clash/leg_back_near/spots_clash.png",
+     "parts/clash/leg_back_near/cloud_clash.png",
+     "parts/clash/leg_back_near/spots_mask_clash.png",
+     "parts/clash/leg_back_near/body_clash.png"
+    ],
+    "leg_front_near": [
+     "parts/clash/leg_front_near/fluffy_clash.png",
+     "parts/clash/leg_front_near/short_clash.png",
+     "parts/clash/leg_front_near/spots_clash.png",
+     "parts/clash/leg_front_near/cloud_clash.png",
+     "parts/clash/leg_front_near/spots_mask_clash.png",
+     "parts/clash/leg_front_near/knee_clash.png",
+     "parts/clash/leg_front_near/body_clash.png"
+    ],
+    "tail": [
+     "parts/clash/tail/fluffy_clash.png",
+     "parts/clash/tail/short_clash.png",
+     "parts/clash/tail/spots_clash.png",
+     "parts/clash/tail/cloud_clash.png",
+     "parts/clash/tail/spots_mask_clash.png"
+    ],
+    "head": [
+     "parts/clash/head/fluffy_clash.png",
+     "parts/clash/head/short_clash.png",
+     "parts/clash/head/spots_clash.png",
+     "parts/clash/head/cloud_clash.png",
+     "parts/clash/head/spots_mask_clash.png",
+     "parts/clash/head/body_clash.png",
+     "parts/clash/head/beard_clash.png",
+     "parts/clash/head/face_clash.png"
+    ],
+    "body": [
+     "parts/clash/body/fluffy_clash.png",
+     "parts/clash/body/short_clash.png",
+     "parts/clash/body/spots_clash.png",
+     "parts/clash/body/cloud_clash.png",
+     "parts/clash/body/spots_mask_clash.png",
+     "parts/clash/body/body_clash.png",
+     "parts/clash/body/beard_clash.png"
+    ],
+    "horn": [
+     "parts/clash/horn/curl_clash.png",
+     "parts/clash/horn/straight_clash.png",
+     "parts/clash/horn/spiral_clash.png",
+     "parts/clash/horn/branch_clash.png"
+    ]
+   },
+   "horn_root": [
+    860,
+    687
+   ]
+  }
+ },
+ "joint_patch": {
+  "note": "关节补片（v8b，v9 加四条腿）：parts/<pose>/head_patch（脖子后/胸前）、tail_patch（臀部/尾根）与 leg_back_near/leg_back_far/leg_front_near/leg_front_far_patch（髋/肩，角度 = 该腿绕自身 pivot 的旋转角），每个羊毛款式 + spots_mask 各有 a-15/-10/-5/+5/+10/+15 六帧（角度 = 头/尾绕 pivot 的旋转角，度，正值 = 屏幕逆时针，与 PIL rotate 一致；游戏里 canvas rotate 正值是顺时针，取 a = -canvasDeg）。用法：画在所有部件最下层，不跟随头/尾旋转（已按该角度在世界坐标算好）；用同款式羊毛色染色（灰/255×woolColor，spots_mask 用 #8b5a2b）。显示规则：|a|<1° 不画；取同符号最近的一帧（|a|≤7.5→5，≤12.5→10，否则 15）；alpha = clamp((|a|-1)/4,0,1)，1°→5° 淡入。静止（a=0）时不画，静态合成不变。某款式/角度没有缺口时该帧不存在，直接跳过。",
+  "poses": {
+   "idle": {
+    "head_patch": {
+     "pivot": [
+      690,
+      450
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/idle/head_patch/cloud_idle_a+10.png",
+      "parts/idle/head_patch/cloud_idle_a+15.png",
+      "parts/idle/head_patch/cloud_idle_a+5.png",
+      "parts/idle/head_patch/cloud_idle_a-10.png",
+      "parts/idle/head_patch/cloud_idle_a-15.png",
+      "parts/idle/head_patch/cloud_idle_a-5.png",
+      "parts/idle/head_patch/fluffy_idle_a+10.png",
+      "parts/idle/head_patch/fluffy_idle_a+15.png",
+      "parts/idle/head_patch/fluffy_idle_a+5.png",
+      "parts/idle/head_patch/fluffy_idle_a-10.png",
+      "parts/idle/head_patch/fluffy_idle_a-15.png",
+      "parts/idle/head_patch/fluffy_idle_a-5.png",
+      "parts/idle/head_patch/short_idle_a+10.png",
+      "parts/idle/head_patch/short_idle_a+15.png",
+      "parts/idle/head_patch/short_idle_a+5.png",
+      "parts/idle/head_patch/short_idle_a-10.png",
+      "parts/idle/head_patch/short_idle_a-15.png",
+      "parts/idle/head_patch/short_idle_a-5.png",
+      "parts/idle/head_patch/spots_idle_a+10.png",
+      "parts/idle/head_patch/spots_idle_a+15.png",
+      "parts/idle/head_patch/spots_idle_a+5.png",
+      "parts/idle/head_patch/spots_idle_a-10.png",
+      "parts/idle/head_patch/spots_idle_a-15.png",
+      "parts/idle/head_patch/spots_idle_a-5.png"
+     ]
+    },
+    "tail_patch": {
+     "pivot": [
+      250,
+      550
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/idle/tail_patch/cloud_idle_a+10.png",
+      "parts/idle/tail_patch/cloud_idle_a+15.png",
+      "parts/idle/tail_patch/cloud_idle_a+5.png",
+      "parts/idle/tail_patch/cloud_idle_a-10.png",
+      "parts/idle/tail_patch/cloud_idle_a-15.png",
+      "parts/idle/tail_patch/cloud_idle_a-5.png",
+      "parts/idle/tail_patch/fluffy_idle_a+10.png",
+      "parts/idle/tail_patch/fluffy_idle_a+15.png",
+      "parts/idle/tail_patch/fluffy_idle_a+5.png",
+      "parts/idle/tail_patch/fluffy_idle_a-10.png",
+      "parts/idle/tail_patch/fluffy_idle_a-15.png",
+      "parts/idle/tail_patch/fluffy_idle_a-5.png",
+      "parts/idle/tail_patch/short_idle_a+10.png",
+      "parts/idle/tail_patch/short_idle_a+15.png",
+      "parts/idle/tail_patch/short_idle_a+5.png",
+      "parts/idle/tail_patch/short_idle_a-10.png",
+      "parts/idle/tail_patch/short_idle_a-15.png",
+      "parts/idle/tail_patch/short_idle_a-5.png",
+      "parts/idle/tail_patch/spots_idle_a+10.png",
+      "parts/idle/tail_patch/spots_idle_a+15.png",
+      "parts/idle/tail_patch/spots_idle_a+5.png",
+      "parts/idle/tail_patch/spots_idle_a-10.png",
+      "parts/idle/tail_patch/spots_idle_a-15.png",
+      "parts/idle/tail_patch/spots_idle_a-5.png"
+     ]
+    },
+    "leg_back_near_patch": {
+     "pivot": [
+      235,
+      700
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/idle/leg_back_near_patch/cloud_idle_a+10.png",
+      "parts/idle/leg_back_near_patch/cloud_idle_a+15.png",
+      "parts/idle/leg_back_near_patch/cloud_idle_a+5.png",
+      "parts/idle/leg_back_near_patch/cloud_idle_a-10.png",
+      "parts/idle/leg_back_near_patch/cloud_idle_a-15.png",
+      "parts/idle/leg_back_near_patch/fluffy_idle_a+10.png",
+      "parts/idle/leg_back_near_patch/fluffy_idle_a+15.png",
+      "parts/idle/leg_back_near_patch/fluffy_idle_a+5.png",
+      "parts/idle/leg_back_near_patch/fluffy_idle_a-10.png",
+      "parts/idle/leg_back_near_patch/fluffy_idle_a-15.png",
+      "parts/idle/leg_back_near_patch/fluffy_idle_a-5.png",
+      "parts/idle/leg_back_near_patch/short_idle_a+10.png",
+      "parts/idle/leg_back_near_patch/short_idle_a+15.png",
+      "parts/idle/leg_back_near_patch/short_idle_a+5.png",
+      "parts/idle/leg_back_near_patch/short_idle_a-10.png",
+      "parts/idle/leg_back_near_patch/short_idle_a-15.png",
+      "parts/idle/leg_back_near_patch/short_idle_a-5.png",
+      "parts/idle/leg_back_near_patch/spots_idle_a+10.png",
+      "parts/idle/leg_back_near_patch/spots_idle_a+15.png",
+      "parts/idle/leg_back_near_patch/spots_idle_a+5.png",
+      "parts/idle/leg_back_near_patch/spots_idle_a-10.png",
+      "parts/idle/leg_back_near_patch/spots_idle_a-15.png",
+      "parts/idle/leg_back_near_patch/spots_idle_a-5.png"
+     ]
+    },
+    "leg_back_far_patch": {
+     "pivot": [
+      320,
+      700
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/idle/leg_back_far_patch/cloud_idle_a+10.png",
+      "parts/idle/leg_back_far_patch/cloud_idle_a+15.png",
+      "parts/idle/leg_back_far_patch/cloud_idle_a+5.png",
+      "parts/idle/leg_back_far_patch/cloud_idle_a-10.png",
+      "parts/idle/leg_back_far_patch/cloud_idle_a-15.png",
+      "parts/idle/leg_back_far_patch/cloud_idle_a-5.png",
+      "parts/idle/leg_back_far_patch/fluffy_idle_a+10.png",
+      "parts/idle/leg_back_far_patch/fluffy_idle_a+15.png",
+      "parts/idle/leg_back_far_patch/fluffy_idle_a+5.png",
+      "parts/idle/leg_back_far_patch/fluffy_idle_a-10.png",
+      "parts/idle/leg_back_far_patch/fluffy_idle_a-15.png",
+      "parts/idle/leg_back_far_patch/fluffy_idle_a-5.png",
+      "parts/idle/leg_back_far_patch/short_idle_a+10.png",
+      "parts/idle/leg_back_far_patch/short_idle_a+15.png",
+      "parts/idle/leg_back_far_patch/short_idle_a+5.png",
+      "parts/idle/leg_back_far_patch/short_idle_a-10.png",
+      "parts/idle/leg_back_far_patch/short_idle_a-15.png",
+      "parts/idle/leg_back_far_patch/short_idle_a-5.png",
+      "parts/idle/leg_back_far_patch/spots_idle_a+10.png",
+      "parts/idle/leg_back_far_patch/spots_idle_a+15.png",
+      "parts/idle/leg_back_far_patch/spots_idle_a+5.png",
+      "parts/idle/leg_back_far_patch/spots_idle_a-10.png",
+      "parts/idle/leg_back_far_patch/spots_idle_a-15.png",
+      "parts/idle/leg_back_far_patch/spots_idle_a-5.png"
+     ]
+    },
+    "leg_front_near_patch": {
+     "pivot": [
+      625,
+      710
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/idle/leg_front_near_patch/cloud_idle_a+10.png",
+      "parts/idle/leg_front_near_patch/cloud_idle_a+15.png",
+      "parts/idle/leg_front_near_patch/cloud_idle_a+5.png",
+      "parts/idle/leg_front_near_patch/cloud_idle_a-10.png",
+      "parts/idle/leg_front_near_patch/cloud_idle_a-15.png",
+      "parts/idle/leg_front_near_patch/cloud_idle_a-5.png",
+      "parts/idle/leg_front_near_patch/fluffy_idle_a+10.png",
+      "parts/idle/leg_front_near_patch/fluffy_idle_a+15.png",
+      "parts/idle/leg_front_near_patch/fluffy_idle_a+5.png",
+      "parts/idle/leg_front_near_patch/fluffy_idle_a-10.png",
+      "parts/idle/leg_front_near_patch/fluffy_idle_a-15.png",
+      "parts/idle/leg_front_near_patch/fluffy_idle_a-5.png",
+      "parts/idle/leg_front_near_patch/short_idle_a+10.png",
+      "parts/idle/leg_front_near_patch/short_idle_a+15.png",
+      "parts/idle/leg_front_near_patch/short_idle_a-10.png",
+      "parts/idle/leg_front_near_patch/short_idle_a-15.png",
+      "parts/idle/leg_front_near_patch/short_idle_a-5.png",
+      "parts/idle/leg_front_near_patch/spots_idle_a+10.png",
+      "parts/idle/leg_front_near_patch/spots_idle_a+15.png",
+      "parts/idle/leg_front_near_patch/spots_idle_a+5.png",
+      "parts/idle/leg_front_near_patch/spots_idle_a-10.png",
+      "parts/idle/leg_front_near_patch/spots_idle_a-15.png",
+      "parts/idle/leg_front_near_patch/spots_idle_a-5.png"
+     ]
+    },
+    "leg_front_far_patch": {
+     "pivot": [
+      680,
+      710
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/idle/leg_front_far_patch/cloud_idle_a+10.png",
+      "parts/idle/leg_front_far_patch/cloud_idle_a+15.png",
+      "parts/idle/leg_front_far_patch/cloud_idle_a+5.png",
+      "parts/idle/leg_front_far_patch/cloud_idle_a-10.png",
+      "parts/idle/leg_front_far_patch/cloud_idle_a-15.png",
+      "parts/idle/leg_front_far_patch/cloud_idle_a-5.png",
+      "parts/idle/leg_front_far_patch/fluffy_idle_a+10.png",
+      "parts/idle/leg_front_far_patch/fluffy_idle_a+15.png",
+      "parts/idle/leg_front_far_patch/fluffy_idle_a+5.png",
+      "parts/idle/leg_front_far_patch/fluffy_idle_a-10.png",
+      "parts/idle/leg_front_far_patch/fluffy_idle_a-15.png",
+      "parts/idle/leg_front_far_patch/fluffy_idle_a-5.png",
+      "parts/idle/leg_front_far_patch/short_idle_a+10.png",
+      "parts/idle/leg_front_far_patch/short_idle_a+15.png",
+      "parts/idle/leg_front_far_patch/short_idle_a+5.png",
+      "parts/idle/leg_front_far_patch/short_idle_a-10.png",
+      "parts/idle/leg_front_far_patch/short_idle_a-15.png",
+      "parts/idle/leg_front_far_patch/short_idle_a-5.png",
+      "parts/idle/leg_front_far_patch/spots_idle_a+10.png",
+      "parts/idle/leg_front_far_patch/spots_idle_a+15.png",
+      "parts/idle/leg_front_far_patch/spots_idle_a+5.png",
+      "parts/idle/leg_front_far_patch/spots_idle_a-10.png",
+      "parts/idle/leg_front_far_patch/spots_idle_a-15.png",
+      "parts/idle/leg_front_far_patch/spots_idle_a-5.png"
+     ]
+    }
+   },
+   "jump": {
+    "head_patch": {
+     "pivot": [
+      665,
+      470
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/jump/head_patch/cloud_jump_a+10.png",
+      "parts/jump/head_patch/cloud_jump_a+15.png",
+      "parts/jump/head_patch/cloud_jump_a+5.png",
+      "parts/jump/head_patch/cloud_jump_a-10.png",
+      "parts/jump/head_patch/cloud_jump_a-15.png",
+      "parts/jump/head_patch/cloud_jump_a-5.png",
+      "parts/jump/head_patch/fluffy_jump_a+10.png",
+      "parts/jump/head_patch/fluffy_jump_a+15.png",
+      "parts/jump/head_patch/fluffy_jump_a+5.png",
+      "parts/jump/head_patch/fluffy_jump_a-15.png",
+      "parts/jump/head_patch/fluffy_jump_a-5.png",
+      "parts/jump/head_patch/short_jump_a+10.png",
+      "parts/jump/head_patch/short_jump_a+15.png",
+      "parts/jump/head_patch/short_jump_a+5.png",
+      "parts/jump/head_patch/short_jump_a-10.png",
+      "parts/jump/head_patch/short_jump_a-15.png",
+      "parts/jump/head_patch/short_jump_a-5.png",
+      "parts/jump/head_patch/spots_jump_a+10.png",
+      "parts/jump/head_patch/spots_jump_a+15.png",
+      "parts/jump/head_patch/spots_jump_a+5.png",
+      "parts/jump/head_patch/spots_jump_a-15.png",
+      "parts/jump/head_patch/spots_jump_a-5.png"
+     ]
+    },
+    "tail_patch": {
+     "pivot": [
+      330,
+      650
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/jump/tail_patch/cloud_jump_a+10.png",
+      "parts/jump/tail_patch/cloud_jump_a+15.png",
+      "parts/jump/tail_patch/cloud_jump_a+5.png",
+      "parts/jump/tail_patch/cloud_jump_a-10.png",
+      "parts/jump/tail_patch/cloud_jump_a-15.png",
+      "parts/jump/tail_patch/cloud_jump_a-5.png",
+      "parts/jump/tail_patch/fluffy_jump_a+10.png",
+      "parts/jump/tail_patch/fluffy_jump_a+15.png",
+      "parts/jump/tail_patch/fluffy_jump_a-10.png",
+      "parts/jump/tail_patch/fluffy_jump_a-15.png",
+      "parts/jump/tail_patch/fluffy_jump_a-5.png",
+      "parts/jump/tail_patch/short_jump_a+10.png",
+      "parts/jump/tail_patch/short_jump_a+15.png",
+      "parts/jump/tail_patch/short_jump_a-10.png",
+      "parts/jump/tail_patch/short_jump_a-15.png",
+      "parts/jump/tail_patch/short_jump_a-5.png",
+      "parts/jump/tail_patch/spots_jump_a+10.png",
+      "parts/jump/tail_patch/spots_jump_a+15.png",
+      "parts/jump/tail_patch/spots_jump_a-10.png",
+      "parts/jump/tail_patch/spots_jump_a-15.png",
+      "parts/jump/tail_patch/spots_jump_a-5.png"
+     ]
+    },
+    "leg_back_near_patch": {
+     "pivot": [
+      360,
+      780
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/jump/leg_back_near_patch/cloud_jump_a+10.png",
+      "parts/jump/leg_back_near_patch/cloud_jump_a+15.png",
+      "parts/jump/leg_back_near_patch/fluffy_jump_a+10.png",
+      "parts/jump/leg_back_near_patch/fluffy_jump_a+15.png",
+      "parts/jump/leg_back_near_patch/short_jump_a+10.png",
+      "parts/jump/leg_back_near_patch/short_jump_a+15.png",
+      "parts/jump/leg_back_near_patch/short_jump_a+5.png",
+      "parts/jump/leg_back_near_patch/spots_jump_a+10.png",
+      "parts/jump/leg_back_near_patch/spots_jump_a+15.png"
+     ]
+    },
+    "leg_back_far_patch": {
+     "pivot": [
+      300,
+      760
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/jump/leg_back_far_patch/cloud_jump_a+10.png",
+      "parts/jump/leg_back_far_patch/cloud_jump_a-10.png",
+      "parts/jump/leg_back_far_patch/cloud_jump_a-15.png",
+      "parts/jump/leg_back_far_patch/cloud_jump_a-5.png",
+      "parts/jump/leg_back_far_patch/fluffy_jump_a+15.png",
+      "parts/jump/leg_back_far_patch/fluffy_jump_a+5.png",
+      "parts/jump/leg_back_far_patch/fluffy_jump_a-10.png",
+      "parts/jump/leg_back_far_patch/fluffy_jump_a-15.png",
+      "parts/jump/leg_back_far_patch/fluffy_jump_a-5.png",
+      "parts/jump/leg_back_far_patch/short_jump_a+15.png",
+      "parts/jump/leg_back_far_patch/short_jump_a+5.png",
+      "parts/jump/leg_back_far_patch/short_jump_a-10.png",
+      "parts/jump/leg_back_far_patch/short_jump_a-15.png",
+      "parts/jump/leg_back_far_patch/short_jump_a-5.png",
+      "parts/jump/leg_back_far_patch/spots_jump_a+15.png",
+      "parts/jump/leg_back_far_patch/spots_jump_a+5.png",
+      "parts/jump/leg_back_far_patch/spots_jump_a-10.png",
+      "parts/jump/leg_back_far_patch/spots_jump_a-15.png",
+      "parts/jump/leg_back_far_patch/spots_jump_a-5.png"
+     ]
+    },
+    "leg_front_near_patch": {
+     "pivot": [
+      700,
+      640
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/jump/leg_front_near_patch/cloud_jump_a+10.png",
+      "parts/jump/leg_front_near_patch/cloud_jump_a+15.png",
+      "parts/jump/leg_front_near_patch/cloud_jump_a-10.png",
+      "parts/jump/leg_front_near_patch/cloud_jump_a-15.png",
+      "parts/jump/leg_front_near_patch/cloud_jump_a-5.png",
+      "parts/jump/leg_front_near_patch/fluffy_jump_a+10.png",
+      "parts/jump/leg_front_near_patch/fluffy_jump_a+15.png",
+      "parts/jump/leg_front_near_patch/fluffy_jump_a+5.png",
+      "parts/jump/leg_front_near_patch/fluffy_jump_a-10.png",
+      "parts/jump/leg_front_near_patch/fluffy_jump_a-15.png",
+      "parts/jump/leg_front_near_patch/fluffy_jump_a-5.png",
+      "parts/jump/leg_front_near_patch/short_jump_a+10.png",
+      "parts/jump/leg_front_near_patch/short_jump_a+15.png",
+      "parts/jump/leg_front_near_patch/short_jump_a+5.png",
+      "parts/jump/leg_front_near_patch/short_jump_a-10.png",
+      "parts/jump/leg_front_near_patch/short_jump_a-15.png",
+      "parts/jump/leg_front_near_patch/short_jump_a-5.png",
+      "parts/jump/leg_front_near_patch/spots_jump_a+10.png",
+      "parts/jump/leg_front_near_patch/spots_jump_a+15.png",
+      "parts/jump/leg_front_near_patch/spots_jump_a+5.png",
+      "parts/jump/leg_front_near_patch/spots_jump_a-10.png",
+      "parts/jump/leg_front_near_patch/spots_jump_a-15.png",
+      "parts/jump/leg_front_near_patch/spots_jump_a-5.png"
+     ]
+    },
+    "leg_front_far_patch": {
+     "pivot": [
+      770,
+      610
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/jump/leg_front_far_patch/cloud_jump_a+10.png",
+      "parts/jump/leg_front_far_patch/cloud_jump_a+15.png",
+      "parts/jump/leg_front_far_patch/cloud_jump_a+5.png",
+      "parts/jump/leg_front_far_patch/fluffy_jump_a+10.png",
+      "parts/jump/leg_front_far_patch/fluffy_jump_a+15.png",
+      "parts/jump/leg_front_far_patch/fluffy_jump_a+5.png",
+      "parts/jump/leg_front_far_patch/short_jump_a+10.png",
+      "parts/jump/leg_front_far_patch/short_jump_a+15.png",
+      "parts/jump/leg_front_far_patch/short_jump_a+5.png",
+      "parts/jump/leg_front_far_patch/spots_jump_a+10.png",
+      "parts/jump/leg_front_far_patch/spots_jump_a+15.png",
+      "parts/jump/leg_front_far_patch/spots_jump_a+5.png"
+     ]
+    }
+   },
+   "clash": {
+    "head_patch": {
+     "pivot": [
+      720,
+      730
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/clash/head_patch/cloud_clash_a+10.png",
+      "parts/clash/head_patch/cloud_clash_a+15.png",
+      "parts/clash/head_patch/cloud_clash_a+5.png",
+      "parts/clash/head_patch/cloud_clash_a-10.png",
+      "parts/clash/head_patch/cloud_clash_a-15.png",
+      "parts/clash/head_patch/cloud_clash_a-5.png",
+      "parts/clash/head_patch/fluffy_clash_a+10.png",
+      "parts/clash/head_patch/fluffy_clash_a+15.png",
+      "parts/clash/head_patch/fluffy_clash_a+5.png",
+      "parts/clash/head_patch/fluffy_clash_a-10.png",
+      "parts/clash/head_patch/fluffy_clash_a-15.png",
+      "parts/clash/head_patch/fluffy_clash_a-5.png",
+      "parts/clash/head_patch/short_clash_a+10.png",
+      "parts/clash/head_patch/short_clash_a+15.png",
+      "parts/clash/head_patch/short_clash_a+5.png",
+      "parts/clash/head_patch/short_clash_a-10.png",
+      "parts/clash/head_patch/short_clash_a-15.png",
+      "parts/clash/head_patch/short_clash_a-5.png",
+      "parts/clash/head_patch/spots_clash_a+10.png",
+      "parts/clash/head_patch/spots_clash_a+15.png",
+      "parts/clash/head_patch/spots_clash_a+5.png",
+      "parts/clash/head_patch/spots_clash_a-10.png",
+      "parts/clash/head_patch/spots_clash_a-15.png",
+      "parts/clash/head_patch/spots_clash_a-5.png"
+     ]
+    },
+    "tail_patch": {
+     "pivot": [
+      270,
+      615
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/clash/tail_patch/cloud_clash_a+10.png",
+      "parts/clash/tail_patch/cloud_clash_a+15.png",
+      "parts/clash/tail_patch/cloud_clash_a+5.png",
+      "parts/clash/tail_patch/cloud_clash_a-10.png",
+      "parts/clash/tail_patch/cloud_clash_a-15.png",
+      "parts/clash/tail_patch/cloud_clash_a-5.png",
+      "parts/clash/tail_patch/fluffy_clash_a+10.png",
+      "parts/clash/tail_patch/fluffy_clash_a+15.png",
+      "parts/clash/tail_patch/fluffy_clash_a+5.png",
+      "parts/clash/tail_patch/fluffy_clash_a-10.png",
+      "parts/clash/tail_patch/fluffy_clash_a-15.png",
+      "parts/clash/tail_patch/fluffy_clash_a-5.png",
+      "parts/clash/tail_patch/short_clash_a+10.png",
+      "parts/clash/tail_patch/short_clash_a+15.png",
+      "parts/clash/tail_patch/short_clash_a+5.png",
+      "parts/clash/tail_patch/short_clash_a-10.png",
+      "parts/clash/tail_patch/short_clash_a-15.png",
+      "parts/clash/tail_patch/short_clash_a-5.png",
+      "parts/clash/tail_patch/spots_clash_a+10.png",
+      "parts/clash/tail_patch/spots_clash_a+15.png",
+      "parts/clash/tail_patch/spots_clash_a+5.png",
+      "parts/clash/tail_patch/spots_clash_a-10.png",
+      "parts/clash/tail_patch/spots_clash_a-15.png",
+      "parts/clash/tail_patch/spots_clash_a-5.png"
+     ]
+    },
+    "leg_back_near_patch": {
+     "pivot": [
+      210,
+      770
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/clash/leg_back_near_patch/cloud_clash_a+10.png",
+      "parts/clash/leg_back_near_patch/cloud_clash_a+15.png",
+      "parts/clash/leg_back_near_patch/cloud_clash_a+5.png",
+      "parts/clash/leg_back_near_patch/cloud_clash_a-10.png",
+      "parts/clash/leg_back_near_patch/cloud_clash_a-15.png",
+      "parts/clash/leg_back_near_patch/cloud_clash_a-5.png",
+      "parts/clash/leg_back_near_patch/fluffy_clash_a+10.png",
+      "parts/clash/leg_back_near_patch/fluffy_clash_a+15.png",
+      "parts/clash/leg_back_near_patch/fluffy_clash_a+5.png",
+      "parts/clash/leg_back_near_patch/fluffy_clash_a-10.png",
+      "parts/clash/leg_back_near_patch/fluffy_clash_a-15.png",
+      "parts/clash/leg_back_near_patch/fluffy_clash_a-5.png",
+      "parts/clash/leg_back_near_patch/short_clash_a+10.png",
+      "parts/clash/leg_back_near_patch/short_clash_a+15.png",
+      "parts/clash/leg_back_near_patch/short_clash_a+5.png",
+      "parts/clash/leg_back_near_patch/short_clash_a-10.png",
+      "parts/clash/leg_back_near_patch/short_clash_a-15.png",
+      "parts/clash/leg_back_near_patch/short_clash_a-5.png",
+      "parts/clash/leg_back_near_patch/spots_clash_a+10.png",
+      "parts/clash/leg_back_near_patch/spots_clash_a+15.png",
+      "parts/clash/leg_back_near_patch/spots_clash_a+5.png",
+      "parts/clash/leg_back_near_patch/spots_clash_a-10.png",
+      "parts/clash/leg_back_near_patch/spots_clash_a-15.png",
+      "parts/clash/leg_back_near_patch/spots_clash_a-5.png"
+     ]
+    },
+    "leg_back_far_patch": {
+     "pivot": [
+      290,
+      790
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/clash/leg_back_far_patch/cloud_clash_a+10.png",
+      "parts/clash/leg_back_far_patch/cloud_clash_a+15.png",
+      "parts/clash/leg_back_far_patch/cloud_clash_a+5.png",
+      "parts/clash/leg_back_far_patch/cloud_clash_a-10.png",
+      "parts/clash/leg_back_far_patch/cloud_clash_a-15.png",
+      "parts/clash/leg_back_far_patch/cloud_clash_a-5.png",
+      "parts/clash/leg_back_far_patch/fluffy_clash_a+10.png",
+      "parts/clash/leg_back_far_patch/fluffy_clash_a+15.png",
+      "parts/clash/leg_back_far_patch/fluffy_clash_a+5.png",
+      "parts/clash/leg_back_far_patch/fluffy_clash_a-10.png",
+      "parts/clash/leg_back_far_patch/fluffy_clash_a-15.png",
+      "parts/clash/leg_back_far_patch/fluffy_clash_a-5.png",
+      "parts/clash/leg_back_far_patch/short_clash_a+10.png",
+      "parts/clash/leg_back_far_patch/short_clash_a+15.png",
+      "parts/clash/leg_back_far_patch/short_clash_a+5.png",
+      "parts/clash/leg_back_far_patch/short_clash_a-10.png",
+      "parts/clash/leg_back_far_patch/short_clash_a-15.png",
+      "parts/clash/leg_back_far_patch/short_clash_a-5.png",
+      "parts/clash/leg_back_far_patch/spots_clash_a+10.png",
+      "parts/clash/leg_back_far_patch/spots_clash_a+15.png",
+      "parts/clash/leg_back_far_patch/spots_clash_a+5.png",
+      "parts/clash/leg_back_far_patch/spots_clash_a-10.png",
+      "parts/clash/leg_back_far_patch/spots_clash_a-15.png",
+      "parts/clash/leg_back_far_patch/spots_clash_a-5.png"
+     ]
+    },
+    "leg_front_near_patch": {
+     "pivot": [
+      610,
+      800
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/clash/leg_front_near_patch/cloud_clash_a+10.png",
+      "parts/clash/leg_front_near_patch/cloud_clash_a+15.png",
+      "parts/clash/leg_front_near_patch/cloud_clash_a+5.png",
+      "parts/clash/leg_front_near_patch/cloud_clash_a-10.png",
+      "parts/clash/leg_front_near_patch/cloud_clash_a-15.png",
+      "parts/clash/leg_front_near_patch/cloud_clash_a-5.png",
+      "parts/clash/leg_front_near_patch/fluffy_clash_a+10.png",
+      "parts/clash/leg_front_near_patch/fluffy_clash_a+15.png",
+      "parts/clash/leg_front_near_patch/fluffy_clash_a+5.png",
+      "parts/clash/leg_front_near_patch/fluffy_clash_a-10.png",
+      "parts/clash/leg_front_near_patch/fluffy_clash_a-15.png",
+      "parts/clash/leg_front_near_patch/fluffy_clash_a-5.png",
+      "parts/clash/leg_front_near_patch/short_clash_a+10.png",
+      "parts/clash/leg_front_near_patch/short_clash_a+15.png",
+      "parts/clash/leg_front_near_patch/short_clash_a+5.png",
+      "parts/clash/leg_front_near_patch/short_clash_a-10.png",
+      "parts/clash/leg_front_near_patch/short_clash_a-15.png",
+      "parts/clash/leg_front_near_patch/short_clash_a-5.png",
+      "parts/clash/leg_front_near_patch/spots_clash_a+10.png",
+      "parts/clash/leg_front_near_patch/spots_clash_a+15.png",
+      "parts/clash/leg_front_near_patch/spots_clash_a+5.png",
+      "parts/clash/leg_front_near_patch/spots_clash_a-10.png",
+      "parts/clash/leg_front_near_patch/spots_clash_a-15.png",
+      "parts/clash/leg_front_near_patch/spots_clash_a-5.png"
+     ]
+    },
+    "leg_front_far_patch": {
+     "pivot": [
+      670,
+      800
+     ],
+     "angles": [
+      -15,
+      -10,
+      -5,
+      5,
+      10,
+      15
+     ],
+     "files": [
+      "parts/clash/leg_front_far_patch/cloud_clash_a+10.png",
+      "parts/clash/leg_front_far_patch/cloud_clash_a+15.png",
+      "parts/clash/leg_front_far_patch/cloud_clash_a+5.png",
+      "parts/clash/leg_front_far_patch/cloud_clash_a-10.png",
+      "parts/clash/leg_front_far_patch/cloud_clash_a-15.png",
+      "parts/clash/leg_front_far_patch/fluffy_clash_a+10.png",
+      "parts/clash/leg_front_far_patch/fluffy_clash_a+15.png",
+      "parts/clash/leg_front_far_patch/fluffy_clash_a+5.png",
+      "parts/clash/leg_front_far_patch/fluffy_clash_a-10.png",
+      "parts/clash/leg_front_far_patch/fluffy_clash_a-15.png",
+      "parts/clash/leg_front_far_patch/short_clash_a+10.png",
+      "parts/clash/leg_front_far_patch/short_clash_a+15.png",
+      "parts/clash/leg_front_far_patch/short_clash_a+5.png",
+      "parts/clash/leg_front_far_patch/short_clash_a-10.png",
+      "parts/clash/leg_front_far_patch/short_clash_a-15.png",
+      "parts/clash/leg_front_far_patch/spots_clash_a+10.png",
+      "parts/clash/leg_front_far_patch/spots_clash_a+15.png",
+      "parts/clash/leg_front_far_patch/spots_clash_a+5.png",
+      "parts/clash/leg_front_far_patch/spots_clash_a-10.png",
+      "parts/clash/leg_front_far_patch/spots_clash_a-15.png"
+     ]
+    }
+   }
+  }
+ }
+}

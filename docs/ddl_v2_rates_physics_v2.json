@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "name": "第一顶",
+    "target": 0.7,
+    "adapt_powerSnap": 0.86,
+    "ok": true,
+    "blind_powerSnap": 0.7675,
+    "blind": 0.795,
+    "adapt_both": 0.8775
+  },
+  {
+    "id": 2,
+    "name": "歪歪草堆",
+    "target": 0.35,
+    "adapt_powerSnap": 0.665,
+    "ok": true,
+    "blind_powerSnap": 0.2975,
+    "blind": 0.285,
+    "adapt_both": 0.6675
+  },
+  {
+    "id": 3,
+    "name": "石头挡路",
+    "target": 0.35,
+    "adapt_powerSnap": 0.39,
+    "ok": true,
+    "blind_powerSnap": 0.14,
+    "blind": 0.0975,
+    "adapt_both": 0.39
+  },
+  {
+    "id": 4,
+    "name": "接力顶",
+    "target": 0.35,
+    "adapt_powerSnap": 0.65,
+    "ok": true,
+    "blind_powerSnap": 0.13,
+    "blind": 0.14,
+    "adapt_both": 0.79
+  },
+  {
+    "id": 5,
+    "name": "脆脆箱",
+    "target": 0.35,
+    "adapt_powerSnap": 0.7375,
+    "ok": true,
+    "blind_powerSnap": 0.3375,
+    "blind": 0.34,
+    "adapt_both": 0.8875
+  },
+  {
+    "id": 6,
+    "name": "别吵醒它",
+    "target": 0.4,
+    "adapt_powerSnap": 0.4925,
+    "ok": true,
+    "blind_powerSnap": 0.445,
+    "blind": 0.3,
+    "adapt_both": 0.4925
+  },
+  {
+    "id": 7,
+    "name": "两堆草",
+    "target": 0.2,
+    "adapt_powerSnap": 0.45,
+    "ok": true,
+    "blind_powerSnap": 0.055,
+    "blind": 0.0475,
+    "adapt_both": 0.755
+  },
+  {
+    "id": 8,
+    "name": "石林弹球",
+    "target": 0.35,
+    "adapt_powerSnap": 0.545,
+    "ok": true,
+    "blind_powerSnap": 0.2275,
+    "blind": 0.1325,
+    "adapt_both": 0.545
+  },
+  {
+    "id": 9,
+    "name": "起床号",
+    "target": 0.2,
+    "adapt_powerSnap": 0.8275,
+    "ok": true,
+    "blind_powerSnap": 0.2075,
+    "blind": 0.155,
+    "adapt_both": 0.9525
+  },
+  {
+    "id": 10,
+    "name": "牧场大扫除",
+    "target": 0.2,
+    "adapt_powerSnap": 0.2375,
+    "ok": true,
+    "blind_powerSnap": 0.075,
+    "blind": 0.05,
+    "adapt_both": 0.165
+  }
+]

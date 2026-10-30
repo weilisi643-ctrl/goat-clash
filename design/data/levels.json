@@ -1,0 +1,744 @@
+{
+ "version": 1,
+ "screen": {
+  "w": 375,
+  "h": 667
+ },
+ "field": {
+  "x0": 0,
+  "y0": 60,
+  "x1": 375,
+  "y1": 667
+ },
+ "physics": {
+  "dt": 0.016666666666666666,
+  "frictionG": 600.0,
+  "maxSpeed": 900,
+  "wallRestitution": 0.5,
+  "angleUnit": "deg, 0=右 90=上(屏幕向上)",
+  "power": "0~1，速度=maxSpeed*power*speedMul",
+  "collider": "全部按圆形"
+ },
+ "objectTypes": {
+  "goat": {
+   "m": 1.0,
+   "f": 0.9,
+   "e": 0.6,
+   "r": 18
+  },
+  "crate": {
+   "m": 1.2,
+   "f": 1.1,
+   "e": 0.4,
+   "r": 16
+  },
+  "fragile": {
+   "m": 0.8,
+   "f": 1.1,
+   "e": 0.3,
+   "r": 15,
+   "breakV": 260
+  },
+  "ball": {
+   "m": 0.6,
+   "f": 0.5,
+   "e": 0.8,
+   "r": 12
+  },
+  "rock": {
+   "m": 1000000000.0,
+   "f": 0,
+   "e": 0.5,
+   "r": 20,
+   "static": true
+  },
+  "sheep": {
+   "m": 1.5,
+   "f": 1.0,
+   "e": 0.5,
+   "r": 18,
+   "wakeV": 120,
+   "dashV": 600
+  }
+ },
+ "hornMods": {
+  "curl": {
+   "speedMul": 1.0,
+   "e": 0.3,
+   "massMul": 1.0
+  },
+  "straight": {
+   "speedMul": 1.15,
+   "e": 0.6,
+   "massMul": 1.0
+  },
+  "spiral": {
+   "speedMul": 1.0,
+   "e": 0.9,
+   "massMul": 1.0
+  },
+  "branch": {
+   "speedMul": 0.9,
+   "e": 0.5,
+   "massMul": 1.4
+  }
+ },
+ "ads": {
+  "retryAd": "激励视频：本关+1次顶撞，每关限1次",
+  "hintAd": "激励视频：显示参考解第1步瞄准线"
+ },
+ "levels": [
+  {
+   "id": 1,
+   "name": "第一顶",
+   "start": {
+    "x": 187,
+    "y": 600
+   },
+   "objects": [
+    {
+     "id": "t1",
+     "type": "crate",
+     "x": 187,
+     "y": 420,
+     "target": true
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 187,
+     "y": 250,
+     "r": 34
+    }
+   ],
+   "maxShots": 3,
+   "teach": "直线顶撞：瞄准木箱，顶进草堆",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 1,
+    "2": 2,
+    "1": 3
+   },
+   "solution": [
+    {
+     "angle": 90,
+     "power": 1.0,
+     "events": [
+      "hay"
+     ]
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": 2,
+   "name": "歪歪草堆",
+   "start": {
+    "x": 120,
+    "y": 600
+   },
+   "objects": [
+    {
+     "id": "t1",
+     "type": "crate",
+     "x": 180,
+     "y": 430,
+     "target": true
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 290,
+     "y": 190,
+     "r": 32
+    }
+   ],
+   "maxShots": 4,
+   "teach": "角度：要从木箱的反方向去顶",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 2,
+    "2": 3,
+    "1": 4
+   },
+   "solution": [
+    {
+     "angle": 70,
+     "power": 1.0,
+     "events": []
+    },
+    {
+     "angle": 74,
+     "power": 0.9,
+     "events": [
+      "hay"
+     ]
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": 3,
+   "name": "石头挡路",
+   "start": {
+    "x": 187,
+    "y": 600
+   },
+   "objects": [
+    {
+     "id": "t1",
+     "type": "ball",
+     "x": 230,
+     "y": 480,
+     "target": true
+    },
+    {
+     "id": "r1",
+     "type": "rock",
+     "x": 130,
+     "y": 340
+    },
+    {
+     "id": "r2",
+     "type": "rock",
+     "x": 170,
+     "y": 340
+    },
+    {
+     "id": "r3",
+     "type": "rock",
+     "x": 210,
+     "y": 340
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 70,
+     "y": 230,
+     "r": 36
+    }
+   ],
+   "maxShots": 4,
+   "teach": "借墙反弹：石头推不动，让羊毛球擦墙绕过去",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 2,
+    "2": 3,
+    "1": 4
+   },
+   "solution": [
+    {
+     "angle": 62,
+     "power": 1.0,
+     "events": [
+      "rock",
+      "wall"
+     ]
+    },
+    {
+     "angle": 102,
+     "power": 0.9,
+     "events": [
+      "hay",
+      "rock",
+      "wall"
+     ]
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": 4,
+   "name": "接力顶",
+   "start": {
+    "x": 60,
+    "y": 600
+   },
+   "objects": [
+    {
+     "id": "c1",
+     "type": "crate",
+     "x": 120,
+     "y": 500
+    },
+    {
+     "id": "t1",
+     "type": "crate",
+     "x": 200,
+     "y": 380,
+     "target": true
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 300,
+     "y": 180,
+     "r": 32
+    }
+   ],
+   "maxShots": 5,
+   "teach": "连锁反应：顶 A 箱去撞 B 箱",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 3,
+    "2": 4,
+    "1": 5
+   },
+   "solution": [
+    {
+     "angle": 64,
+     "power": 1.0,
+     "events": []
+    },
+    {
+     "angle": 58,
+     "power": 1.0,
+     "events": []
+    },
+    {
+     "angle": 56,
+     "power": 0.9,
+     "events": [
+      "hay"
+     ]
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": 5,
+   "name": "脆脆箱",
+   "start": {
+    "x": 187,
+    "y": 600
+   },
+   "objects": [
+    {
+     "id": "f1",
+     "type": "fragile",
+     "x": 187,
+     "y": 470
+    },
+    {
+     "id": "t1",
+     "type": "crate",
+     "x": 187,
+     "y": 330,
+     "target": true
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 187,
+     "y": 140,
+     "r": 32
+    }
+   ],
+   "maxShots": 4,
+   "teach": "易碎箱：用力顶会撞碎，轻顶只会推动",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 2,
+    "2": 3,
+    "1": 4
+   },
+   "solution": [
+    {
+     "angle": 90,
+     "power": 1.0,
+     "events": [
+      "break"
+     ]
+    },
+    {
+     "angle": 88,
+     "power": 0.8,
+     "events": [
+      "hay"
+     ]
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": 6,
+   "name": "别吵醒它",
+   "start": {
+    "x": 80,
+    "y": 600
+   },
+   "objects": [
+    {
+     "id": "s1",
+     "type": "sheep",
+     "x": 100,
+     "y": 420,
+     "dashDir": 0
+    },
+    {
+     "id": "t1",
+     "type": "crate",
+     "x": 220,
+     "y": 420,
+     "target": true
+    },
+    {
+     "id": "r1",
+     "type": "rock",
+     "x": 180,
+     "y": 475
+    },
+    {
+     "id": "r2",
+     "type": "rock",
+     "x": 222,
+     "y": 470
+    },
+    {
+     "id": "r3",
+     "type": "rock",
+     "x": 264,
+     "y": 475
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 330,
+     "y": 420,
+     "r": 30
+    }
+   ],
+   "maxShots": 3,
+   "teach": "睡羊被撞醒后，会朝它面朝的方向迷糊冲刺",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 1,
+    "2": 2,
+    "1": 3
+   },
+   "solution": [
+    {
+     "angle": 58,
+     "power": 0.7,
+     "events": [
+      "dash",
+      "hay",
+      "rock",
+      "wake"
+     ]
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": 7,
+   "name": "两堆草",
+   "start": {
+    "x": 187,
+    "y": 620
+   },
+   "objects": [
+    {
+     "id": "t1",
+     "type": "crate",
+     "x": 130,
+     "y": 460,
+     "target": true
+    },
+    {
+     "id": "t2",
+     "type": "crate",
+     "x": 245,
+     "y": 460,
+     "target": true
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 70,
+     "y": 200,
+     "r": 32
+    },
+    {
+     "id": "h2",
+     "x": 305,
+     "y": 200,
+     "r": 32
+    }
+   ],
+   "maxShots": 6,
+   "teach": "多目标：每个目标进任意草堆都算",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 4,
+    "2": 5,
+    "1": 6
+   },
+   "solution": [
+    {
+     "angle": 110,
+     "power": 1.0,
+     "events": []
+    },
+    {
+     "angle": 70,
+     "power": 1.0,
+     "events": []
+    },
+    {
+     "angle": 68,
+     "power": 1.0,
+     "events": [
+      "hay",
+      "wall"
+     ]
+    },
+    {
+     "angle": 110,
+     "power": 0.9,
+     "events": [
+      "hay"
+     ]
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": 8,
+   "name": "石林弹球",
+   "start": {
+    "x": 320,
+    "y": 610
+   },
+   "objects": [
+    {
+     "id": "t1",
+     "type": "ball",
+     "x": 300,
+     "y": 470,
+     "target": true
+    },
+    {
+     "id": "r1",
+     "type": "rock",
+     "x": 260,
+     "y": 330
+    },
+    {
+     "id": "r2",
+     "type": "rock",
+     "x": 200,
+     "y": 380
+    },
+    {
+     "id": "r3",
+     "type": "rock",
+     "x": 130,
+     "y": 260
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 70,
+     "y": 140,
+     "r": 32
+    }
+   ],
+   "maxShots": 4,
+   "teach": "多次反弹路线，螺旋角弹性更好",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 1,
+    "2": 2,
+    "1": 4
+   },
+   "solution": [
+    {
+     "angle": 92,
+     "power": 0.9,
+     "events": [
+      "hay",
+      "rock",
+      "wall"
+     ]
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": 9,
+   "name": "起床号",
+   "start": {
+    "x": 187,
+    "y": 620
+   },
+   "objects": [
+    {
+     "id": "f1",
+     "type": "fragile",
+     "x": 187,
+     "y": 500
+    },
+    {
+     "id": "s1",
+     "type": "sheep",
+     "x": 187,
+     "y": 380,
+     "dashDir": 90
+    },
+    {
+     "id": "t1",
+     "type": "crate",
+     "x": 187,
+     "y": 250,
+     "target": true
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 187,
+     "y": 110,
+     "r": 32
+    }
+   ],
+   "maxShots": 4,
+   "teach": "先撞碎木箱，再叫醒睡羊替你顶",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 1,
+    "2": 2,
+    "1": 4
+   },
+   "solution": [
+    {
+     "angle": 82,
+     "power": 1.0,
+     "events": [
+      "break",
+      "dash",
+      "hay",
+      "wake",
+      "wall"
+     ]
+    }
+   ],
+   "verified": true
+  },
+  {
+   "id": 10,
+   "name": "牧场大扫除",
+   "start": {
+    "x": 187,
+    "y": 620
+   },
+   "objects": [
+    {
+     "id": "t1",
+     "type": "crate",
+     "x": 100,
+     "y": 450,
+     "target": true
+    },
+    {
+     "id": "s1",
+     "type": "sheep",
+     "x": 250,
+     "y": 470,
+     "dashDir": 135
+    },
+    {
+     "id": "t2",
+     "type": "ball",
+     "x": 190,
+     "y": 330,
+     "target": true
+    },
+    {
+     "id": "r1",
+     "type": "rock",
+     "x": 300,
+     "y": 300
+    },
+    {
+     "id": "f1",
+     "type": "fragile",
+     "x": 100,
+     "y": 330
+    }
+   ],
+   "hays": [
+    {
+     "id": "h1",
+     "x": 90,
+     "y": 150,
+     "r": 32
+    },
+    {
+     "id": "h2",
+     "x": 290,
+     "y": 150,
+     "r": 32
+    }
+   ],
+   "maxShots": 6,
+   "teach": "综合：碎箱、睡羊、双目标",
+   "horn": "curl",
+   "allowedHorns": null,
+   "stars": {
+    "3": 4,
+    "2": 5,
+    "1": 6
+   },
+   "solution": [
+    {
+     "angle": 62,
+     "power": 0.8,
+     "events": [
+      "dash",
+      "hay",
+      "wake"
+     ]
+    },
+    {
+     "angle": 118,
+     "power": 1.0,
+     "events": []
+    },
+    {
+     "angle": 116,
+     "power": 1.0,
+     "events": [
+      "wall"
+     ]
+    },
+    {
+     "angle": 114,
+     "power": 1.0,
+     "events": [
+      "hay",
+      "wall"
+     ]
+    }
+   ],
+   "verified": true
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>咩咩顶角王 - 浏览器预览</title>
+<style>body{margin:0;background:#222;display:flex;justify-content:center}</style></head><body>
+<script>
+// 浏览器 shim：模拟 wx API 与 CommonJS require（需通过 http 服务打开，如 python3 -m http.server）
+var W=375,H=667,cv=document.createElement('canvas');document.body.appendChild(cv);
+window.wx={createCanvas:function(){return cv},getSystemInfoSync:function(){return{windowWidth:W,windowHeight:H}},
+ onTouchStart:function(f){cv.addEventListener('mousedown',function(e){var r=cv.getBoundingClientRect();f({touches:[{clientX:e.clientX-r.left,clientY:e.clientY-r.top}]})})}};
+var cache={};function req(base){return function(p){var u=new URL(p,location.origin+base).pathname;if(cache[u])return cache[u].exports;
+ var x=new XMLHttpRequest();x.open('GET',u,false);x.send();var m={exports:{}};cache[u]=m;
+ new Function('module','exports','require',x.responseText)(m,m.exports,req(u));return m.exports}}
+window.GAME=req(location.pathname)('./game.js');window.GAME=cache[new URL('./js/main.js',location.href).pathname].exports;
+</script></body></html>

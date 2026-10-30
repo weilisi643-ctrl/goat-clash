@@ -1,0 +1,205 @@
+[
+  {
+    "id": "ui_bg",
+    "hex": "#CFFC98",
+    "role": "UI 草绿底（主背景）",
+    "source": "ui_mock_v2/home.png 697,516px 第1名；js/theme.js bg"
+  },
+  {
+    "id": "ui_tuft",
+    "hex": "#B1D198",
+    "role": "底面稀疏小草",
+    "source": "ui_mock_v2/hud.png 990px；theme.js tuft"
+  },
+  {
+    "id": "ui_ink",
+    "hex": "#2F3727",
+    "role": "描边/文字/按钮投影（墨绿黑，禁用纯黑）",
+    "source": "home.png 66,457px；theme.js ink"
+  },
+  {
+    "id": "ui_white",
+    "hex": "#FFFFFF",
+    "role": "按钮/面板填充、标题字",
+    "source": "home.png 135,430px"
+  },
+  {
+    "id": "ui_green",
+    "hex": "#8CCB4E",
+    "role": "主按钮厚底、我方血条",
+    "source": "hud.png 14,792px"
+  },
+  {
+    "id": "ui_yellow",
+    "hex": "#FCD800",
+    "role": "高亮/胜利字/箭头按钮",
+    "source": "home.png 24,112px"
+  },
+  {
+    "id": "ui_blue",
+    "hex": "#2E6FD8",
+    "role": "次级功能按钮",
+    "source": "home.png 6,158px"
+  },
+  {
+    "id": "ui_orange",
+    "hex": "#FF9E3D",
+    "role": "活动按钮",
+    "source": "home.png 6,474px"
+  },
+  {
+    "id": "ui_red",
+    "hex": "#FF7A6B",
+    "role": "敌方血条",
+    "source": "hud.png 5,975px"
+  },
+  {
+    "id": "ui_alert",
+    "hex": "#E5482F",
+    "role": "警示",
+    "source": "theme.js alert"
+  },
+  {
+    "id": "ui_gray",
+    "hex": "#C9CCC4",
+    "role": "失败字/禁用",
+    "source": "theme.js gray；result_lose"
+  },
+  {
+    "id": "wool_white",
+    "hex": "#FFFFFF",
+    "role": "羊毛色1（默认）",
+    "source": "js/data.js woolColors[0]"
+  },
+  {
+    "id": "wool_pink",
+    "hex": "#F6D6E6",
+    "role": "羊毛色2",
+    "source": "data.js"
+  },
+  {
+    "id": "wool_blue",
+    "hex": "#CFE8FF",
+    "role": "羊毛色3",
+    "source": "data.js"
+  },
+  {
+    "id": "wool_black",
+    "hex": "#3A3A3A",
+    "role": "羊毛色4",
+    "source": "data.js"
+  },
+  {
+    "id": "wool_cream",
+    "hex": "#FFE9A8",
+    "role": "羊毛色5",
+    "source": "data.js"
+  },
+  {
+    "id": "wool_mint",
+    "hex": "#C9F2C7",
+    "role": "羊毛色6",
+    "source": "data.js"
+  },
+  {
+    "id": "wool_ref_light",
+    "hex": "#F4E4D4",
+    "role": "写实参考羊毛亮面",
+    "source": "base_side_realistic.png 9.0%"
+  },
+  {
+    "id": "wool_ref_mid",
+    "hex": "#E4D4C4",
+    "role": "写实参考羊毛中间调",
+    "source": "base_side_realistic.png 5.4%"
+  },
+  {
+    "id": "wool_ref_shadow",
+    "hex": "#D4C4AC",
+    "role": "写实参考羊毛暗面",
+    "source": "base_side_realistic.png 2.8%"
+  },
+  {
+    "id": "knee_patch",
+    "hex": "#A8774A",
+    "role": "膝部补丁默认色",
+    "source": "manifest.json recolor"
+  },
+  {
+    "id": "horn_tan",
+    "hex": "#D9B77A",
+    "role": "角色1 米金（默认）",
+    "source": "data.js hornColors[0]"
+  },
+  {
+    "id": "horn_gold",
+    "hex": "#FFD700",
+    "role": "角色2 金",
+    "source": "data.js"
+  },
+  {
+    "id": "horn_silver",
+    "hex": "#C0C0C0",
+    "role": "角色3 银",
+    "source": "data.js"
+  },
+  {
+    "id": "horn_pink",
+    "hex": "#FF7AA8",
+    "role": "角色4 粉",
+    "source": "data.js"
+  },
+  {
+    "id": "horn_cyan",
+    "hex": "#7AD0FF",
+    "role": "角色5 冰蓝",
+    "source": "data.js"
+  },
+  {
+    "id": "horn_brown",
+    "hex": "#8B5A2B",
+    "role": "角色6 棕",
+    "source": "data.js"
+  },
+  {
+    "id": "body_dark",
+    "hex": "#4C341C",
+    "role": "身体/蹄/腿 深棕主色",
+    "source": "body/body_idle.png 4.7%（8级量化）"
+  },
+  {
+    "id": "body_mid",
+    "hex": "#6C4C2C",
+    "role": "身体中间调",
+    "source": "body/body_idle.png 3.0%"
+  },
+  {
+    "id": "face_skin",
+    "hex": "#AC8C6C",
+    "role": "脸部皮肤",
+    "source": "face/face_idle.png 1.6%"
+  },
+  {
+    "id": "face_eye",
+    "hex": "#140404",
+    "role": "眼/鼻深色",
+    "source": "face/face_idle.png 1.4%"
+  },
+  {
+    "name": "薰衣草紫",
+    "hex": "#CDB8F0",
+    "role": "教学战奖励羊毛色"
+  },
+  {
+    "id": "contact_shadow",
+    "hex": "#2F3727",
+    "role": "接触阴影，alpha 0.26",
+    "source": "老大 2026-10-29"
+  },
+  {
+    "id": "perfect_zone_outline",
+    "hex": "#FCD800",
+    "role": "完美区描边（accentYellow）",
+    "source": "老大 2026-10-29"
+  }
+]

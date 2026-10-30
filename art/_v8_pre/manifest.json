@@ -1,0 +1,778 @@
+{
+ "game": "山羊对撞",
+ "version": 7,
+ "style": "半写实侧面朝右，参考 base_side_realistic.png",
+ "canvas": [
+  1152,
+  1024
+ ],
+ "canvas_prev_v6": [
+  1024,
+  1024
+ ],
+ "small_canvas": [
+  360,
+  320
+ ],
+ "small_canvas_prev_v6": [
+  320,
+  320
+ ],
+ "small_scale": 0.3125,
+ "anchor_note": "同一姿态所有图层共用 1152x1024 画布（v7 起仅向右加宽 128px，所有坐标不变），左上角对齐直接叠放；anchor 为脚底中心参考点；小图坐标乘 small_scale",
+ "poses": {
+  "idle": {
+   "foot_y_before": 1007,
+   "foot_y_after": 995,
+   "shift_y": -12,
+   "anchor": [
+    511,
+    995
+   ],
+   "horn_root": [
+    806,
+    277
+   ],
+   "horn_rotation_deg": 0,
+   "head_box": [
+    686,
+    231,
+    921,
+    503
+   ]
+  },
+  "jump": {
+   "foot_y_before": 953,
+   "foot_y_after": 995,
+   "shift_y": 42,
+   "anchor": [
+    511,
+    995
+   ],
+   "horn_root": [
+    782,
+    326
+   ],
+   "horn_rotation_deg": -2.8,
+   "head_box": [
+    686,
+    277,
+    890,
+    509
+   ],
+   "horn_rotation_vs_idle_deg": -2.8
+  },
+  "clash": {
+   "foot_y_before": 869,
+   "foot_y_after": 995,
+   "shift_y": 126,
+   "anchor": [
+    511,
+    995
+   ],
+   "horn_root": [
+    860,
+    687
+   ],
+   "horn_rotation_deg": -54.6,
+   "head_box": [
+    734,
+    641,
+    911,
+    873
+   ],
+   "horn_rotation_vs_idle_deg": -54.6
+  }
+ },
+ "draw_order": [
+  "wool/{wool}_{pose}",
+  "wool/knee_{pose}",
+  "body/body_{pose}",
+  "beard/beard_{pose}",
+  "face/face_{pose}",
+  "horn/{horn}_{pose}"
+ ],
+ "recolor": {
+  "gray_mask": "羊毛类灰度图：RGB = 灰度/255 × 目标色（multiply），alpha 保留；羊毛用 data.woolColors，knee 默认 #a8774a",
+  "gray_mask_mid": "羊角：底色中灰 128 = 目标色本身，RGB = clamp(灰度/128 × 目标色)，亮部为高光、暗部为纹理；用 data.hornColors",
+  "color": "彩色原样绘制，不换色（body 含蹄子、耳内粉色；face 含眼鼻嘴；beard 胡子固定白色）",
+  "spots_mask": "spots 已把斑点烘焙成深灰；spots_mask_* 可另上第二色"
+ },
+ "ids": {
+  "wools": [
+   "fluffy",
+   "short",
+   "spots",
+   "cloud"
+  ],
+  "horns": [
+   "curl",
+   "straight",
+   "spiral",
+   "branch"
+  ]
+ },
+ "files": [
+  {
+   "file": "body/body_idle.png",
+   "small": "body/body_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "color",
+   "bytes": 32691,
+   "small_bytes": 2399
+  },
+  {
+   "file": "face/face_idle.png",
+   "small": "face/face_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "color",
+   "bytes": 20390,
+   "small_bytes": 1792
+  },
+  {
+   "file": "beard/beard_idle.png",
+   "small": "beard/beard_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "color",
+   "bytes": 10443,
+   "small_bytes": 1413
+  },
+  {
+   "file": "wool/knee_idle.png",
+   "small": "wool/knee_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 11679,
+   "small_bytes": 1466
+  },
+  {
+   "file": "wool/fluffy_idle.png",
+   "small": "wool/fluffy_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 262289,
+   "small_bytes": 19889
+  },
+  {
+   "file": "wool/short_idle.png",
+   "small": "wool/short_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 217276,
+   "small_bytes": 16429
+  },
+  {
+   "file": "wool/spots_mask_idle.png",
+   "small": "wool/spots_mask_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 200709,
+   "small_bytes": 20411
+  },
+  {
+   "file": "wool/spots_idle.png",
+   "small": "wool/spots_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 289084,
+   "small_bytes": 20821
+  },
+  {
+   "file": "wool/cloud_idle.png",
+   "small": "wool/cloud_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 270832,
+   "small_bytes": 21583
+  },
+  {
+   "file": "horn/curl_idle.png",
+   "small": "horn/curl_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 62984,
+   "small_bytes": 3468
+  },
+  {
+   "file": "horn/straight_idle.png",
+   "small": "horn/straight_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 32440,
+   "small_bytes": 2273
+  },
+  {
+   "file": "horn/spiral_idle.png",
+   "small": "horn/spiral_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 38163,
+   "small_bytes": 2493
+  },
+  {
+   "file": "horn/branch_idle.png",
+   "small": "horn/branch_idle_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 57083,
+   "small_bytes": 3199
+  },
+  {
+   "file": "body/body_jump.png",
+   "small": "body/body_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "color",
+   "bytes": 20217,
+   "small_bytes": 1824
+  },
+  {
+   "file": "face/face_jump.png",
+   "small": "face/face_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "color",
+   "bytes": 14596,
+   "small_bytes": 1599
+  },
+  {
+   "file": "beard/beard_jump.png",
+   "small": "beard/beard_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "color",
+   "bytes": 8792,
+   "small_bytes": 1342
+  },
+  {
+   "file": "wool/knee_jump.png",
+   "small": "wool/knee_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 10130,
+   "small_bytes": 1396
+  },
+  {
+   "file": "wool/fluffy_jump.png",
+   "small": "wool/fluffy_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 194060,
+   "small_bytes": 14109
+  },
+  {
+   "file": "wool/short_jump.png",
+   "small": "wool/short_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 164030,
+   "small_bytes": 11850
+  },
+  {
+   "file": "wool/spots_mask_jump.png",
+   "small": "wool/spots_mask_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 144464,
+   "small_bytes": 14321
+  },
+  {
+   "file": "wool/spots_jump.png",
+   "small": "wool/spots_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 215800,
+   "small_bytes": 14701
+  },
+  {
+   "file": "wool/cloud_jump.png",
+   "small": "wool/cloud_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 200141,
+   "small_bytes": 14623
+  },
+  {
+   "file": "horn/curl_jump.png",
+   "small": "horn/curl_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 65129,
+   "small_bytes": 3371
+  },
+  {
+   "file": "horn/straight_jump.png",
+   "small": "horn/straight_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 32747,
+   "small_bytes": 2297
+  },
+  {
+   "file": "horn/spiral_jump.png",
+   "small": "horn/spiral_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 38339,
+   "small_bytes": 2498
+  },
+  {
+   "file": "horn/branch_jump.png",
+   "small": "horn/branch_jump_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 56928,
+   "small_bytes": 3259
+  },
+  {
+   "file": "body/body_clash.png",
+   "small": "body/body_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "color",
+   "bytes": 24513,
+   "small_bytes": 1997
+  },
+  {
+   "file": "face/face_clash.png",
+   "small": "face/face_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "color",
+   "bytes": 14994,
+   "small_bytes": 1612
+  },
+  {
+   "file": "beard/beard_clash.png",
+   "small": "beard/beard_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "color",
+   "bytes": 9657,
+   "small_bytes": 1364
+  },
+  {
+   "file": "wool/knee_clash.png",
+   "small": "wool/knee_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 9514,
+   "small_bytes": 1390
+  },
+  {
+   "file": "wool/fluffy_clash.png",
+   "small": "wool/fluffy_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 192472,
+   "small_bytes": 14413
+  },
+  {
+   "file": "wool/short_clash.png",
+   "small": "wool/short_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 158974,
+   "small_bytes": 11342
+  },
+  {
+   "file": "wool/spots_mask_clash.png",
+   "small": "wool/spots_mask_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 141627,
+   "small_bytes": 14502
+  },
+  {
+   "file": "wool/spots_clash.png",
+   "small": "wool/spots_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 207538,
+   "small_bytes": 15475
+  },
+  {
+   "file": "wool/cloud_clash.png",
+   "small": "wool/cloud_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 196592,
+   "small_bytes": 14900
+  },
+  {
+   "file": "horn/curl_clash.png",
+   "small": "horn/curl_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 66270,
+   "small_bytes": 3319
+  },
+  {
+   "file": "horn/straight_clash.png",
+   "small": "horn/straight_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 32947,
+   "small_bytes": 2248
+  },
+  {
+   "file": "horn/spiral_clash.png",
+   "small": "horn/spiral_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 36121,
+   "small_bytes": 2420
+  },
+  {
+   "file": "horn/branch_clash.png",
+   "small": "horn/branch_clash_320.png",
+   "size": [
+    1152,
+    1024
+   ],
+   "small_size": [
+    360,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 56453,
+   "small_bytes": 3274
+  }
+ ],
+ "horn_bboxes": {
+  "curl_idle": [
+   666,
+   103,
+   852,
+   286
+  ],
+  "curl_jump": [
+   646,
+   150,
+   832,
+   335
+  ],
+  "curl_clash": [
+   823,
+   509,
+   992,
+   705
+  ],
+  "straight_idle": [
+   762,
+   101,
+   854,
+   286
+  ],
+  "straight_jump": [
+   744,
+   150,
+   835,
+   336
+  ],
+  "straight_clash": [
+   840,
+   554,
+   1007,
+   712
+  ],
+  "spiral_idle": [
+   757,
+   93,
+   861,
+   289
+  ],
+  "spiral_jump": [
+   734,
+   142,
+   846,
+   340
+  ],
+  "spiral_clash": [
+   837,
+   582,
+   1039,
+   721
+  ],
+  "branch_idle": [
+   632,
+   64,
+   839,
+   289
+  ],
+  "branch_jump": [
+   614,
+   113,
+   815,
+   337
+  ],
+  "branch_clash": [
+   831,
+   479,
+   1034,
+   709
+  ]
+ },
+ "horn_bbox_note": "alpha>0 的外接框，画布 1152x1024，右侧余量 = 1151 - x1",
+ "horn_rotation_method": "各姿态角 = 待机角同一张图（不镜像、不重生成、不缩放），仅绕角根整体旋转。测量：face 图层瞳孔质心→鼻嘴质心连线角，待机 42.6°、起跳 45.4°、对撞 96.8°（图像坐标，向下为正）。起跳 rotation=-2.8°，对撞 rotation=-54.6°（PIL 逆时针为正，负值=顺时针低头）。远侧角与近侧角合成后一起旋转。"
+}

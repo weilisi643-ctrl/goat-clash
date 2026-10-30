@@ -1,0 +1,337 @@
+{
+  "version": 1,
+  "resetHourUTC8": 5,
+  "startDate": "2026-11-02",
+  "fallback": "procedural",
+  "freeTries": 3,
+  "adExtraMax": 3,
+  "targetStage2WinRate": [
+    0.08,
+    0.2
+  ],
+  "days": [
+    {
+      "day": 1,
+      "dateKey": null,
+      "seed": 1001,
+      "name": "棉花糖",
+      "look": {
+        "wool": "fluffy",
+        "woolColor": "#ffffff",
+        "horn": "curl",
+        "hornColor": "#d9b77a"
+      },
+      "stancePref": [
+        "low_charge",
+        "low_sweep"
+      ],
+      "stages": [
+        {
+          "stage": 1,
+          "clueLv": 1,
+          "ai": {
+            "timingHit": 0.2,
+            "readAcc": 0.1,
+            "counterPick": 0,
+            "powBonus": 5,
+            "hpBonus": 0
+          },
+          "allowedHorns": null
+        },
+        {
+          "stage": 2,
+          "clueLv": 4,
+          "ai": {
+            "timingHit": 0.7,
+            "readAcc": 0.5,
+            "counterPick": 0.5,
+            "powBonus": 20,
+            "hpBonus": 10
+          },
+          "allowedHorns": [
+            "straight",
+            "spiral"
+          ]
+        }
+      ],
+      "cardId": "card_day1"
+    },
+    {
+      "day": 2,
+      "dateKey": null,
+      "seed": 1002,
+      "name": "小闪电",
+      "look": {
+        "wool": "short",
+        "woolColor": "#cfe8ff",
+        "horn": "straight",
+        "hornColor": "#c0c0c0"
+      },
+      "stancePref": [
+        "high_leap"
+      ],
+      "stages": [
+        {
+          "stage": 1,
+          "clueLv": 1,
+          "ai": {
+            "timingHit": 0.2,
+            "readAcc": 0.1,
+            "counterPick": 0,
+            "powBonus": 5,
+            "hpBonus": 0
+          },
+          "allowedHorns": null
+        },
+        {
+          "stage": 2,
+          "clueLv": 4,
+          "ai": {
+            "timingHit": 0.75,
+            "readAcc": 0.5,
+            "counterPick": 0.6,
+            "powBonus": 22,
+            "hpBonus": 10
+          },
+          "allowedHorns": [
+            "curl",
+            "spiral"
+          ]
+        }
+      ],
+      "cardId": "card_day2"
+    },
+    {
+      "day": 3,
+      "dateKey": null,
+      "seed": 1003,
+      "name": "豆豆",
+      "look": {
+        "wool": "spots",
+        "woolColor": "#ffe9a8",
+        "horn": "spiral",
+        "hornColor": "#ff7aa8"
+      },
+      "stancePref": [
+        "mid_ram",
+        "mid_feint"
+      ],
+      "stages": [
+        {
+          "stage": 1,
+          "clueLv": 1,
+          "ai": {
+            "timingHit": 0.25,
+            "readAcc": 0.1,
+            "counterPick": 0,
+            "powBonus": 6,
+            "hpBonus": 0
+          },
+          "allowedHorns": null
+        },
+        {
+          "stage": 2,
+          "clueLv": 5,
+          "ai": {
+            "timingHit": 0.7,
+            "readAcc": 0.55,
+            "counterPick": 0.6,
+            "powBonus": 22,
+            "hpBonus": 15
+          },
+          "allowedHorns": [
+            "curl",
+            "branch"
+          ]
+        }
+      ],
+      "cardId": "card_day3"
+    },
+    {
+      "day": 4,
+      "dateKey": null,
+      "seed": 1004,
+      "name": "云朵公主",
+      "look": {
+        "wool": "cloud",
+        "woolColor": "#f6d6e6",
+        "horn": "branch",
+        "hornColor": "#ffd700"
+      },
+      "stancePref": [
+        "high_rear",
+        "low_sweep"
+      ],
+      "stages": [
+        {
+          "stage": 1,
+          "clueLv": 1,
+          "ai": {
+            "timingHit": 0.25,
+            "readAcc": 0.1,
+            "counterPick": 0,
+            "powBonus": 6,
+            "hpBonus": 0
+          },
+          "allowedHorns": null
+        },
+        {
+          "stage": 2,
+          "clueLv": 4,
+          "ai": {
+            "timingHit": 0.8,
+            "readAcc": 0.55,
+            "counterPick": 0.4,
+            "powBonus": 25,
+            "hpBonus": 20
+          },
+          "allowedHorns": [
+            "straight",
+            "curl"
+          ]
+        }
+      ],
+      "cardId": "card_day4"
+    },
+    {
+      "day": 5,
+      "dateKey": null,
+      "seed": 1005,
+      "name": "黑旋风",
+      "look": {
+        "wool": "short",
+        "woolColor": "#3a3a3a",
+        "horn": "straight",
+        "hornColor": "#8b5a2b"
+      },
+      "stancePref": [
+        "high_leap",
+        "mid_feint"
+      ],
+      "stages": [
+        {
+          "stage": 1,
+          "clueLv": 1,
+          "ai": {
+            "timingHit": 0.3,
+            "readAcc": 0.15,
+            "counterPick": 0,
+            "powBonus": 7,
+            "hpBonus": 0
+          },
+          "allowedHorns": null
+        },
+        {
+          "stage": 2,
+          "clueLv": 5,
+          "ai": {
+            "timingHit": 0.8,
+            "readAcc": 0.6,
+            "counterPick": 0.7,
+            "powBonus": 25,
+            "hpBonus": 10
+          },
+          "allowedHorns": [
+            "spiral",
+            "branch"
+          ]
+        }
+      ],
+      "cardId": "card_day5"
+    },
+    {
+      "day": 6,
+      "dateKey": null,
+      "seed": 1006,
+      "name": "薄荷",
+      "look": {
+        "wool": "fluffy",
+        "woolColor": "#c9f2c7",
+        "horn": "spiral",
+        "hornColor": "#7ad0ff"
+      },
+      "stancePref": [
+        "mid_feint"
+      ],
+      "stages": [
+        {
+          "stage": 1,
+          "clueLv": 1,
+          "ai": {
+            "timingHit": 0.3,
+            "readAcc": 0.15,
+            "counterPick": 0,
+            "powBonus": 7,
+            "hpBonus": 0
+          },
+          "allowedHorns": null
+        },
+        {
+          "stage": 2,
+          "clueLv": 5,
+          "ai": {
+            "timingHit": 0.85,
+            "readAcc": 0.6,
+            "counterPick": 0.6,
+            "powBonus": 26,
+            "hpBonus": 15
+          },
+          "allowedHorns": [
+            "curl",
+            "straight"
+          ]
+        }
+      ],
+      "cardId": "card_day6"
+    },
+    {
+      "day": 7,
+      "dateKey": null,
+      "seed": 1007,
+      "name": "擂台老羊王",
+      "look": {
+        "wool": "cloud",
+        "woolColor": "#ffffff",
+        "horn": "branch",
+        "hornColor": "#ffd700"
+      },
+      "stancePref": [
+        "low_charge",
+        "low_sweep",
+        "mid_ram",
+        "mid_feint",
+        "high_leap",
+        "high_rear"
+      ],
+      "stages": [
+        {
+          "stage": 1,
+          "clueLv": 1,
+          "ai": {
+            "timingHit": 0.3,
+            "readAcc": 0.2,
+            "counterPick": 0,
+            "powBonus": 8,
+            "hpBonus": 0
+          },
+          "allowedHorns": null
+        },
+        {
+          "stage": 2,
+          "clueLv": 5,
+          "ai": {
+            "timingHit": 0.9,
+            "readAcc": 0.65,
+            "counterPick": 0.7,
+            "powBonus": 28,
+            "hpBonus": 25
+          },
+          "allowedHorns": [
+            "spiral"
+          ]
+        }
+      ],
+      "cardId": "card_day7"
+    }
+  ]
+}

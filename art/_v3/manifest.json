@@ -1,0 +1,683 @@
+{
+ "game": "山羊对撞",
+ "version": 3,
+ "style": "半写实侧面朝右，参考 base_side_realistic.png",
+ "canvas": [
+  1024,
+  1024
+ ],
+ "small_canvas": [
+  320,
+  320
+ ],
+ "small_scale": 0.3125,
+ "anchor_note": "同一姿态所有图层共用 1024x1024 画布，左上角对齐直接叠放；anchor 为脚底中心参考点；小图坐标乘 small_scale",
+ "poses": {
+  "idle": {
+   "anchor": [
+    511,
+    995
+   ],
+   "horn_root": [
+    806,
+    289
+   ],
+   "horn_rotation_deg": 0,
+   "head_box": [
+    686,
+    243,
+    921,
+    515
+   ]
+  },
+  "jump": {
+   "anchor": [
+    511,
+    995
+   ],
+   "horn_root": [
+    782,
+    284
+   ],
+   "horn_rotation_deg": -12,
+   "head_box": [
+    686,
+    235,
+    890,
+    467
+   ]
+  },
+  "clash": {
+   "anchor": [
+    511,
+    995
+   ],
+   "horn_root": [
+    860,
+    561
+   ],
+   "horn_rotation_deg": -72,
+   "head_box": [
+    734,
+    515,
+    911,
+    747
+   ]
+  }
+ },
+ "draw_order": [
+  "wool/{wool}_{pose}",
+  "wool/knee_{pose}",
+  "body/body_{pose}",
+  "beard/beard_{pose}",
+  "face/face_{pose}",
+  "horn/{horn}_{pose}"
+ ],
+ "recolor": {
+  "gray_mask": "羊毛类灰度图：RGB = 灰度/255 × 目标色（multiply），alpha 保留；羊毛用 data.woolColors，knee 默认 #a8774a",
+  "gray_mask_mid": "羊角：底色中灰 128 = 目标色本身，RGB = clamp(灰度/128 × 目标色)，亮部为高光、暗部为纹理；用 data.hornColors",
+  "color": "彩色原样绘制，不换色（body 含蹄子、耳内粉色；face 含眼鼻嘴；beard 胡子固定白色）",
+  "spots_mask": "spots 已把斑点烘焙成深灰；spots_mask_* 可另上第二色"
+ },
+ "ids": {
+  "wools": [
+   "fluffy",
+   "short",
+   "spots",
+   "cloud"
+  ],
+  "horns": [
+   "curl",
+   "straight",
+   "spiral",
+   "branch"
+  ]
+ },
+ "files": [
+  {
+   "file": "body/body_idle.png",
+   "small": "body/body_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "color",
+   "bytes": 44142,
+   "small_bytes": 2919
+  },
+  {
+   "file": "face/face_idle.png",
+   "small": "face/face_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "color",
+   "bytes": 19717,
+   "small_bytes": 1782
+  },
+  {
+   "file": "beard/beard_idle.png",
+   "small": "beard/beard_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "color",
+   "bytes": 9878,
+   "small_bytes": 1381
+  },
+  {
+   "file": "wool/knee_idle.png",
+   "small": "wool/knee_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 11088,
+   "small_bytes": 1450
+  },
+  {
+   "file": "wool/fluffy_idle.png",
+   "small": "wool/fluffy_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 263512,
+   "small_bytes": 19614
+  },
+  {
+   "file": "wool/short_idle.png",
+   "small": "wool/short_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 216964,
+   "small_bytes": 15698
+  },
+  {
+   "file": "wool/spots_mask_idle.png",
+   "small": "wool/spots_mask_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 201335,
+   "small_bytes": 20705
+  },
+  {
+   "file": "wool/spots_idle.png",
+   "small": "wool/spots_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 290333,
+   "small_bytes": 21406
+  },
+  {
+   "file": "wool/cloud_idle.png",
+   "small": "wool/cloud_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 272555,
+   "small_bytes": 20777
+  },
+  {
+   "file": "horn/curl_idle.png",
+   "small": "horn/curl_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 62118,
+   "small_bytes": 3411
+  },
+  {
+   "file": "horn/straight_idle.png",
+   "small": "horn/straight_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 32401,
+   "small_bytes": 2368
+  },
+  {
+   "file": "horn/spiral_idle.png",
+   "small": "horn/spiral_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 37262,
+   "small_bytes": 2493
+  },
+  {
+   "file": "horn/branch_idle.png",
+   "small": "horn/branch_idle_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 56325,
+   "small_bytes": 3277
+  },
+  {
+   "file": "body/body_jump.png",
+   "small": "body/body_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "color",
+   "bytes": 29008,
+   "small_bytes": 2215
+  },
+  {
+   "file": "face/face_jump.png",
+   "small": "face/face_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "color",
+   "bytes": 13996,
+   "small_bytes": 1575
+  },
+  {
+   "file": "beard/beard_jump.png",
+   "small": "beard/beard_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "color",
+   "bytes": 8231,
+   "small_bytes": 1339
+  },
+  {
+   "file": "wool/knee_jump.png",
+   "small": "wool/knee_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 9578,
+   "small_bytes": 1382
+  },
+  {
+   "file": "wool/fluffy_jump.png",
+   "small": "wool/fluffy_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 192293,
+   "small_bytes": 13130
+  },
+  {
+   "file": "wool/short_jump.png",
+   "small": "wool/short_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 163966,
+   "small_bytes": 10755
+  },
+  {
+   "file": "wool/spots_mask_jump.png",
+   "small": "wool/spots_mask_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 141721,
+   "small_bytes": 13736
+  },
+  {
+   "file": "wool/spots_jump.png",
+   "small": "wool/spots_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 210139,
+   "small_bytes": 14645
+  },
+  {
+   "file": "wool/cloud_jump.png",
+   "small": "wool/cloud_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 201336,
+   "small_bytes": 14551
+  },
+  {
+   "file": "horn/curl_jump.png",
+   "small": "horn/curl_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 64035,
+   "small_bytes": 3385
+  },
+  {
+   "file": "horn/straight_jump.png",
+   "small": "horn/straight_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 32407,
+   "small_bytes": 2335
+  },
+  {
+   "file": "horn/spiral_jump.png",
+   "small": "horn/spiral_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 36049,
+   "small_bytes": 2474
+  },
+  {
+   "file": "horn/branch_jump.png",
+   "small": "horn/branch_jump_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 56248,
+   "small_bytes": 3287
+  },
+  {
+   "file": "body/body_clash.png",
+   "small": "body/body_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "color",
+   "bytes": 31553,
+   "small_bytes": 2266
+  },
+  {
+   "file": "face/face_clash.png",
+   "small": "face/face_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "color",
+   "bytes": 14346,
+   "small_bytes": 1608
+  },
+  {
+   "file": "beard/beard_clash.png",
+   "small": "beard/beard_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "color",
+   "bytes": 9073,
+   "small_bytes": 1340
+  },
+  {
+   "file": "wool/knee_clash.png",
+   "small": "wool/knee_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 8961,
+   "small_bytes": 1390
+  },
+  {
+   "file": "wool/fluffy_clash.png",
+   "small": "wool/fluffy_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 192988,
+   "small_bytes": 14278
+  },
+  {
+   "file": "wool/short_clash.png",
+   "small": "wool/short_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 159174,
+   "small_bytes": 11169
+  },
+  {
+   "file": "wool/spots_mask_clash.png",
+   "small": "wool/spots_mask_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 143020,
+   "small_bytes": 13983
+  },
+  {
+   "file": "wool/spots_clash.png",
+   "small": "wool/spots_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 206600,
+   "small_bytes": 15013
+  },
+  {
+   "file": "wool/cloud_clash.png",
+   "small": "wool/cloud_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask",
+   "bytes": 212887,
+   "small_bytes": 15742
+  },
+  {
+   "file": "horn/curl_clash.png",
+   "small": "horn/curl_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 64719,
+   "small_bytes": 3312
+  },
+  {
+   "file": "horn/straight_clash.png",
+   "small": "horn/straight_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 30905,
+   "small_bytes": 2269
+  },
+  {
+   "file": "horn/spiral_clash.png",
+   "small": "horn/spiral_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 32054,
+   "small_bytes": 2328
+  },
+  {
+   "file": "horn/branch_clash.png",
+   "small": "horn/branch_clash_320.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "small_size": [
+    320,
+    320
+   ],
+   "kind": "gray_mask_mid",
+   "bytes": 54197,
+   "small_bytes": 3180
+  }
+ ]
+}

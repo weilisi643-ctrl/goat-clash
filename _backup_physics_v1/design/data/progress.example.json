@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "uidHash": "a1b2c3",
+  "dateKey": "2026-11-02",
+  "faction": "east",
+  "factionChangedAt": "2026-11-02",
+  "showProfile": false,
+  "tries": {
+    "free": 3,
+    "used": 1,
+    "adGranted": 1,
+    "adMax": 3
+  },
+  "stage1Won": true,
+  "stage2Won": false,
+  "defended": false,
+  "todayScore": 0,
+  "weekScore": 34,
+  "defendDays": 4,
+  "titles": [
+    "t_rookie"
+  ],
+  "cards": [
+    "card_day1"
+  ],
+  "grass": 120,
+  "readStats": {
+    "guesses": 6,
+    "hits": 4
+  },
+  "history": [
+    {
+      "stage": 1,
+      "win": true,
+      "hpPct": 0.82,
+      "hits": 3,
+      "guesses": 3
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+ "version": 1,
+ "style": "半写实，配合 art v7 羊",
+ "recolor_rule": "gray_mask: RGB = 灰度/255 × 目标色；color: 原色；color_additive: 推荐 lighter 叠加",
+ "pivot_note": "pivot 为贴图中心",
+ "files": [
+  {
+   "file": "fx/dust_0.png",
+   "size": [
+    192,
+    192
+   ],
+   "kind": "gray_mask",
+   "recolor": "multiply gray/255 × color, default #c8b08a",
+   "desc": "尘土团 帧/变体 0（越往后越散越淡）",
+   "pivot": [
+    96,
+    96
+   ],
+   "bytes": 4682
+  },
+  {
+   "file": "fx/dust_1.png",
+   "size": [
+    192,
+    192
+   ],
+   "kind": "gray_mask",
+   "recolor": "multiply gray/255 × color, default #c8b08a",
+   "desc": "尘土团 帧/变体 1（越往后越散越淡）",
+   "pivot": [
+    96,
+    96
+   ],
+   "bytes": 4803
+  },
+  {
+   "file": "fx/dust_2.png",
+   "size": [
+    192,
+    192
+   ],
+   "kind": "gray_mask",
+   "recolor": "multiply gray/255 × color, default #c8b08a",
+   "desc": "尘土团 帧/变体 2（越往后越散越淡）",
+   "pivot": [
+    96,
+    96
+   ],
+   "bytes": 5068
+  },
+  {
+   "file": "fx/grass_bits.png",
+   "size": [
+    128,
+    128
+   ],
+   "kind": "color",
+   "recolor": "none（原色绿草，可整体 multiply 成枯黄）",
+   "desc": "草屑一簇，粒子发射时可整张或随机旋转",
+   "pivot": [
+    64,
+    64
+   ],
+   "bytes": 1989
+  },
+  {
+   "file": "fx/grass_blade_0.png",
+   "size": [
+    32,
+    32
+   ],
+   "kind": "color",
+   "recolor": "none",
+   "desc": "单根草屑粒子 0（32px）",
+   "pivot": [
+    16,
+    16
+   ],
+   "bytes": 1135
+  },
+  {
+   "file": "fx/grass_blade_1.png",
+   "size": [
+    32,
+    32
+   ],
+   "kind": "color",
+   "recolor": "none",
+   "desc": "单根草屑粒子 1（32px）",
+   "pivot": [
+    16,
+    16
+   ],
+   "bytes": 1143
+  },
+  {
+   "file": "fx/grass_blade_2.png",
+   "size": [
+    32,
+    32
+   ],
+   "kind": "color",
+   "recolor": "none",
+   "desc": "单根草屑粒子 2（32px）",
+   "pivot": [
+    16,
+    16
+   ],
+   "bytes": 1147
+  },
+  {
+   "file": "fx/spark_burst.png",
+   "size": [
+    128,
+    128
+   ],
+   "kind": "color_additive",
+   "recolor": "建议 globalCompositeOperation=lighter；也可 multiply 换色",
+   "desc": "撞击火花星爆（128px）",
+   "pivot": [
+    64,
+    64
+   ],
+   "bytes": 2885
+  },
+  {
+   "file": "fx/spark_streak.png",
+   "size": [
+    32,
+    32
+   ],
+   "kind": "color_additive",
+   "recolor": "lighter",
+   "desc": "单条火花粒子，沿速度方向旋转（32px）",
+   "pivot": [
+    16,
+    16
+   ],
+   "bytes": 1221
+  },
+  {
+   "file": "fx/wool_fluff_0.png",
+   "size": [
+    64,
+    64
+   ],
+   "kind": "gray_mask",
+   "recolor": "multiply gray/255 × 羊毛色（与 wool 同规则）",
+   "desc": "羊毛碎片 0（64px）",
+   "pivot": [
+    32,
+    32
+   ],
+   "bytes": 1719
+  },
+  {
+   "file": "fx/wool_fluff_1.png",
+   "size": [
+    64,
+    64
+   ],
+   "kind": "gray_mask",
+   "recolor": "multiply gray/255 × 羊毛色（与 wool 同规则）",
+   "desc": "羊毛碎片 1（64px）",
+   "pivot": [
+    32,
+    32
+   ],
+   "bytes": 1779
+  },
+  {
+   "file": "fx/wool_fluff_2.png",
+   "size": [
+    64,
+    64
+   ],
+   "kind": "gray_mask",
+   "recolor": "multiply gray/255 × 羊毛色（与 wool 同规则）",
+   "desc": "羊毛碎片 2（64px）",
+   "pivot": [
+    32,
+    32
+   ],
+   "bytes": 1808
+  },
+  {
+   "file": "fx/shockwave_ring.png",
+   "size": [
+    256,
+    256
+   ],
+   "kind": "gray_mask",
+   "recolor": "multiply 换色或 lighter；按 scale 0.2→1.2 + alpha 渐隐播放",
+   "desc": "冲击波环（256px）",
+   "pivot": [
+    128,
+    128
+   ],
+   "bytes": 8701
+  }
+ ]
+}

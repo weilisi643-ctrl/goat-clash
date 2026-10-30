@@ -1,0 +1,417 @@
+{
+ "version": 1,
+ "base": "art v7",
+ "canvas": [
+  1152,
+  1024
+ ],
+ "small_canvas": [
+  360,
+  320
+ ],
+ "anchor": [
+  511,
+  995
+ ],
+ "note": "部件为全画布尺寸，左上角对齐直接叠放，offset 均为 0。各部件像素不重叠（硬切分），按 draw_order 叠加与 v7 逐像素一致。每个部件内部仍按 v7 图层顺序 wool→knee→body→beard→face→horn 绘制、同样换色。pivot 为全画布像素坐标，小图乘 0.3125。",
+ "optional_underlay": {
+  "part": "joint_fill",
+  "draw": "在所有部件之前先画（最底层），只在头/腿/尾转动时开启；它是各关节切线外侧 28px 的 v7 原像素，填补转动后露出的楔形缺口。开启后静止合成不再逐像素等于 v7（部件半透明边缘会透出它），所以静止时关掉。"
+ },
+ "part_draw_order": [
+  "leg_back_far",
+  "leg_front_far",
+  "tail",
+  "body",
+  "leg_back_near",
+  "leg_front_near",
+  "head"
+ ],
+ "layer_draw_order_within_part": [
+  "wool/{wool}",
+  "wool/knee",
+  "body",
+  "beard",
+  "face",
+  "horn/{horn}  (仅 head)"
+ ],
+ "poses": {
+  "idle": {
+   "pivots": {
+    "leg_back_near": [
+     234,
+     745
+    ],
+    "leg_back_far": [
+     312,
+     745
+    ],
+    "leg_front_near": [
+     618,
+     770
+    ],
+    "leg_front_far": [
+     671,
+     770
+    ],
+    "tail": [
+     204,
+     552
+    ],
+    "head": [
+     735,
+     400
+    ],
+    "body": [
+     497,
+     585
+    ],
+    "body_alt_foot_anchor": [
+     511,
+     995
+    ]
+   },
+   "neck_cut_line": [
+    [
+     690,
+     330
+    ],
+    [
+     780,
+     470
+    ]
+   ],
+   "files": {
+    "leg_back_far": [
+     "parts/idle/leg_back_far/fluffy_idle.png",
+     "parts/idle/leg_back_far/short_idle.png",
+     "parts/idle/leg_back_far/spots_idle.png",
+     "parts/idle/leg_back_far/cloud_idle.png",
+     "parts/idle/leg_back_far/spots_mask_idle.png",
+     "parts/idle/leg_back_far/body_idle.png"
+    ],
+    "leg_front_far": [
+     "parts/idle/leg_front_far/fluffy_idle.png",
+     "parts/idle/leg_front_far/short_idle.png",
+     "parts/idle/leg_front_far/spots_idle.png",
+     "parts/idle/leg_front_far/cloud_idle.png",
+     "parts/idle/leg_front_far/spots_mask_idle.png",
+     "parts/idle/leg_front_far/knee_idle.png",
+     "parts/idle/leg_front_far/body_idle.png"
+    ],
+    "tail": [
+     "parts/idle/tail/fluffy_idle.png",
+     "parts/idle/tail/short_idle.png",
+     "parts/idle/tail/spots_idle.png",
+     "parts/idle/tail/cloud_idle.png",
+     "parts/idle/tail/spots_mask_idle.png"
+    ],
+    "body": [
+     "parts/idle/body/fluffy_idle.png",
+     "parts/idle/body/short_idle.png",
+     "parts/idle/body/spots_idle.png",
+     "parts/idle/body/cloud_idle.png",
+     "parts/idle/body/spots_mask_idle.png",
+     "parts/idle/body/body_idle.png"
+    ],
+    "leg_back_near": [
+     "parts/idle/leg_back_near/fluffy_idle.png",
+     "parts/idle/leg_back_near/short_idle.png",
+     "parts/idle/leg_back_near/spots_idle.png",
+     "parts/idle/leg_back_near/cloud_idle.png",
+     "parts/idle/leg_back_near/spots_mask_idle.png",
+     "parts/idle/leg_back_near/body_idle.png"
+    ],
+    "leg_front_near": [
+     "parts/idle/leg_front_near/fluffy_idle.png",
+     "parts/idle/leg_front_near/short_idle.png",
+     "parts/idle/leg_front_near/spots_idle.png",
+     "parts/idle/leg_front_near/cloud_idle.png",
+     "parts/idle/leg_front_near/spots_mask_idle.png",
+     "parts/idle/leg_front_near/knee_idle.png",
+     "parts/idle/leg_front_near/body_idle.png"
+    ],
+    "head": [
+     "parts/idle/head/fluffy_idle.png",
+     "parts/idle/head/short_idle.png",
+     "parts/idle/head/spots_idle.png",
+     "parts/idle/head/cloud_idle.png",
+     "parts/idle/head/spots_mask_idle.png",
+     "parts/idle/head/body_idle.png",
+     "parts/idle/head/beard_idle.png",
+     "parts/idle/head/face_idle.png",
+     "parts/idle/head/curl_idle.png",
+     "parts/idle/head/straight_idle.png",
+     "parts/idle/head/spiral_idle.png",
+     "parts/idle/head/branch_idle.png"
+    ],
+    "joint_fill": [
+     "parts/idle/joint_fill/fluffy_idle.png",
+     "parts/idle/joint_fill/short_idle.png",
+     "parts/idle/joint_fill/spots_idle.png",
+     "parts/idle/joint_fill/cloud_idle.png",
+     "parts/idle/joint_fill/spots_mask_idle.png",
+     "parts/idle/joint_fill/knee_idle.png",
+     "parts/idle/joint_fill/body_idle.png",
+     "parts/idle/joint_fill/face_idle.png"
+    ]
+   },
+   "horn_root": [
+    806,
+    277
+   ]
+  },
+  "jump": {
+   "pivots": {
+    "leg_back_near": [
+     264,
+     805
+    ],
+    "leg_back_far": [
+     350,
+     805
+    ],
+    "leg_front_near": [
+     659,
+     645
+    ],
+    "leg_front_far": [
+     735,
+     645
+    ],
+    "tail": [
+     289,
+     641
+    ],
+    "head": [
+     715,
+     410
+    ],
+    "body": [
+     519,
+     619
+    ],
+    "body_alt_foot_anchor": [
+     511,
+     995
+    ]
+   },
+   "neck_cut_line": [
+    [
+     670,
+     340
+    ],
+    [
+     760,
+     480
+    ]
+   ],
+   "files": {
+    "leg_back_far": [
+     "parts/jump/leg_back_far/fluffy_jump.png",
+     "parts/jump/leg_back_far/short_jump.png",
+     "parts/jump/leg_back_far/spots_jump.png",
+     "parts/jump/leg_back_far/cloud_jump.png",
+     "parts/jump/leg_back_far/spots_mask_jump.png"
+    ],
+    "leg_front_far": [
+     "parts/jump/leg_front_far/fluffy_jump.png",
+     "parts/jump/leg_front_far/short_jump.png",
+     "parts/jump/leg_front_far/spots_jump.png",
+     "parts/jump/leg_front_far/cloud_jump.png",
+     "parts/jump/leg_front_far/spots_mask_jump.png",
+     "parts/jump/leg_front_far/knee_jump.png",
+     "parts/jump/leg_front_far/body_jump.png"
+    ],
+    "tail": [
+     "parts/jump/tail/fluffy_jump.png",
+     "parts/jump/tail/short_jump.png",
+     "parts/jump/tail/spots_jump.png",
+     "parts/jump/tail/cloud_jump.png",
+     "parts/jump/tail/spots_mask_jump.png"
+    ],
+    "body": [
+     "parts/jump/body/fluffy_jump.png",
+     "parts/jump/body/short_jump.png",
+     "parts/jump/body/spots_jump.png",
+     "parts/jump/body/cloud_jump.png",
+     "parts/jump/body/spots_mask_jump.png",
+     "parts/jump/body/knee_jump.png"
+    ],
+    "leg_back_near": [
+     "parts/jump/leg_back_near/fluffy_jump.png",
+     "parts/jump/leg_back_near/short_jump.png",
+     "parts/jump/leg_back_near/spots_jump.png",
+     "parts/jump/leg_back_near/cloud_jump.png",
+     "parts/jump/leg_back_near/spots_mask_jump.png",
+     "parts/jump/leg_back_near/body_jump.png"
+    ],
+    "leg_front_near": [
+     "parts/jump/leg_front_near/fluffy_jump.png",
+     "parts/jump/leg_front_near/short_jump.png",
+     "parts/jump/leg_front_near/spots_jump.png",
+     "parts/jump/leg_front_near/cloud_jump.png",
+     "parts/jump/leg_front_near/spots_mask_jump.png",
+     "parts/jump/leg_front_near/body_jump.png"
+    ],
+    "head": [
+     "parts/jump/head/fluffy_jump.png",
+     "parts/jump/head/short_jump.png",
+     "parts/jump/head/spots_jump.png",
+     "parts/jump/head/cloud_jump.png",
+     "parts/jump/head/spots_mask_jump.png",
+     "parts/jump/head/body_jump.png",
+     "parts/jump/head/beard_jump.png",
+     "parts/jump/head/face_jump.png",
+     "parts/jump/head/curl_jump.png",
+     "parts/jump/head/straight_jump.png",
+     "parts/jump/head/spiral_jump.png",
+     "parts/jump/head/branch_jump.png"
+    ],
+    "joint_fill": [
+     "parts/jump/joint_fill/fluffy_jump.png",
+     "parts/jump/joint_fill/short_jump.png",
+     "parts/jump/joint_fill/spots_jump.png",
+     "parts/jump/joint_fill/cloud_jump.png",
+     "parts/jump/joint_fill/spots_mask_jump.png",
+     "parts/jump/joint_fill/knee_jump.png",
+     "parts/jump/joint_fill/body_jump.png",
+     "parts/jump/joint_fill/beard_jump.png",
+     "parts/jump/joint_fill/face_jump.png"
+    ]
+   },
+   "horn_root": [
+    782,
+    326
+   ]
+  },
+  "clash": {
+   "pivots": {
+    "leg_back_near": [
+     176,
+     820
+    ],
+    "leg_back_far": [
+     256,
+     820
+    ],
+    "leg_front_near": [
+     616,
+     840
+    ],
+    "leg_front_far": [
+     682,
+     840
+    ],
+    "tail": [
+     234,
+     620
+    ],
+    "head": [
+     770,
+     735
+    ],
+    "body": [
+     470,
+     696
+    ],
+    "body_alt_foot_anchor": [
+     511,
+     995
+    ]
+   },
+   "neck_cut_line": [
+    [
+     790,
+     640
+    ],
+    [
+     750,
+     830
+    ]
+   ],
+   "files": {
+    "leg_back_far": [
+     "parts/clash/leg_back_far/fluffy_clash.png",
+     "parts/clash/leg_back_far/short_clash.png",
+     "parts/clash/leg_back_far/spots_clash.png",
+     "parts/clash/leg_back_far/cloud_clash.png",
+     "parts/clash/leg_back_far/spots_mask_clash.png",
+     "parts/clash/leg_back_far/body_clash.png"
+    ],
+    "leg_front_far": [
+     "parts/clash/leg_front_far/fluffy_clash.png",
+     "parts/clash/leg_front_far/short_clash.png",
+     "parts/clash/leg_front_far/spots_clash.png",
+     "parts/clash/leg_front_far/cloud_clash.png",
+     "parts/clash/leg_front_far/spots_mask_clash.png",
+     "parts/clash/leg_front_far/knee_clash.png",
+     "parts/clash/leg_front_far/body_clash.png",
+     "parts/clash/leg_front_far/beard_clash.png"
+    ],
+    "tail": [
+     "parts/clash/tail/fluffy_clash.png",
+     "parts/clash/tail/short_clash.png",
+     "parts/clash/tail/spots_clash.png",
+     "parts/clash/tail/cloud_clash.png",
+     "parts/clash/tail/spots_mask_clash.png"
+    ],
+    "body": [
+     "parts/clash/body/fluffy_clash.png",
+     "parts/clash/body/short_clash.png",
+     "parts/clash/body/spots_clash.png",
+     "parts/clash/body/cloud_clash.png",
+     "parts/clash/body/spots_mask_clash.png",
+     "parts/clash/body/beard_clash.png",
+     "parts/clash/body/face_clash.png"
+    ],
+    "leg_back_near": [
+     "parts/clash/leg_back_near/fluffy_clash.png",
+     "parts/clash/leg_back_near/short_clash.png",
+     "parts/clash/leg_back_near/spots_clash.png",
+     "parts/clash/leg_back_near/cloud_clash.png",
+     "parts/clash/leg_back_near/spots_mask_clash.png",
+     "parts/clash/leg_back_near/body_clash.png"
+    ],
+    "leg_front_near": [
+     "parts/clash/leg_front_near/fluffy_clash.png",
+     "parts/clash/leg_front_near/short_clash.png",
+     "parts/clash/leg_front_near/spots_clash.png",
+     "parts/clash/leg_front_near/cloud_clash.png",
+     "parts/clash/leg_front_near/spots_mask_clash.png",
+     "parts/clash/leg_front_near/knee_clash.png",
+     "parts/clash/leg_front_near/body_clash.png"
+    ],
+    "head": [
+     "parts/clash/head/fluffy_clash.png",
+     "parts/clash/head/short_clash.png",
+     "parts/clash/head/spots_clash.png",
+     "parts/clash/head/cloud_clash.png",
+     "parts/clash/head/spots_mask_clash.png",
+     "parts/clash/head/body_clash.png",
+     "parts/clash/head/beard_clash.png",
+     "parts/clash/head/face_clash.png",
+     "parts/clash/head/curl_clash.png",
+     "parts/clash/head/straight_clash.png",
+     "parts/clash/head/spiral_clash.png",
+     "parts/clash/head/branch_clash.png"
+    ],
+    "joint_fill": [
+     "parts/clash/joint_fill/fluffy_clash.png",
+     "parts/clash/joint_fill/short_clash.png",
+     "parts/clash/joint_fill/spots_clash.png",
+     "parts/clash/joint_fill/cloud_clash.png",
+     "parts/clash/joint_fill/spots_mask_clash.png",
+     "parts/clash/joint_fill/knee_clash.png",
+     "parts/clash/joint_fill/body_clash.png",
+     "parts/clash/joint_fill/beard_clash.png",
+     "parts/clash/joint_fill/face_clash.png"
+    ]
+   },
+   "horn_root": [
+    860,
+    687
+   ]
+  }
+ }
+}

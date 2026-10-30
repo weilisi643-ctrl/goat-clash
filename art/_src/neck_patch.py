@@ -1,0 +1,63 @@
+# v8b: per-angle "joint patch" frames for head (neck/chest) and tail (rump), drawn UNDER all parts, fixed in world space.
+import numpy as np, json, os, imagequant
+from PIL import Image
+from scipy import ndimage as nd
+ART='/workspace/goat-game/art'; WOOLS=['fluffy','short','spots','cloud']; ANG=[-15,-10,-5,5,10,15]
+P=json.load(open(ART+'/parts.json'))
+def A(p): return np.asarray(Image.open(f'{ART}/{p}').convert('RGBA')).astype(float)
+def rot(a,th,c):
+    im=Image.fromarray(np.clip(a,0,255).astype(np.uint8),'RGBA').convert('RGBa').rotate(th,resample=Image.BICUBIC,center=tuple(c))
+    return np.asarray(im.convert('RGBA')).astype(float)
+def partfile(pose,part,name):
+    f=f'{ART}/parts/{pose}/{part}/{name}'; return A(f[len(ART)+1:]) if os.path.exists(f) else np.zeros((1024,1152,4))
+def disk(r): y,x=np.ogrid[-r:r+1,-r:r+1]; return x*x+y*y<=r*r
+CFG={'head':dict(R=150,close=14),'tail':dict(R=100,close=12),**{l:dict(R=90,close=10) for l in ['leg_back_near','leg_back_far','leg_front_near','leg_front_far']}}  # v9: leg joint patches (hip/shoulder)
+def save(a,rel):
+    a=np.clip(np.round(a),0,255).astype(np.uint8); a[a[...,3]<3]=0; im=Image.fromarray(a,'RGBA'); os.makedirs(os.path.dirname(f'{ART}/{rel}'),exist_ok=True); im.save(f'{ART}/{rel}',optimize=True,compress_level=9)
+    sm=im.resize((360,320),Image.LANCZOS); sa=np.asarray(sm).copy(); sa[sa[...,3]<3]=0
+    sa[...,1]=np.minimum(sa[...,1],np.maximum(sa[...,0],sa[...,2])); Image.fromarray(sa,'RGBA').save(f'{ART}/'+rel.replace('.png','_320.png'),optimize=True)  # v8d: plain RGBA (palette+putpalette dropped tRNS -> opaque #474C4C bg)
+info={}; stat={}
+yy,xx=np.mgrid[:1024,:1152]
+for pose,pp in P['poses'].items():
+    parts=list(pp['files'].keys()); info[pose]={}
+    for jp,cf in CFG.items():
+        piv=pp['pivots'][jp]; movers=[jp]+(['horn'] if jp=='head' else [])
+        near=np.hypot(xx-piv[0],yy-piv[1])<=cf['R']; frames=[]
+        for w in WOOLS:
+            lays=[w,'knee','body','face']  # beard excluded: it hangs free, no patch between beard and chest+(['spots_mask'] if w=='spots' else [])
+            def comp(th):
+                al=np.zeros((1024,1152)); wl=np.zeros((1024,1152,4)); sm=np.zeros((1024,1152,4))
+                for part in parts:
+                    if part=='horn': continue
+                    for k in lays:
+                        nm=f'{k}_{pose}.png'; a=partfile(pose,part,nm)
+                        if part in movers and th: a=rot(a,th,piv)
+                        if k=='spots_mask': sm=np.maximum(sm,a); continue
+                        al=np.maximum(al,a[...,3])
+                        if k==w: m=a[...,3]>wl[...,3]; wl[m]=a[m]
+                return al,wl,sm
+            al0,_,_=comp(0); S0=al0>128; conc0=nd.binary_closing(S0,structure=disk(cf['close']))&~S0
+            for th in ANG:
+                al,wl,sm=comp(th); S=al>128
+                gap=nd.binary_closing(S,structure=disk(cf['close']))&~S&~conc0&near
+                gap=nd.binary_opening(gap,iterations=1)
+                if gap.sum()<4: continue
+                reg=nd.binary_dilation(gap,iterations=3)  # 3px hidden under parts -> no seam
+                good=wl[...,3]>200; _,(iy,ix)=nd.distance_transform_edt(~good,return_indices=True)
+                o=np.zeros_like(wl); o[reg]=wl[iy[reg],ix[reg]]; o[reg,3]=255
+                o[...,3]*=np.clip(nd.distance_transform_edt(reg)/1.5,0,1)  # soft outer edge
+                rel=f'parts/{pose}/{jp}_patch/{w}_{pose}_a{th:+d}.png'; save(o,rel)
+                if w=='spots':
+                    g2=sm[...,3]>0
+                    if g2.any():
+                        _,(iy,ix)=nd.distance_transform_edt(~g2,return_indices=True); s2=np.zeros_like(sm); s2[reg]=sm[iy[reg],ix[reg]]; s2[...,3]=np.minimum(s2[...,3],o[...,3]); save(s2,f'parts/{pose}/{jp}_patch/spots_mask_{pose}_a{th:+d}.png')
+                frames.append(rel); stat[f'{pose}/{jp}/{w}/{th:+d}']=int(gap.sum())
+        info[pose][f'{jp}_patch']=dict(pivot=piv,angles=ANG,files=sorted(frames))
+note=('关节补片（v8b，v9 加四条腿）：parts/<pose>/head_patch（脖子后/胸前）、tail_patch（臀部/尾根）与 leg_back_near/leg_back_far/leg_front_near/leg_front_far_patch（髋/肩，角度 = 该腿绕自身 pivot 的旋转角），每个羊毛款式 + spots_mask 各有 a-15/-10/-5/+5/+10/+15 六帧（角度 = 头/尾绕 pivot 的旋转角，度，'
+      '正值 = 屏幕逆时针，与 PIL rotate 一致；游戏里 canvas rotate 正值是顺时针，取 a = -canvasDeg）。用法：画在所有部件最下层，'
+      '不跟随头/尾旋转（已按该角度在世界坐标算好）；用同款式羊毛色染色（灰/255×woolColor，spots_mask 用 #8b5a2b）。显示规则：|a|<1° 不画；'
+      '取同符号最近的一帧（|a|≤7.5→5，≤12.5→10，否则 15）；alpha = clamp((|a|-1)/4,0,1)，1°→5° 淡入。静止（a=0）时不画，静态合成不变。'
+      '某款式/角度没有缺口时该帧不存在，直接跳过。')
+P['joint_patch']=dict(note=note,poses=info)
+json.dump(P,open(ART+'/parts.json','w'),ensure_ascii=False,indent=1); print(json.dumps(stat))
+import subprocess; subprocess.run(['python3',ART+'/_src/alpha_check.py'],check=True)  # v8d guard: every asset PNG keeps alpha

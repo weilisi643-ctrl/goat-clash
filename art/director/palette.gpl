@@ -1,0 +1,38 @@
+GIMP Palette
+Name: 山羊对撞 v1
+Columns: 6
+#
+207 252 152	ui_bg
+177 209 152	ui_tuft
+ 47  55  39	ui_ink
+255 255 255	ui_white
+140 203  78	ui_green
+252 216   0	ui_yellow
+ 46 111 216	ui_blue
+255 158  61	ui_orange
+255 122 107	ui_red
+229  72  47	ui_alert
+201 204 196	ui_gray
+255 255 255	wool_white
+246 214 230	wool_pink
+207 232 255	wool_blue
+ 58  58  58	wool_black
+255 233 168	wool_cream
+201 242 199	wool_mint
+244 228 212	wool_ref_light
+228 212 196	wool_ref_mid
+212 196 172	wool_ref_shadow
+168 119  74	knee_patch
+217 183 122	horn_tan
+255 215   0	horn_gold
+192 192 192	horn_silver
+255 122 168	horn_pink
+122 208 255	horn_cyan
+139  90  43	horn_brown
+ 76  52  28	body_dark
+108  76  44	body_mid
+172 140 108	face_skin
+ 20   4   4	face_eye
+205 184 240	lavender_reward
+ 47  55  39	contact_shadow_a026
+252 216   0	perfect_zone_outline
